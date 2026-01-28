@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FireGuardian</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root{
+  --primary:#d32f2f;
+  --dark:#b71c1c;
+  --bg:#f4f4f6;
+  --card:#fff;
+  --text:#222;
+  --ok:#2e7d32;
+  --warn:#f9a825;
+  --danger:#c62828;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+header{
+  background:linear-gradient(90deg,var(--primary),var(--dark));
+  color:#fff;
+  padding:14px;
+  text-align:center;
+}
+.container{max-width:1200px;margin:auto;padding:16px}
+.card{
+  background:var(--card);
+  border-radius:12px;
+  padding:16px;
+  box-shadow:0 6px 20px rgba(0,0,0,.08);
+  margin-bottom:16px;
+}
+nav{
+  display:flex;
+  gap:8px;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+}
+nav button{
+  flex:1;
+  min-width:140px;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  cursor:pointer;
+  font-weight:600;
+  background:#fff;
+}
+nav button.active{
+  background:var(--primary);
+  color:#fff;
+}
+.tab{display:none}
+.tab.active{display:block}
+
+.dashboard{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:12px;
+}
+.stat{
+  padding:14px;
+  border-radius:12px;
+  color:#fff;
+  font-weight:bold;
+  text-align:center;
+}
+.stat.ok{background:var(--ok)}
+.stat.warn{background:var(--warn)}
+.stat.danger{background:var(--danger)}
+
+form{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:12px;
+}
+input,select,textarea{
+  padding:8px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+textarea{grid-column:1/-1}
+
+.actions{
+  grid-column:1/-1;
+  display:flex;
+  gap:10px;
+}
+.btn{
+  padding:10px 14px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+}
+.btn.primary{background:var(--primary);color:#fff}
+.btn.danger{background:#555;color:#fff}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+th,td{
+  padding:8px;
+  border-bottom:1px solid #eee;
+  text-align:left;
+}
+.badge{
+  padding:4px 8px;
+  border-radius:8px;
+  font-size:12px;
+  color:#fff;
+}
+.badge.ok{background:var(--ok)}
+.badge.warn{background:var(--warn)}
+.badge.danger{background:var(--danger)}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1><i class="fas fa-shield-alt"></i> FireGuardian</h1>
+</header>
+
+<div class="container">
+
+<nav>
+  <button class="active" data-tab="dash">Dashboard</button>
+  <button data-tab="cadastro">Cadastro</button>
+  <button data-tab="lista">Equipamentos</button>
+</nav>
+
+<!-- DASHBOARD -->
+<div id="dash" class="card tab active">
+  <h2>Resumo Geral</h2>
+  <div class="dashboard">
+    <div id="ok" class="stat ok">0 OK</div>
+    <div id="warn" class="stat warn">0 Vencendo</div>
+    <div id="danger" class="stat danger">0 Vencidos</div>
+  </div>
+</div>
+
+<!-- CADASTRO -->
+<div id="cadastro" class="card tab">
+  <h2>Cadastro de Equipamento</h2>
+
+  <form id="form">
+    <select id="tipo" required>
+      <option value="">Tipo Equipamento</option>
+      <option>Extintor</option>
+      <option>Mangueira</option>
+      <option>Personalizado</option>
+    </select>
+
+    <input id="area" placeholder="Área / Andar *" required>
+    <input id="local" placeholder="Localização Detalhada *" required>
+
+    <input type="date" id="ultima" required>
+    <input type="date" id="proxima" required>
+
+    <div id="mangueiraExtra" style="display:none">
+      <label><input type="checkbox" id="storz"> Chave Storz</label>
+    </div>
+
+    <textarea id="obs" placeholder="Observações"></textarea>
+
+    <div class="actions">
+      <button type="submit" class="btn primary">Salvar</button>
+      <button type="reset" class="btn danger">Cancelar</button>
+    </div>
+  </form>
+</div>
+
+<!-- LISTA -->
+<div id="lista" class="card tab">
+  <h2>Equipamentos Cadastrados</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>Área</th>
+        <th>Localização</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+</div>
+
+<script>
+const tabs=document.querySelectorAll('.tab');
+const buttons=document.querySelectorAll('nav button');
+buttons.forEach(b=>{
+  b.onclick=()=>{
+    buttons.forEach(x=>x.classList.remove('active'));
+    tabs.forEach(t=>t.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById(b.dataset.tab).classList.add('active');
+  }
+});
+
+const form=document.getElementById('form');
+const tbody=document.getElementById('tbody');
+const tipo=document.getElementById('tipo');
+const storz=document.getElementById('storz');
+const mangueiraExtra=document.getElementById('mangueiraExtra');
+
+tipo.onchange=()=>{
+  mangueiraExtra.style.display=tipo.value==='Mangueira'?'block':'none';
+};
+
+let data=JSON.parse(localStorage.getItem('fireguardian')||'[]');
+
+function status(item){
+  const hoje=new Date();
+  const prox=new Date(item.proxima);
+  const diff=(prox-hoje)/86400000;
+  if(diff<0) return 'danger';
+  if(diff<=30) return 'warn';
+  return 'ok';
+}
+
+function salvar(){
+  localStorage.setItem('fireguardian',JSON.stringify(data));
+  render();
+}
+
+function render(){
+  tbody.innerHTML='';
+  let ok=0,warn=0,danger=0;
+  data.forEach((i,idx)=>{
+    const s=status(i);
+    if(s==='ok')ok++; if(s==='warn')warn++; if(s==='danger')danger++;
+    tbody.innerHTML+=`
+      <tr>
+        <td>${i.tipo}</td>
+        <td>${i.area}</td>
+        <td>${i.local}</td>
+        <td><span class="badge ${s}">${s.toUpperCase()}</span></td>
+        <td><button class="btn danger" onclick="del(${idx})">Excluir</button></td>
+      </tr>`;
+  });
+  document.getElementById('ok').innerText=ok+' OK';
+  document.getElementById('warn').innerText=warn+' Vencendo';
+  document.getElementById('danger').innerText=danger+' Vencidos';
+}
+
+function del(i){
+  data.splice(i,1);
+  salvar();
+}
+
+form.onsubmit=e=>{
+  e.preventDefault();
+  data.push({
+    tipo:tipo.value,
+    area:area.value,
+    local:local.value,
+    ultima:ultima.value,
+    proxima:proxima.value,
+    storz:storz.checked,
+    obs:obs.value
+  });
+  form.reset();
+  mangueiraExtra.style.display='none';
+  salvar();
+};
+
+render();
+</script>
+
+</body>
+</html>
