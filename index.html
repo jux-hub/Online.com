@@ -3,73 +3,113 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Teste Download PDF</title>
+<title>Editor e Teste de Download PDF</title>
 
 <style>
 body{
     font-family: Arial, sans-serif;
-    background:#f4f4f4;
-    text-align:center;
-    padding:40px;
+    background:#eef2f7;
+    padding:20px;
 }
 .container{
-    background:white;
-    padding:30px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,0.1);
-    max-width:400px;
+    max-width:800px;
     margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+h1{
+    text-align:center;
+}
+textarea{
+    width:100%;
+    height:200px;
+    padding:10px;
+    margin-top:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:16px;
 }
 button{
-    width:100%;
-    padding:15px;
-    margin-top:15px;
+    padding:12px 20px;
+    margin-top:10px;
+    margin-right:10px;
     border:none;
-    border-radius:8px;
-    background:#1976D2;
-    color:white;
+    border-radius:6px;
     font-size:16px;
     cursor:pointer;
 }
-button:hover{
-    background:#0d47a1;
+.btn-primary{
+    background:#1976D2;
+    color:white;
+}
+.btn-success{
+    background:#2e7d32;
+    color:white;
+}
+.btn-warning{
+    background:#f57c00;
+    color:white;
+}
+.preview{
+    margin-top:20px;
+    padding:15px;
+    border:1px solid #ddd;
+    background:#fafafa;
+    border-radius:6px;
 }
 </style>
-</head>
 
+<!-- Biblioteca jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</head>
 <body>
 
 <div class="container">
-    <h2>Teste Download WebView</h2>
 
-    <!-- 1 - PDF hospedado -->
-    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf">
-        <button>Baixar PDF (Link Direto)</button>
-    </a>
+<h1>Editor de Documento</h1>
 
-    <!-- 2 - Arquivo externo -->
-    <a href="https://file-examples.com/storage/fe9f3bce1e3b8f6f52b8b1a/2017/10/file-sample_150kB.pdf">
-        <button>Baixar PDF Externo</button>
-    </a>
+<label>Digite seu texto:</label>
+<textarea id="texto">
+Digite aqui seu texto para gerar o PDF...
+</textarea>
 
-    <!-- 3 - Gerar PDF via Blob -->
-    <button onclick="baixarBlob()">Baixar PDF via Blob</button>
+<br>
+
+<button class="btn-primary" onclick="visualizar()">Visualizar</button>
+<button class="btn-success" onclick="gerarPDF()">Gerar e Baixar PDF</button>
+
+<br><br>
+
+<a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf">
+    <button class="btn-warning">Testar Download PDF Externo</button>
+</a>
+
+<div class="preview" id="preview"></div>
 
 </div>
 
 <script>
-function baixarBlob(){
-    const texto = "Teste de PDF via Blob no WebView";
-    const blob = new Blob([texto], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "teste_blob.pdf";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+function visualizar(){
+    const texto = document.getElementById("texto").value;
+    document.getElementById("preview").innerText = texto;
 }
+
+async function gerarPDF(){
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const texto = document.getElementById("texto").value;
+
+    doc.setFontSize(14);
+    doc.text(texto, 10, 20);
+
+    doc.save("documento_teste.pdf");
+}
+
 </script>
 
 </body>
