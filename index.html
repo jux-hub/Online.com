@@ -3,25 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FireGuardian - Teste de Funcionalidades</title>
+    <title>FireGuardian Pro - Gestão de Equipamentos</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
         :root {
             --primary: #B3261E;
+            --primary-dark: #8C1D18;
             --primary-container: #F9DEDC;
-            --on-primary: #FFFFFF;
+            --secondary: #9C4146;
             --surface: #FFFBFE;
             --surface-variant: #E7E0EC;
             --outline: #79747E;
             --error: #BA1A1A;
             --success: #4CAF50;
             --warning: #FF9800;
+            --info: #2196F3;
+            --on-surface: #1C1B1F;
+            --on-surface-variant: #49454F;
         }
 
         @media (prefers-color-scheme: dark) {
@@ -29,222 +34,89 @@
                 --surface: #1C1B1F;
                 --surface-variant: #49454F;
                 --on-surface: #E6E1E5;
+                --on-surface-variant: #CAC4D0;
             }
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--surface);
             color: var(--on-surface);
             line-height: 1.6;
-            padding-bottom: 80px;
+            font-size: 14px;
+            overflow-x: hidden;
         }
 
+        /* App Bar */
         .app-bar {
             background: var(--primary);
-            color: var(--on-primary);
+            color: white;
             padding: 16px 20px;
-            position: sticky;
+            position: fixed;
             top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        .app-bar h1 {
-            font-size: 1.5rem;
+        .app-bar-title {
+            font-size: 20px;
             font-weight: 600;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .card {
-            background: var(--surface-variant);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Seção de Anotações */
-        .note-input {
-            width: 100%;
-            min-height: 120px;
-            padding: 16px;
-            border: 2px solid var(--outline);
-            border-radius: 12px;
-            font-size: 16px;
-            resize: vertical;
-            background: var(--surface);
-            color: inherit;
-            font-family: inherit;
-        }
-
-        .note-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 24px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 4px;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: var(--on-primary);
-        }
-
-        .btn-primary:active {
-            transform: scale(0.98);
-            opacity: 0.9;
-        }
-
-        .btn-secondary {
-            background: var(--surface-variant);
-            color: var(--primary);
-            border: 1px solid var(--outline);
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-warning {
-            background: var(--warning);
-            color: white;
-        }
-
-        .btn-error {
-            background: var(--error);
-            color: white;
-        }
-
-        .btn-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 16px;
-        }
-
-        /* Lista de Anotações */
-        .notes-list {
-            margin-top: 20px;
-        }
-
-        .note-item {
-            background: var(--surface);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border-left: 4px solid var(--primary);
-            position: relative;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .note-date {
-            font-size: 12px;
-            color: var(--outline);
-            margin-bottom: 8px;
-        }
-
-        .note-text {
-            font-size: 15px;
-            line-height: 1.5;
-            white-space: pre-wrap;
-        }
-
-        .note-actions {
+        .app-bar-actions {
             display: flex;
             gap: 8px;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid var(--surface-variant);
         }
 
         .icon-btn {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             border: none;
-            background: transparent;
+            background: rgba(255,255,255,0.15);
+            color: white;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--outline);
+            font-size: 20px;
             transition: all 0.2s;
         }
 
-        .icon-btn:hover {
-            background: var(--surface-variant);
-            color: var(--primary);
-        }
-
-        .icon-btn.delete:hover {
-            color: var(--error);
+        .icon-btn:active {
+            transform: scale(0.95);
+            background: rgba(255,255,255,0.25);
         }
 
         /* Status Bar */
         .status-bar {
             position: fixed;
-            bottom: 0;
+            top: 72px;
             left: 0;
             right: 0;
-            background: var(--surface);
-            border-top: 1px solid var(--surface-variant);
-            padding: 12px 20px;
+            background: var(--surface-variant);
+            padding: 8px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 13px;
-            z-index: 99;
+            font-size: 12px;
+            z-index: 999;
+            border-bottom: 1px solid var(--outline);
         }
 
         .status-item {
             display: flex;
             align-items: center;
             gap: 6px;
+            color: var(--on-surface-variant);
         }
 
         .status-dot {
@@ -265,49 +137,455 @@
             50% { opacity: 0.5; }
         }
 
-        /* Test Section */
-        .test-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
-            margin-top: 12px;
+        /* Main Content */
+        .main-content {
+            margin-top: 110px;
+            padding: 16px;
+            padding-bottom: 100px;
         }
 
-        .test-btn {
-            padding: 16px;
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--surface-variant);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            background: var(--primary-container);
+            border-bottom: 1px solid var(--surface-variant);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
             border-radius: 12px;
-            border: 2px dashed var(--outline);
-            background: transparent;
-            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .card-subtitle {
+            font-size: 12px;
+            color: var(--on-surface-variant);
+            margin-top: 2px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 16px;
             text-align: center;
+            border: 2px solid var(--surface-variant);
             transition: all 0.2s;
         }
 
-        .test-btn:active {
-            background: var(--surface-variant);
+        .stat-card:active {
+            transform: scale(0.98);
             border-color: var(--primary);
         }
 
-        .test-btn .icon {
-            font-size: 24px;
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--on-surface-variant);
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--on-surface-variant);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--surface-variant);
+            border-radius: 12px;
+            font-size: 16px;
+            background: var(--surface);
+            color: var(--on-surface);
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-container);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: 100%;
             margin-bottom: 8px;
         }
 
-        .test-btn .label {
+        .btn:last-child {
+            margin-bottom: 0;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(179, 38, 30, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--surface-variant);
+            color: var(--on-surface);
+            border: 2px solid var(--outline);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-error {
+            background: var(--error);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+            min-width: 120px;
+            margin-bottom: 0;
+        }
+
+        /* Equipment List */
+        .equipment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .equipment-item {
+            background: var(--surface);
+            border: 2px solid var(--surface-variant);
+            border-radius: 12px;
+            padding: 16px;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .equipment-item:active {
+            transform: scale(0.99);
+            border-color: var(--primary);
+        }
+
+        .equipment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .equipment-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .type-extintor { background: #FFEBEE; color: #C62828; }
+        .type-mangueira { background: #E3F2FD; color: #1565C0; }
+        .type-hidrante { background: #E8F5E9; color: #2E7D32; }
+        .type-outros { background: #FFF3E0; color: #E65100; }
+
+        .equipment-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .status-ok { background: var(--success); }
+        .status-warning { background: var(--warning); }
+        .status-expired { background: var(--error); }
+
+        .equipment-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--on-surface);
+            margin-bottom: 4px;
+        }
+
+        .equipment-location {
+            font-size: 13px;
+            color: var(--on-surface-variant);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .equipment-date {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            padding: 8px 12px;
+            background: var(--surface-variant);
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+
+        .date-label {
+            color: var(--on-surface-variant);
+        }
+
+        .date-value {
+            font-weight: 600;
+            color: var(--on-surface);
+        }
+
+        .date-value.expired { color: var(--error); }
+        .date-value.warning { color: var(--warning); }
+
+        .equipment-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--surface-variant);
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: var(--surface-variant);
+            color: var(--on-surface);
             font-size: 12px;
             font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .action-btn:active {
+            background: var(--primary-container);
             color: var(--primary);
         }
 
-        /* Log de Eventos */
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--on-surface-variant);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--on-surface);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow: hidden;
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: 24px 24px 0;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--on-surface);
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            max-height: 60vh;
+        }
+
+        .modal-footer {
+            padding: 16px 24px 24px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-footer .btn {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #323232;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 3000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--error); }
+        .toast.warning { background: var(--warning); }
+
+        /* Log Container */
         .log-container {
             background: #1a1a2e;
             color: #00ff00;
             padding: 16px;
             border-radius: 12px;
             font-family: 'Courier New', monospace;
-            font-size: 12px;
-            max-height: 200px;
+            font-size: 11px;
+            max-height: 150px;
             overflow-y: auto;
             margin-top: 12px;
         }
@@ -322,290 +600,209 @@
             color: #888;
         }
 
-        .log-error {
-            color: #ff4444;
+        .log-error { color: #ff4444; }
+        .log-success { color: #44ff44; }
+        .log-info { color: #4488ff; }
+
+        /* Test Buttons Grid */
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
         }
 
-        .log-success {
-            color: #44ff44;
+        .test-btn {
+            padding: 16px 12px;
+            border-radius: 12px;
+            border: 2px dashed var(--outline);
+            background: transparent;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
         }
 
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            background: #323232;
-            color: white;
-            padding: 14px 24px;
-            border-radius: 8px;
-            font-size: 14px;
-            opacity: 0;
-            transition: all 0.3s;
-            z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        .test-btn:active {
+            background: var(--surface-variant);
+            border-color: var(--primary);
+            border-style: solid;
         }
 
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
+        .test-btn .icon {
+            font-size: 28px;
+            margin-bottom: 8px;
         }
 
-        .toast.success {
-            background: var(--success);
+        .test-btn .label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--primary);
+            line-height: 1.3;
         }
 
-        .toast.error {
-            background: var(--error);
+        /* Hidden file input */
+        .file-input {
+            display: none;
         }
 
-        /* Modal */
-        .modal {
+        /* Loading */
+        .loading-overlay {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 200;
+            background: rgba(0,0,0,0.7);
+            z-index: 2500;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        .modal.active {
+        .loading-overlay.active {
             display: flex;
         }
 
-        .modal-content {
-            background: var(--surface);
-            border-radius: 20px;
-            padding: 24px;
-            max-width: 400px;
-            width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--surface-variant);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
-        .modal-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 16px;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--outline);
+        .loading-text {
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
         }
 
-        .empty-state .icon {
-            font-size: 64px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        /* Stats */
-        .stats-grid {
+        /* Quick Actions */
+        .quick-actions {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
-        .stat-card {
-            background: var(--primary-container);
-            padding: 16px;
+        .quick-action {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 8px;
+            background: var(--surface);
             border-radius: 12px;
+            border: 1px solid var(--surface-variant);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-action:active {
+            background: var(--primary-container);
+            transform: scale(0.95);
+        }
+
+        .quick-action-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--primary-container);
+            color: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .quick-action-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--on-surface);
             text-align: center;
         }
 
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
+        /* Filter Chips */
+        .filter-chips {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 16px;
+            scrollbar-width: none;
         }
 
-        .stat-label {
-            font-size: 12px;
+        .filter-chips::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chip {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--outline);
+            background: var(--surface);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--on-surface-variant);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Search Bar */
+        .search-bar {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 16px 14px 44px;
+            border: 2px solid var(--surface-variant);
+            border-radius: 28px;
+            font-size: 15px;
+            background: var(--surface);
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-container);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
             color: var(--outline);
-            margin-top: 4px;
         }
     </style>
 </head>
 <body>
     <!-- App Bar -->
     <div class="app-bar">
-        <h1>
+        <div class="app-bar-title">
             <span>🛡️</span>
-            FireGuardian Test
-        </h1>
-    </div>
-
-    <div class="container">
-        <!-- Stats -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-value" id="noteCount">0</div>
-                <div class="stat-label">Anotações</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="pdfCount">0</div>
-                <div class="stat-label">PDFs</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="backupDate">-</div>
-                <div class="stat-label">Último Backup</div>
-            </div>
+            FireGuardian Pro
         </div>
-
-        <!-- Nova Anotação -->
-        <div class="card">
-            <div class="card-title">
-                <span>📝</span>
-                Nova Anotação
-            </div>
-            <textarea 
-                class="note-input" 
-                id="noteInput" 
-                placeholder="Digite sua anotação aqui..."
-            ></textarea>
-            <div class="btn-group">
-                <button class="btn btn-primary" onclick="addNote()">
-                    <span>💾</span> Salvar Nota
-                </button>
-                <button class="btn btn-secondary" onclick="clearInput()">
-                    <span>🗑️</span> Limpar
-                </button>
-            </div>
-        </div>
-
-        <!-- Testes de Exportação -->
-        <div class="card">
-            <div class="card-title">
-                <span>📄</span>
-                Testes de Exportação (PDF)
-            </div>
-            <div class="test-grid">
-                <button class="test-btn" onclick="testPDFMethod1()">
-                    <div class="icon">📄</div>
-                    <div class="label">PDF Método 1<br>window.print()</div>
-                </button>
-                <button class="test-btn" onclick="testPDFMethod2()">
-                    <div class="icon">📑</div>
-                    <div class="label">PDF Método 2<br>jsPDF</div>
-                </button>
-                <button class="test-btn" onclick="testPDFMethod3()">
-                    <div class="icon">📃</div>
-                    <div class="label">PDF Método 3<br>Base64 → Android</div>
-                </button>
-                <button class="test-btn" onclick="testPDFMethod4()">
-                    <div class="icon">🎯</div>
-                    <div class="label">PDF Método 4<br>Blob Download</div>
-                </button>
-            </div>
-        </div>
-
-        <!-- Testes de Excel -->
-        <div class="card">
-            <div class="card-title">
-                <span>📊</span>
-                Testes de Exportação (Excel)
-            </div>
-            <div class="test-grid">
-                <button class="test-btn" onclick="testExcelMethod1()">
-                    <div class="icon">📊</div>
-                    <div class="label">Excel Método 1<br>CSV</div>
-                </button>
-                <button class="test-btn" onclick="testExcelMethod2()">
-                    <div class="icon">📈</div>
-                    <div class="label">Excel Método 2<br>SheetJS</div>
-                </button>
-                <button class="test-btn" onclick="testExcelMethod3()">
-                    <div class="icon">📉</div>
-                    <div class="label">Excel Método 3<br>Base64 → Android</div>
-                </button>
-                <button class="test-btn" onclick="testExcelMethod4()">
-                    <div class="icon">🎲</div>
-                    <div class="label">Excel Método 4<br>URI Scheme</div>
-                </button>
-            </div>
-        </div>
-
-        <!-- Testes de Backup -->
-        <div class="card">
-            <div class="card-title">
-                <span>💾</span>
-                Testes de Backup & Compartilhamento
-            </div>
-            <div class="btn-group">
-                <button class="btn btn-success" onclick="createBackup()">
-                    <span>💾</span> Criar Backup JSON
-                </button>
-                <button class="btn btn-warning" onclick="requestRestore()">
-                    <span>📂</span> Restaurar Backup
-                </button>
-                <button class="btn btn-secondary" onclick="shareNotes()">
-                    <span>📤</span> Compartilhar Texto
-                </button>
-                <button class="btn btn-primary" onclick="shareFile()">
-                    <span>🔗</span> Compartilhar Arquivo
-                </button>
-            </div>
-        </div>
-
-        <!-- Testes de Interface Android -->
-        <div class="card">
-            <div class="card-title">
-                <span>🤖</span>
-                Testes de Interface Android
-            </div>
-            <div class="btn-group">
-                <button class="btn btn-secondary" onclick="testAndroidInterface()">
-                    <span>🔍</span> Verificar Interface
-                </button>
-                <button class="btn btn-secondary" onclick="getAndroidVersion()">
-                    <span>📱</span> Versão do App
-                </button>
-                <button class="btn btn-secondary" onclick="testVibration()">
-                    <span>📳</span> Vibrar
-                </button>
-                <button class="btn btn-secondary" onclick="testToast()">
-                    <span>🍞</span> Toast Nativo
-                </button>
-            </div>
-        </div>
-
-        <!-- Log de Eventos -->
-        <div class="card">
-            <div class="card-title">
-                <span>🪵</span>
-                Log de Eventos
-                <button class="icon-btn" onclick="clearLog()" style="margin-left: auto;">
-                    🗑️
-                </button>
-            </div>
-            <div class="log-container" id="logContainer">
-                <div class="log-entry">Sistema iniciado...</div>
-            </div>
-        </div>
-
-        <!-- Lista de Anotações -->
-        <div class="card">
-            <div class="card-title">
-                <span>📋</span>
-                Minhas Anotações
-            </div>
-            <div id="notesList" class="notes-list">
-                <div class="empty-state">
-                    <div class="icon">📝</div>
-                    <p>Nenhuma anotação ainda</p>
-                    <p style="font-size: 14px; margin-top: 8px;">Digite algo acima para começar!</p>
-                </div>
-            </div>
+        <div class="app-bar-actions">
+            <button class="icon-btn" onclick="showSyncStatus()" title="Sincronizar">🔄</button>
+            <button class="icon-btn" onclick="toggleMenu()" title="Menu">⋮</button>
         </div>
     </div>
 
@@ -616,23 +813,213 @@
             <span id="statusText">Online</span>
         </div>
         <div class="status-item">
-            <span>🔋 FireGuardian v1.0</span>
+            <span id="equipmentCount">0 equipamentos</span>
+        </div>
+        <div class="status-item">
+            <span>v1.0</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card" onclick="filterByStatus('all')">
+                <div class="stat-value" id="totalCount">0</div>
+                <div class="stat-label">Total</div>
+            </div>
+            <div class="stat-card" onclick="filterByStatus('ok')">
+                <div class="stat-value" id="okCount" style="color: var(--success);">0</div>
+                <div class="stat-label">Conforme</div>
+            </div>
+            <div class="stat-card" onclick="filterByStatus('warning')">
+                <div class="stat-value" id="warningCount" style="color: var(--warning);">0</div>
+                <div class="stat-label">Atenção</div>
+            </div>
+            <div class="stat-card" onclick="filterByStatus('expired')">
+                <div class="stat-value" id="expiredCount" style="color: var(--error);">0</div>
+                <div class="stat-label">Vencidos</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="quick-action" onclick="openAddModal()">
+                <div class="quick-action-icon">➕</div>
+                <div class="quick-action-label">Novo</div>
+            </div>
+            <div class="quick-action" onclick="exportToPDF()">
+                <div class="quick-action-icon">📄</div>
+                <div class="quick-action-label">PDF</div>
+            </div>
+            <div class="quick-action" onclick="exportToExcel()">
+                <div class="quick-action-icon">📊</div>
+                <div class="quick-action-label">Excel</div>
+            </div>
+            <div class="quick-action" onclick="showBackupModal()">
+                <div class="quick-action-icon">💾</div>
+                <div class="quick-action-label">Backup</div>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="searchInput" placeholder="Buscar equipamentos..." oninput="searchEquipment()">
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="filter-chips">
+            <button class="chip active" onclick="filterByType('all')">Todos</button>
+            <button class="chip" onclick="filterByType('extintor')">Extintores</button>
+            <button class="chip" onclick="filterByType('mangueira')">Mangueiras</button>
+            <button class="chip" onclick="filterByType('hidrante')">Hidrantes</button>
+            <button class="chip" onclick="filterByType('outros')">Outros</button>
+        </div>
+
+        <!-- Equipment List -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🧯</div>
+                <div>
+                    <div class="card-title">Equipamentos Cadastrados</div>
+                    <div class="card-subtitle" id="listSubtitle">Gerencie seus equipamentos de segurança</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="equipmentList" class="equipment-list">
+                    <div class="empty-state">
+                        <div class="empty-icon">📝</div>
+                        <div class="empty-title">Nenhum equipamento</div>
+                        <p>Adicione seu primeiro equipamento clicando em "Novo"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test & Debug Section -->
+        <div class="card" style="margin-top: 24px;">
+            <div class="card-header" style="background: #FFF3E0;">
+                <div class="card-icon" style="background: #E65100;">🔧</div>
+                <div>
+                    <div class="card-title" style="color: #E65100;">Testes e Diagnóstico</div>
+                    <div class="card-subtitle">Ferramentas para testar funcionalidades</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="test-grid">
+                    <button class="test-btn" onclick="testAndroidInterface()">
+                        <div class="icon">🤖</div>
+                        <div class="label">Verificar<br>Interface Android</div>
+                    </button>
+                    <button class="test-btn" onclick="testPDFDownload()">
+                        <div class="icon">📄</div>
+                        <div class="label">Testar<br>Download PDF</div>
+                    </button>
+                    <button class="test-btn" onclick="testExcelDownload()">
+                        <div class="icon">📊</div>
+                        <div class="label">Testar<br>Download Excel</div>
+                    </button>
+                    <button class="test-btn" onclick="testBackupRestore()">
+                        <div class="icon">💾</div>
+                        <div class="label">Testar<br>Backup/Restore</div>
+                    </button>
+                </div>
+                
+                <div style="margin-top: 16px; display: flex; gap: 8px;">
+                    <button class="btn btn-secondary" onclick="generateSampleData()">
+                        <span>🎲</span> Gerar Dados de Teste
+                    </button>
+                    <button class="btn btn-error" onclick="clearAllData()">
+                        <span>🗑️</span> Limpar Tudo
+                    </button>
+                </div>
+
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry">Sistema iniciado. Aguardando ações...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Equipment Modal -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Novo Equipamento</div>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Tipo de Equipamento</label>
+                    <select class="form-select" id="eqType">
+                        <option value="extintor">Extintor de Incêndio</option>
+                        <option value="mangueira">Mangueira</option>
+                        <option value="hidrante">Hidrante</option>
+                        <option value="outros">Outros Equipamentos</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Código/Identificação</label>
+                    <input type="text" class="form-input" id="eqCode" placeholder="Ex: EXT-001">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Localização/Área</label>
+                    <input type="text" class="form-input" id="eqLocation" placeholder="Ex: Prédio A - Térreo">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Data de Validade</label>
+                    <input type="date" class="form-input" id="eqDate">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Observações</label>
+                    <textarea class="form-textarea" id="eqNotes" placeholder="Informações adicionais..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addModal')">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveEquipment()">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Backup Modal -->
+    <div class="modal-overlay" id="backupModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Backup e Restauração</div>
+            </div>
+            <div class="modal-body">
+                <button class="btn btn-success" onclick="createBackup()">
+                    <span>💾</span> Criar Backup JSON
+                </button>
+                <button class="btn btn-warning" onclick="restoreBackup()">
+                    <span>📂</span> Restaurar Backup
+                </button>
+                <input type="file" class="file-input" id="restoreFile" accept=".json,application/json" onchange="processRestore(this)">
+                
+                <div style="margin-top: 16px; padding: 16px; background: var(--surface-variant); border-radius: 12px;">
+                    <div style="font-size: 12px; color: var(--on-surface-variant); margin-bottom: 8px;">
+                        <strong>ℹ️ Informações:</strong>
+                    </div>
+                    <div style="font-size: 12px; color: var(--on-surface-variant);">
+                        • Backup salvo em: Downloads/FireGuardian/<br>
+                        • Último backup: <span id="lastBackup">Nunca</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('backupModal')">Fechar</button>
+            </div>
         </div>
     </div>
 
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
-    <!-- Modal de Preview -->
-    <div class="modal" id="previewModal">
-        <div class="modal-content">
-            <div class="modal-title">Preview do PDF</div>
-            <div id="previewContent" style="margin-bottom: 16px;"></div>
-            <div class="btn-group" style="justify-content: flex-end;">
-                <button class="btn btn-secondary" onclick="closeModal()">Fechar</button>
-                <button class="btn btn-primary" onclick="confirmDownload()">Baixar</button>
-            </div>
-        </div>
+    <!-- Loading -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Processando...</div>
     </div>
 
     <!-- Scripts -->
@@ -640,671 +1027,717 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
     <script>
-        // Estado da aplicação
-        let notes = JSON.parse(localStorage.getItem('fireguardian_notes') || '[]');
-        let currentPDFData = null;
-        let currentFileName = '';
+        // ============================================
+        // ESTADO DA APLICAÇÃO
+        // ============================================
+        let equipments = JSON.parse(localStorage.getItem('fireguardian_equipments') || '[]');
+        let currentFilter = { type: 'all', status: 'all', search: '' };
+        let androidInterface = null;
 
-        // Inicialização
+        // ============================================
+        // INICIALIZAÇÃO
+        // ============================================
         document.addEventListener('DOMContentLoaded', () => {
-            renderNotes();
-            updateStats();
-            checkOnlineStatus();
-            logEvent('Aplicativo inicializado', 'success');
+            logEvent('FireGuardian Pro inicializado', 'info');
             
             // Verificar interface Android
             setTimeout(() => {
-                if (window.AndroidInterface) {
-                    logEvent('Interface Android detectada!', 'success');
-                } else {
-                    logEvent('Interface Android NÃO detectada - Modo Web', 'error');
-                }
-            }, 1000);
+                checkAndroidInterface();
+                updateStats();
+                renderEquipmentList();
+                checkOnlineStatus();
+                updateLastBackupInfo();
+            }, 500);
+
+            // Configurar data atual no formulário
+            document.getElementById('eqDate').valueAsDate = new Date();
         });
 
-        // Gerenciamento de Anotações
-        function addNote() {
-            const input = document.getElementById('noteInput');
-            const text = input.value.trim();
-            
-            if (!text) {
-                showToast('Digite algo primeiro!', 'error');
+        function checkAndroidInterface() {
+            if (window.AndroidInterface) {
+                androidInterface = window.AndroidInterface;
+                logEvent('✅ Interface Android detectada!', 'success');
+                
+                // Verificar métodos disponíveis
+                const methods = ['savePDF', 'saveExcel', 'createBackup', 'restoreBackup', 'getAppVersion', 'showToast'];
+                methods.forEach(method => {
+                    const exists = typeof androidInterface[method] === 'function';
+                    logEvent(`${exists ? '✅' : '❌'} ${method}()`, exists ? 'success' : 'error');
+                });
+                
+                // Obter versão do app
+                try {
+                    const version = androidInterface.getAppVersion();
+                    logEvent(`Versão do App: ${version}`, 'info');
+                } catch(e) {
+                    logEvent('Não foi possível obter versão', 'error');
+                }
+            } else {
+                logEvent('❌ Interface Android NÃO detectada - Modo Web', 'error');
+                showToast('Modo Web: Algumas funções podem ser limitadas', 'warning');
+            }
+        }
+
+        // ============================================
+        // GESTÃO DE EQUIPAMENTOS
+        // ============================================
+        function openAddModal() {
+            document.getElementById('addModal').classList.add('active');
+            document.getElementById('eqCode').focus();
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function saveEquipment() {
+            const type = document.getElementById('eqType').value;
+            const code = document.getElementById('eqCode').value.trim();
+            const location = document.getElementById('eqLocation').value.trim();
+            const date = document.getElementById('eqDate').value;
+            const notes = document.getElementById('eqNotes').value.trim();
+
+            if (!code || !location) {
+                showToast('Preencha código e localização!', 'error');
                 return;
             }
 
-            const note = {
+            const equipment = {
                 id: Date.now(),
-                text: text,
-                date: new Date().toLocaleString('pt-BR'),
-                timestamp: Date.now()
+                type,
+                code,
+                location,
+                validityDate: date,
+                notes,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             };
 
-            notes.unshift(note);
-            saveNotes();
-            input.value = '';
-            renderNotes();
+            equipments.push(equipment);
+            saveEquipments();
+            
+            closeModal('addModal');
+            clearForm();
             updateStats();
-            showToast('Anotação salva!', 'success');
-            logEvent(`Nota criada: ${text.substring(0, 30)}...`, 'success');
-            
-            // Vibrar se disponível
-            if (navigator.vibrate) navigator.vibrate(50);
+            renderEquipmentList();
+            showToast('Equipamento salvo com sucesso!', 'success');
+            logEvent(`Equipamento ${code} adicionado`, 'success');
         }
 
-        function deleteNote(id) {
-            if (confirm('Deseja excluir esta anotação?')) {
-                notes = notes.filter(n => n.id !== id);
-                saveNotes();
-                renderNotes();
+        function deleteEquipment(id) {
+            if (confirm('Deseja excluir este equipamento?')) {
+                equipments = equipments.filter(e => e.id !== id);
+                saveEquipments();
                 updateStats();
-                showToast('Anotação excluída', 'success');
-                logEvent('Nota excluída', 'success');
+                renderEquipmentList();
+                showToast('Equipamento excluído', 'success');
             }
         }
 
-        function editNote(id) {
-            const note = notes.find(n => n.id === id);
-            if (note) {
-                const newText = prompt('Editar anotação:', note.text);
-                if (newText !== null && newText.trim() !== '') {
-                    note.text = newText.trim();
-                    note.date = new Date().toLocaleString('pt-BR') + ' (editado)';
-                    saveNotes();
-                    renderNotes();
-                    showToast('Anotação atualizada!', 'success');
-                }
+        function clearForm() {
+            document.getElementById('eqCode').value = '';
+            document.getElementById('eqLocation').value = '';
+            document.getElementById('eqNotes').value = '';
+            document.getElementById('eqDate').valueAsDate = new Date();
+        }
+
+        function saveEquipments() {
+            localStorage.setItem('fireguardian_equipments', JSON.stringify(equipments));
+        }
+
+        // ============================================
+        // RENDERIZAÇÃO
+        // ============================================
+        function renderEquipmentList() {
+            const container = document.getElementById('equipmentList');
+            let filtered = equipments;
+
+            // Aplicar filtros
+            if (currentFilter.type !== 'all') {
+                filtered = filtered.filter(e => e.type === currentFilter.type);
             }
-        }
+            if (currentFilter.status !== 'all') {
+                filtered = filtered.filter(e => getEquipmentStatus(e.validityDate) === currentFilter.status);
+            }
+            if (currentFilter.search) {
+                const search = currentFilter.search.toLowerCase();
+                filtered = filtered.filter(e => 
+                    e.code.toLowerCase().includes(search) || 
+                    e.location.toLowerCase().includes(search)
+                );
+            }
 
-        function saveNotes() {
-            localStorage.setItem('fireguardian_notes', JSON.stringify(notes));
-        }
+            document.getElementById('equipmentCount').textContent = `${filtered.length} equipamentos`;
+            document.getElementById('listSubtitle').textContent = 
+                filtered.length === 0 ? 'Nenhum equipamento encontrado' : 
+                `Exibindo ${filtered.length} de ${equipments.length} equipamentos`;
 
-        function renderNotes() {
-            const container = document.getElementById('notesList');
-            
-            if (notes.length === 0) {
+            if (filtered.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="icon">📝</div>
-                        <p>Nenhuma anotação ainda</p>
-                        <p style="font-size: 14px; margin-top: 8px;">Digite algo acima para começar!</p>
+                        <div class="empty-icon">📝</div>
+                        <div class="empty-title">Nenhum equipamento encontrado</div>
+                        <p>Ajuste os filtros ou adicione novos equipamentos</p>
                     </div>
                 `;
                 return;
             }
 
-            container.innerHTML = notes.map(note => `
-                <div class="note-item">
-                    <div class="note-date">${note.date}</div>
-                    <div class="note-text">${escapeHtml(note.text)}</div>
-                    <div class="note-actions">
-                        <button class="icon-btn" onclick="editNote(${note.id})" title="Editar">
-                            ✏️
-                        </button>
-                        <button class="icon-btn" onclick="shareNote(${note.id})" title="Compartilhar">
-                            📤
-                        </button>
-                        <button class="icon-btn delete" onclick="deleteNote(${note.id})" title="Excluir">
-                            🗑️
-                        </button>
+            container.innerHTML = filtered.map(eq => {
+                const status = getEquipmentStatus(eq.validityDate);
+                const statusClass = status === 'ok' ? 'status-ok' : status === 'warning' ? 'status-warning' : 'status-expired';
+                const dateClass = status === 'ok' ? '' : status === 'warning' ? 'warning' : 'expired';
+                const typeLabels = { extintor: 'Extintor', mangueira: 'Mangueira', hidrante: 'Hidrante', outros: 'Outros' };
+                const typeClass = `type-${eq.type}`;
+
+                return `
+                    <div class="equipment-item">
+                        <div class="equipment-header">
+                            <span class="equipment-type ${typeClass}">
+                                ${getTypeIcon(eq.type)} ${typeLabels[eq.type]}
+                            </span>
+                            <div class="equipment-status ${statusClass}"></div>
+                        </div>
+                        <div class="equipment-title">${escapeHtml(eq.code)}</div>
+                        <div class="equipment-location">📍 ${escapeHtml(eq.location)}</div>
+                        ${eq.notes ? `<div style="font-size: 12px; color: var(--on-surface-variant); margin-top: 4px;">${escapeHtml(eq.notes)}</div>` : ''}
+                        ${eq.validityDate ? `
+                            <div class="equipment-date">
+                                <span class="date-label">📅 Validade:</span>
+                                <span class="date-value ${dateClass}">${formatDate(eq.validityDate)}</span>
+                            </div>
+                        ` : ''}
+                        <div class="equipment-actions">
+                            <button class="action-btn" onclick="editEquipment(${eq.id})">✏️ Editar</button>
+                            <button class="action-btn" onclick="shareEquipment(${eq.id})">📤 Compartilhar</button>
+                            <button class="action-btn" onclick="deleteEquipment(${eq.id})" style="color: var(--error);">🗑️ Excluir</button>
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
-        function clearInput() {
-            document.getElementById('noteInput').value = '';
-            showToast('Campo limpo', 'success');
+        function getEquipmentStatus(dateStr) {
+            if (!dateStr) return 'ok';
+            const date = new Date(dateStr);
+            const today = new Date();
+            const diffTime = date - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays < 0) return 'expired';
+            if (diffDays <= 30) return 'warning';
+            return 'ok';
         }
 
-        // Estatísticas
+        function getTypeIcon(type) {
+            const icons = { extintor: '🔥', mangueira: '💧', hidrante: '🚿', outros: '🛠️' };
+            return icons[type] || '📦';
+        }
+
         function updateStats() {
-            document.getElementById('noteCount').textContent = notes.length;
-            
-            const pdfs = JSON.parse(localStorage.getItem('pdf_count') || '0');
-            document.getElementById('pdfCount').textContent = pdfs;
-            
-            const lastBackup = localStorage.getItem('last_backup');
-            document.getElementById('backupDate').textContent = lastBackup || '-';
+            document.getElementById('totalCount').textContent = equipments.length;
+            document.getElementById('okCount').textContent = equipments.filter(e => getEquipmentStatus(e.validityDate) === 'ok').length;
+            document.getElementById('warningCount').textContent = equipments.filter(e => getEquipmentStatus(e.validityDate) === 'warning').length;
+            document.getElementById('expiredCount').textContent = equipments.filter(e => getEquipmentStatus(e.validityDate) === 'expired').length;
         }
 
         // ============================================
-        // TESTES DE PDF - Múltiplos métodos
+        // FILTROS E BUSCA
         // ============================================
-
-        // Método 1: window.print() - Gera PDF nativo do navegador
-        function testPDFMethod1() {
-            logEvent('Testando PDF Método 1: window.print()', 'success');
-            
-            const printWindow = window.open('', '_blank');
-            const content = generatePDFContent();
-            
-            printWindow.document.write(`
-                <html>
-                <head>
-                    <title>FireGuardian - Anotações</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; padding: 40px; }
-                        h1 { color: #B3261E; border-bottom: 2px solid #B3261E; padding-bottom: 10px; }
-                        .note { margin: 20px 0; padding: 15px; background: #f5f5f5; border-radius: 8px; }
-                        .date { color: #666; font-size: 12px; margin-bottom: 5px; }
-                        @media print { .no-print { display: none; } }
-                    </style>
-                </head>
-                <body>
-                    ${content}
-                    <div class="no-print" style="margin-top: 30px; text-align: center;">
-                        <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px;">
-                            🖨️ Clique para Imprimir/Salvar PDF
-                        </button>
-                    </div>
-                </body>
-                </html>
-            `);
-            printWindow.document.close();
-            
-            showToast('PDF aberto em nova aba', 'success');
+        function filterByType(type) {
+            currentFilter.type = type;
+            document.querySelectorAll('.filter-chips .chip').forEach(chip => {
+                chip.classList.remove('active');
+                if (chip.textContent.toLowerCase().includes(type === 'all' ? 'todos' : type)) {
+                    chip.classList.add('active');
+                }
+            });
+            renderEquipmentList();
         }
 
-        // Método 2: jsPDF - Gera PDF via biblioteca JavaScript
-        function testPDFMethod2() {
-            logEvent('Testando PDF Método 2: jsPDF', 'success');
-            
+        function filterByStatus(status) {
+            currentFilter.status = status;
+            renderEquipmentList();
+        }
+
+        function searchEquipment() {
+            currentFilter.search = document.getElementById('searchInput').value;
+            renderEquipmentList();
+        }
+
+        // ============================================
+        // EXPORTAÇÃO PDF - MÚLTIPLOS MÉTODOS
+        // ============================================
+        async function exportToPDF() {
+            showLoading('Gerando PDF...');
+            logEvent('Iniciando exportação PDF', 'info');
+
             try {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
+                // MÉTODO 1: Tentar interface Android nativa primeiro
+                if (androidInterface && typeof androidInterface.savePDF === 'function') {
+                    const pdfData = generatePDFBase64();
+                    const fileName = `fireguardian_relatorio_${Date.now()}.pdf`;
+                    
+                    androidInterface.savePDF(pdfData, fileName);
+                    logEvent('PDF enviado via AndroidInterface', 'success');
+                    showToast('PDF enviado para download!', 'success');
+                    hideLoading();
+                    return;
+                }
+
+                // MÉTODO 2: Usar jsPDF com download automático
+                await downloadPDFWithjsPDF();
                 
-                // Cabeçalho
-                doc.setFillColor(179, 38, 30);
-                doc.rect(0, 0, 210, 30, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(20);
-                doc.text('FireGuardian - Relatório', 20, 20);
+            } catch (error) {
+                logEvent('Erro ao gerar PDF: ' + error.message, 'error');
+                showToast('Erro ao gerar PDF. Tentando método alternativo...', 'error');
                 
-                // Conteúdo
+                // MÉTODO 3: Fallback para impressão
+                setTimeout(() => {
+                    window.print();
+                    hideLoading();
+                }, 1000);
+            }
+        }
+
+        function generatePDFBase64() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Cabeçalho
+            doc.setFillColor(179, 38, 30);
+            doc.rect(0, 0, 210, 40, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(24);
+            doc.text('FireGuardian Pro', 20, 25);
+            
+            // Subtítulo
+            doc.setTextColor(100, 100, 100);
+            doc.setFontSize(10);
+            doc.text(`Relatório gerado em: ${new Date().toLocaleString('pt-BR')}`, 20, 50);
+            doc.text(`Total de equipamentos: ${equipments.length}`, 20, 56);
+            
+            // Tabela de equipamentos
+            let y = 70;
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'bold');
+            doc.text('Código', 20, y);
+            doc.text('Tipo', 70, y);
+            doc.text('Localização', 110, y);
+            doc.text('Validade', 170, y);
+            
+            y += 10;
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(10);
+            
+            equipments.forEach(eq => {
+                if (y > 280) {
+                    doc.addPage();
+                    y = 20;
+                }
+                
+                const status = getEquipmentStatus(eq.validityDate);
+                const statusColor = status === 'ok' ? [76, 175, 80] : status === 'warning' ? [255, 152, 0] : [244, 67, 54];
+                
                 doc.setTextColor(0, 0, 0);
-                doc.setFontSize(12);
-                let y = 40;
+                doc.text(eq.code.substring(0, 20), 20, y);
+                doc.text(eq.type.toUpperCase(), 70, y);
+                doc.text(eq.location.substring(0, 25), 110, y);
                 
-                doc.text(`Data: ${new Date().toLocaleString('pt-BR')}`, 20, y);
-                doc.text(`Total de anotações: ${notes.length}`, 20, y + 10);
+                doc.setTextColor(...statusColor);
+                doc.text(eq.validityDate ? formatDate(eq.validityDate) : 'N/A', 170, y);
                 
-                y += 30;
-                
-                notes.forEach((note, index) => {
-                    if (y > 250) {
-                        doc.addPage();
-                        y = 20;
-                    }
-                    
-                    doc.setFillColor(240, 240, 240);
-                    doc.roundedRect(15, y - 5, 180, 25, 3, 3, 'F');
-                    doc.setFontSize(10);
-                    doc.setTextColor(100, 100, 100);
-                    doc.text(note.date, 20, y + 5);
-                    doc.setTextColor(0, 0, 0);
-                    doc.setFontSize(11);
-                    
-                    const text = doc.splitTextToSize(note.text.substring(0, 100), 170);
-                    doc.text(text, 20, y + 15);
-                    
-                    y += 35;
-                });
-                
-                // Salvar
-                const fileName = `fireguardian_relatorio_${Date.now()}.pdf`;
-                doc.save(fileName);
-                
-                incrementPDFCount();
-                showToast('PDF gerado com jsPDF!', 'success');
-                logEvent(`PDF gerado: ${fileName}`, 'success');
-                
-            } catch (error) {
-                logEvent('Erro jsPDF: ' + error.message, 'error');
-                showToast('Erro ao gerar PDF', 'error');
-            }
+                y += 8;
+            });
+            
+            return doc.output('datauristring').split(',')[1];
         }
 
-        // Método 3: Base64 → Android - Envia para o app Android salvar
-        function testPDFMethod3() {
-            logEvent('Testando PDF Método 3: Base64 → Android', 'success');
+        async function downloadPDFWithjsPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
             
-            if (!window.AndroidInterface) {
-                showToast('Interface Android não disponível', 'error');
-                logEvent('AndroidInterface não encontrada', 'error');
-                // Fallback para download direto
-                testPDFMethod4();
-                return;
-            }
+            // Conteúdo similar ao acima
+            doc.setFillColor(179, 38, 30);
+            doc.rect(0, 0, 210, 30, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(20);
+            doc.text('FireGuardian Pro - Relatório', 20, 20);
+            
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(12);
+            let y = 40;
+            
+            equipments.forEach(eq => {
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+                doc.text(`${eq.code} - ${eq.type} - ${eq.location}`, 20, y);
+                y += 10;
+            });
+            
+            const fileName = `fireguardian_relatorio_${Date.now()}.pdf`;
+            
+            // Tentar salvar diretamente
+            doc.save(fileName);
+            
+            hideLoading();
+            showToast('PDF gerado!', 'success');
+            logEvent('PDF gerado via jsPDF', 'success');
+        }
+
+        // ============================================
+        // EXPORTAÇÃO EXCEL - MÚLTIPLOS MÉTODOS
+        // ============================================
+        function exportToExcel() {
+            showLoading('Gerando Excel...');
+            logEvent('Iniciando exportação Excel', 'info');
 
             try {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                
-                doc.setFontSize(16);
-                doc.text('FireGuardian - Backup PDF', 20, 20);
-                doc.setFontSize(12);
-                doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 20, 30);
-                
-                let y = 50;
-                notes.forEach(note => {
-                    if (y > 280) {
-                        doc.addPage();
-                        y = 20;
-                    }
-                    doc.text(`[${note.date}] ${note.text.substring(0, 80)}`, 20, y);
-                    y += 10;
-                });
+                // MÉTODO 1: Interface Android
+                if (androidInterface && typeof androidInterface.saveExcel === 'function') {
+                    const excelData = generateExcelBase64();
+                    const fileName = `fireguardian_dados_${Date.now()}.xlsx`;
+                    
+                    androidInterface.saveExcel(excelData, fileName);
+                    logEvent('Excel enviado via AndroidInterface', 'success');
+                    showToast('Excel enviado para download!', 'success');
+                    hideLoading();
+                    return;
+                }
 
-                // Converter para Base64
-                const pdfBase64 = doc.output('datauristring').split(',')[1];
-                const fileName = `fireguardian_backup_${Date.now()}.pdf`;
-                
-                // Enviar para Android
-                window.AndroidInterface.savePDF(pdfBase64, fileName);
-                
-                showToast('PDF enviado para o Android!', 'success');
-                logEvent(`PDF enviado ao Android: ${fileName}`, 'success');
-                incrementPDFCount();
+                // MÉTODO 2: SheetJS com download
+                downloadWithSheetJS();
                 
             } catch (error) {
-                logEvent('Erro: ' + error.message, 'error');
-                showToast('Erro ao enviar PDF', 'error');
+                logEvent('Erro Excel: ' + error.message, 'error');
+                
+                // MÉTODO 3: Fallback CSV
+                exportToCSV();
             }
         }
 
-        // Método 4: Blob Download - Download direto via navegador
-        function testPDFMethod4() {
-            logEvent('Testando PDF Método 4: Blob Download', 'success');
+        function generateExcelBase64() {
+            const wb = XLSX.utils.book_new();
+            wb.Props = {
+                Title: "FireGuardian Pro",
+                Subject: "Inventário de Equipamentos",
+                Author: "FireGuardian App",
+                CreatedDate: new Date()
+            };
             
-            const content = `
-                FireGuardian - Exportação de Dados
-                Data: ${new Date().toLocaleString('pt-BR')}
-                
-                ANOTAÇÕES:
-                ${notes.map(n => `
-                [${n.date}]
-                ${n.text}
-                ---`).join('\n')}
-            `;
+            const data = equipments.map(e => ({
+                'Código': e.code,
+                'Tipo': e.type,
+                'Localização': e.location,
+                'Data Validade': e.validityDate ? formatDate(e.validityDate) : 'N/A',
+                'Observações': e.notes || '',
+                'Cadastrado em': formatDate(e.createdAt)
+            }));
             
-            const blob = new Blob([content], { type: 'application/pdf' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `fireguardian_export_${Date.now()}.pdf`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            const ws = XLSX.utils.json_to_sheet(data);
+            XLSX.utils.book_append_sheet(wb, ws, "Equipamentos");
             
-            showToast('Download iniciado!', 'success');
-            logEvent('Download PDF iniciado via Blob', 'success');
-            incrementPDFCount();
+            // Ajustar larguras
+            ws['!cols'] = [
+                {wch: 15}, {wch: 12}, {wch: 25}, {wch: 15}, {wch: 30}, {wch: 20}
+            ];
+            
+            return XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
         }
 
-        // ============================================
-        // TESTES DE EXCEL - Múltiplos métodos
-        // ============================================
-
-        // Método 1: CSV - Formato simples compatível com Excel
-        function testExcelMethod1() {
-            logEvent('Testando Excel Método 1: CSV', 'success');
+        function downloadWithSheetJS() {
+            const wb = XLSX.utils.book_new();
+            const data = equipments.map(e => ({
+                Código: e.code,
+                Tipo: e.type,
+                Localização: e.location,
+                Validade: e.validityDate || 'N/A',
+                Observações: e.notes || ''
+            }));
             
-            let csv = 'ID,Data,Texto\n';
-            notes.forEach(note => {
-                csv += `${note.id},"${note.date}","${note.text.replace(/"/g, '""')}"\n`;
+            const ws = XLSX.utils.json_to_sheet(data);
+            XLSX.utils.book_append_sheet(wb, ws, "Equipamentos");
+            
+            const fileName = `fireguardian_dados_${Date.now()}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+            
+            hideLoading();
+            showToast('Excel gerado!', 'success');
+            logEvent('Excel gerado via SheetJS', 'success');
+        }
+
+        function exportToCSV() {
+            let csv = 'Código,Tipo,Localização,Validade,Observações\n';
+            equipments.forEach(e => {
+                csv += `"${e.code}","${e.type}","${e.location}","${e.validityDate || 'N/A'}","${e.notes || ''}"\n`;
             });
             
             const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `fireguardian_notas_${Date.now()}.csv`;
+            link.download = `fireguardian_backup_${Date.now()}.csv`;
             link.click();
             
-            showToast('CSV baixado! Abra no Excel', 'success');
-            logEvent('CSV gerado com sucesso', 'success');
-        }
-
-        // Método 2: SheetJS (XLSX) - Excel nativo
-        function testExcelMethod2() {
-            logEvent('Testando Excel Método 2: SheetJS XLSX', 'success');
-            
-            try {
-                const wb = XLSX.utils.book_new();
-                wb.Props = {
-                    Title: "FireGuardian Backup",
-                    Subject: "Anotações",
-                    Author: "FireGuardian App",
-                    CreatedDate: new Date()
-                };
-                
-                const data = notes.map(n => ({
-                    'ID': n.id,
-                    'Data': n.date,
-                    'Anotação': n.text,
-                    'Timestamp': n.timestamp
-                }));
-                
-                const ws = XLSX.utils.json_to_sheet(data);
-                XLSX.utils.book_append_sheet(wb, ws, "Anotações");
-                
-                const fileName = `fireguardian_excel_${Date.now()}.xlsx`;
-                XLSX.writeFile(wb, fileName);
-                
-                showToast('Excel gerado com SheetJS!', 'success');
-                logEvent(`Excel gerado: ${fileName}`, 'success');
-                
-            } catch (error) {
-                logEvent('Erro SheetJS: ' + error.message, 'error');
-                showToast('Erro ao gerar Excel', 'error');
-            }
-        }
-
-        // Método 3: Base64 → Android - Envia para app Android
-        function testExcelMethod3() {
-            logEvent('Testando Excel Método 3: Base64 → Android', 'success');
-            
-            if (!window.AndroidInterface) {
-                showToast('Interface Android não disponível', 'error');
-                testExcelMethod2(); // Fallback
-                return;
-            }
-
-            try {
-                const wb = XLSX.utils.book_new();
-                const data = notes.map(n => ({
-                    'Data': n.date,
-                    'Anotação': n.text
-                }));
-                
-                const ws = XLSX.utils.json_to_sheet(data);
-                XLSX.utils.book_append_sheet(wb, ws, "Anotações");
-                
-                // Gerar Base64
-                const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
-                const fileName = `fireguardian_backup_${Date.now()}.xlsx`;
-                
-                // Enviar para Android
-                window.AndroidInterface.saveExcel(wbout, fileName);
-                
-                showToast('Excel enviado para Android!', 'success');
-                logEvent(`Excel enviado: ${fileName}`, 'success');
-                
-            } catch (error) {
-                logEvent('Erro: ' + error.message, 'error');
-                showToast('Erro ao enviar Excel', 'error');
-            }
-        }
-
-        // Método 4: URI Scheme - Tenta abrir app de planilhas
-        function testExcelMethod4() {
-            logEvent('Testando Excel Método 4: URI Scheme', 'success');
-            
-            const csv = notes.map(n => `${n.date},${n.text.replace(/,/g, ';')}`).join('\n');
-            const encoded = encodeURIComponent(csv);
-            const uri = `ms-excel:ofe|u|data:text/csv;base64,${btoa(csv)}`;
-            
-            // Tentar abrir app externo
-            window.location.href = uri;
-            
-            showToast('Tentando abrir app de planilhas...', 'success');
-            logEvent('URI Scheme disparado', 'success');
-            
-            // Fallback após 1 segundo
-            setTimeout(() => {
-                testExcelMethod1();
-            }, 1000);
+            hideLoading();
+            showToast('CSV exportado!', 'success');
         }
 
         // ============================================
-        // BACKUP & RESTAURAÇÃO
+        // BACKUP E RESTAURAÇÃO
         // ============================================
+        function showBackupModal() {
+            document.getElementById('backupModal').classList.add('active');
+            updateLastBackupInfo();
+        }
 
         function createBackup() {
-            logEvent('Criando backup JSON...', 'success');
-            
+            showLoading('Criando backup...');
+            logEvent('Criando backup JSON', 'info');
+
             const backupData = {
-                app: 'FireGuardian',
+                app: 'FireGuardian Pro',
                 version: '1.0',
                 created: new Date().toISOString(),
-                notes: notes,
+                equipments: equipments,
                 stats: {
-                    totalNotes: notes.length,
-                    lastExport: new Date().toLocaleString('pt-BR')
+                    total: equipments.length,
+                    byType: {
+                        extintor: equipments.filter(e => e.type === 'extintor').length,
+                        mangueira: equipments.filter(e => e.type === 'mangueira').length,
+                        hidrante: equipments.filter(e => e.type === 'hidrante').length,
+                        outros: equipments.filter(e => e.type === 'outros').length
+                    }
                 }
             };
-            
-            const json = JSON.stringify(backupData, null, 2);
-            
-            // Tentar enviar para Android primeiro
-            if (window.AndroidInterface) {
-                try {
-                    window.AndroidInterface.createBackup(json);
-                    showToast('Backup enviado ao Android!', 'success');
-                    logEvent('Backup enviado via AndroidInterface', 'success');
-                } catch (e) {
-                    // Fallback: download direto
-                    downloadJSON(json);
-                }
-            } else {
-                downloadJSON(json);
-            }
-            
-            localStorage.setItem('last_backup', new Date().toLocaleDateString('pt-BR'));
-            updateStats();
-        }
 
-        function downloadJSON(json) {
+            const json = JSON.stringify(backupData, null, 2);
+
+            // MÉTODO 1: Interface Android
+            if (androidInterface && typeof androidInterface.createBackup === 'function') {
+                try {
+                    androidInterface.createBackup(json);
+                    logEvent('Backup enviado via AndroidInterface', 'success');
+                    showToast('Backup criado com sucesso!', 'success');
+                    localStorage.setItem('fireguardian_last_backup', new Date().toISOString());
+                    updateLastBackupInfo();
+                    hideLoading();
+                    return;
+                } catch(e) {
+                    logEvent('Falha no método Android: ' + e.message, 'error');
+                }
+            }
+
+            // MÉTODO 2: Download direto
             const blob = new Blob([json], { type: 'application/json' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
             a.download = `fireguardian_backup_${Date.now()}.json`;
             a.click();
+            
+            localStorage.setItem('fireguardian_last_backup', new Date().toISOString());
+            updateLastBackupInfo();
+            hideLoading();
             showToast('Backup baixado!', 'success');
             logEvent('Backup baixado via navegador', 'success');
         }
 
-        function requestRestore() {
-            logEvent('Solicitando restauração...', 'success');
+        function restoreBackup() {
+            logEvent('Solicitando restauração...', 'info');
             
-            if (window.AndroidInterface) {
-                window.AndroidInterface.restoreBackup();
-                showToast('Solicitação enviada ao Android', 'success');
-            } else {
-                // Fallback: input file
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = '.json,application/json';
-                input.onchange = (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = (event) => {
-                            try {
-                                const data = JSON.parse(event.target.result);
-                                if (data.notes && Array.isArray(data.notes)) {
-                                    notes = data.notes;
-                                    saveNotes();
-                                    renderNotes();
-                                    updateStats();
-                                    showToast('Backup restaurado!', 'success');
-                                    logEvent('Backup restaurado com sucesso', 'success');
-                                }
-                            } catch (err) {
-                                showToast('Arquivo inválido', 'error');
-                                logEvent('Erro ao restaurar: ' + err.message, 'error');
-                            }
-                        };
-                        reader.readAsText(file);
+            // MÉTODO 1: Interface Android
+            if (androidInterface && typeof androidInterface.restoreBackup === 'function') {
+                try {
+                    androidInterface.restoreBackup();
+                    showToast('Selecione o arquivo de backup', 'success');
+                    return;
+                } catch(e) {
+                    logEvent('Falha na restauração Android: ' + e.message, 'error');
+                }
+            }
+
+            // MÉTODO 2: Input file
+            document.getElementById('restoreFile').click();
+        }
+
+        function processRestore(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            showLoading('Restaurando backup...');
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.equipments && Array.isArray(data.equipments)) {
+                        equipments = data.equipments;
+                        saveEquipments();
+                        updateStats();
+                        renderEquipmentList();
+                        showToast(`Backup restaurado! ${data.equipments.length} equipamentos carregados.`, 'success');
+                        logEvent('Backup restaurado com sucesso', 'success');
+                        closeModal('backupModal');
+                    } else {
+                        throw new Error('Formato de backup inválido');
                     }
-                };
-                input.click();
-            }
-        }
-
-        // ============================================
-        // COMPARTILHAMENTO
-        // ============================================
-
-        async function shareNotes() {
-            logEvent('Compartilhando notas...', 'success');
-            
-            const text = notes.map(n => `📝 ${n.date}\n${n.text}`).join('\n\n');
-            
-            if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: 'Minhas Anotações - FireGuardian',
-                        text: text,
-                    });
-                    logEvent('Compartilhamento nativo usado', 'success');
                 } catch (err) {
-                    logEvent('Share cancelado ou erro: ' + err.message, 'error');
+                    showToast('Erro ao restaurar: ' + err.message, 'error');
+                    logEvent('Erro na restauração: ' + err.message, 'error');
                 }
-            } else {
-                // Fallback: copiar para clipboard
-                navigator.clipboard.writeText(text).then(() => {
-                    showToast('Texto copiado para área de transferência!', 'success');
-                    logEvent('Texto copiado (fallback)', 'success');
-                });
-            }
-        }
-
-        async function shareFile() {
-            logEvent('Compartilhando arquivo...', 'success');
-            
-            const backupData = {
-                notes: notes,
-                exported: new Date().toISOString()
+                hideLoading();
+                input.value = '';
             };
-            const blob = new Blob([JSON.stringify(backupData)], { type: 'application/json' });
-            const file = new File([blob], 'fireguardian_share.json', { type: 'application/json' });
-            
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                try {
-                    await navigator.share({
-                        files: [file],
-                        title: 'FireGuardian Backup',
-                    });
-                    logEvent('Arquivo compartilhado com sucesso', 'success');
-                } catch (err) {
-                    logEvent('Erro no share: ' + err.message, 'error');
-                }
-            } else {
-                showToast('Compartilhamento de arquivos não suportado', 'error');
-                // Fallback: download
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = file.name;
-                a.click();
-            }
+            reader.readAsText(file);
         }
 
-        function shareNote(id) {
-            const note = notes.find(n => n.id === id);
-            if (note && navigator.share) {
-                navigator.share({
-                    title: 'Anotação FireGuardian',
-                    text: `${note.text}\n\n${note.date}`
-                });
-            }
+        function updateLastBackupInfo() {
+            const lastBackup = localStorage.getItem('fireguardian_last_backup');
+            document.getElementById('lastBackup').textContent = lastBackup ? 
+                new Date(lastBackup).toLocaleString('pt-BR') : 'Nunca';
         }
 
         // ============================================
-        // TESTES DE INTERFACE ANDROID
+        // TESTES E DIAGNÓSTICO
         // ============================================
-
         function testAndroidInterface() {
-            logEvent('Verificando AndroidInterface...', 'success');
+            logEvent('=== TESTE DE INTERFACE ANDROID ===', 'info');
+            checkAndroidInterface();
             
-            const tests = {
-                'AndroidInterface existe': !!window.AndroidInterface,
-                'createBackup': !!(window.AndroidInterface && window.AndroidInterface.createBackup),
-                'restoreBackup': !!(window.AndroidInterface && window.AndroidInterface.restoreBackup),
-                'savePDF': !!(window.AndroidInterface && window.AndroidInterface.savePDF),
-                'saveExcel': !!(window.AndroidInterface && window.AndroidInterface.saveExcel),
-                'getAppVersion': !!(window.AndroidInterface && window.AndroidInterface.getAppVersion),
-                'isAndroidApp': !!(window.AndroidInterface && window.AndroidInterface.isAndroidApp)
-            };
-            
-            Object.entries(tests).forEach(([name, result]) => {
-                logEvent(`${name}: ${result ? '✅' : '❌'}`, result ? 'success' : 'error');
-            });
-            
-            showToast(`Interface: ${tests['AndroidInterface existe'] ? 'Detectada' : 'Não detectada'}`, 
-                     tests['AndroidInterface existe'] ? 'success' : 'error');
+            if (androidInterface) {
+                try {
+                    androidInterface.showToast('Teste de comunicação OK!');
+                } catch(e) {
+                    logEvent('showToast falhou: ' + e.message, 'error');
+                }
+            }
         }
 
-        function getAndroidVersion() {
-            if (window.AndroidInterface && window.AndroidInterface.getAppVersion) {
+        function testPDFDownload() {
+            logEvent('Testando download PDF...', 'info');
+            
+            // Teste com dados mínimos
+            const testData = 'Teste de PDF';
+            
+            if (androidInterface && typeof androidInterface.savePDF === 'function') {
                 try {
-                    const version = window.AndroidInterface.getAppVersion();
-                    logEvent(`Versão do App: ${version}`, 'success');
-                    showToast(`Versão: ${version}`, 'success');
-                } catch (e) {
-                    logEvent('Erro ao obter versão: ' + e.message, 'error');
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+                    doc.text('Teste FireGuardian PDF', 20, 20);
+                    doc.text('Se você está vendo isso, o PDF funcionou!', 20, 40);
+                    
+                    const base64 = doc.output('datauristring').split(',')[1];
+                    androidInterface.savePDF(base64, 'teste_fireguardian.pdf');
+                    logEvent('Teste PDF enviado ao Android', 'success');
+                } catch(e) {
+                    logEvent('Erro no teste PDF: ' + e.message, 'error');
                 }
             } else {
-                logEvent('getAppVersion não disponível', 'error');
-                showToast('Interface não disponível', 'error');
+                logEvent('Interface Android não disponível para PDF', 'error');
+                // Fallback: abrir em nova aba
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.text('Teste PDF', 20, 20);
+                doc.output('dataurlnewwindow');
             }
         }
 
-        function testVibration() {
-            if (navigator.vibrate) {
-                navigator.vibrate([100, 50, 100, 50, 200]);
-                logEvent('Vibração testada', 'success');
-                showToast('📳 Vibrando...', 'success');
+        function testExcelDownload() {
+            logEvent('Testando download Excel...', 'info');
+            
+            if (androidInterface && typeof androidInterface.saveExcel === 'function') {
+                try {
+                    const wb = XLSX.utils.book_new();
+                    const ws = XLSX.utils.aoa_to_sheet([
+                        ['Teste', 'FireGuardian'],
+                        ['Status', 'OK'],
+                        ['Data', new Date().toLocaleString('pt-BR')]
+                    ]);
+                    XLSX.utils.book_append_sheet(wb, ws, 'Teste');
+                    
+                    const base64 = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
+                    androidInterface.saveExcel(base64, 'teste_fireguardian.xlsx');
+                    logEvent('Teste Excel enviado ao Android', 'success');
+                } catch(e) {
+                    logEvent('Erro no teste Excel: ' + e.message, 'error');
+                }
             } else {
-                logEvent('API de vibração não suportada', 'error');
-                showToast('Vibração não suportada', 'error');
+                logEvent('Interface Android não disponível para Excel', 'error');
             }
         }
 
-        function testToast() {
-            // Tentar Toast nativo Android
-            if (window.AndroidInterface && window.AndroidInterface.showToast) {
-                window.AndroidInterface.showToast('Toast nativo Android!');
-                logEvent('Toast nativo enviado', 'success');
+        function testBackupRestore() {
+            logEvent('Testando backup/restore...', 'info');
+            
+            // Criar backup de teste
+            const testBackup = {
+                app: 'FireGuardian Test',
+                version: 'test',
+                created: new Date().toISOString(),
+                equipments: [
+                    { id: 1, code: 'TEST-001', type: 'extintor', location: 'Local de Teste', validityDate: '2025-12-31', createdAt: new Date().toISOString() }
+                ]
+            };
+            
+            if (androidInterface && typeof androidInterface.createBackup === 'function') {
+                androidInterface.createBackup(JSON.stringify(testBackup));
+                logEvent('Backup de teste enviado', 'success');
             } else {
-                showToast('Toast JavaScript (fallback)', 'success');
-                logEvent('Toast JavaScript usado (fallback)', 'success');
+                logEvent('Backup de teste (modo web)', 'info');
+                console.log('Backup teste:', testBackup);
+            }
+        }
+
+        function generateSampleData() {
+            const samples = [
+                { type: 'extintor', code: 'EXT-A-001', location: 'Prédio A - Térreo - Corredor Principal' },
+                { type: 'extintor', code: 'EXT-A-002', location: 'Prédio A - 1º Andar - Sala de Reuniões' },
+                { type: 'mangueira', code: 'MAN-A-001', location: 'Prédio A - Térreo - Próximo à Escada' },
+                { type: 'hidrante', code: 'HID-A-001', location: 'Prédio A - Externo - Estacionamento' },
+                { type: 'extintor', code: 'EXT-B-001', location: 'Prédio B - Térreo - Almoxarifado' }
+            ];
+
+            const today = new Date();
+            
+            samples.forEach((sample, index) => {
+                const validity = new Date(today);
+                validity.setMonth(validity.getMonth() + (index % 3 === 0 ? -1 : 6)); // Alguns vencidos, outros não
+                
+                equipments.push({
+                    id: Date.now() + index,
+                    type: sample.type,
+                    code: sample.code,
+                    location: sample.location,
+                    validityDate: validity.toISOString().split('T')[0],
+                    notes: 'Equipamento de teste gerado automaticamente',
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                });
+            });
+
+            saveEquipments();
+            updateStats();
+            renderEquipmentList();
+            showToast(`${samples.length} equipamentos de teste adicionados!`, 'success');
+            logEvent('Dados de teste gerados', 'success');
+        }
+
+        function clearAllData() {
+            if (confirm('ATENÇÃO: Isso apagará TODOS os equipamentos. Deseja continuar?')) {
+                equipments = [];
+                saveEquipments();
+                updateStats();
+                renderEquipmentList();
+                showToast('Todos os dados foram removidos', 'success');
+                logEvent('Todos os dados removidos', 'warning');
             }
         }
 
         // ============================================
         // UTILITÁRIOS
         // ============================================
-
-        function generatePDFContent() {
-            return `
-                <h1>🛡️ FireGuardian - Relatório de Anotações</h1>
-                <p><strong>Data:</strong> ${new Date().toLocaleString('pt-BR')}</p>
-                <p><strong>Total:</strong> ${notes.length} anotações</p>
-                <hr>
-                ${notes.map(note => `
-                    <div class="note">
-                        <div class="date">${note.date}</div>
-                        <div>${escapeHtml(note.text).replace(/\n/g, '<br>')}</div>
-                    </div>
-                `).join('')}
-            `;
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function incrementPDFCount() {
-            const count = parseInt(localStorage.getItem('pdf_count') || '0') + 1;
-            localStorage.setItem('pdf_count', count.toString());
-            updateStats();
-        }
-
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -1315,6 +1748,15 @@
             }, 3000);
         }
 
+        function showLoading(text = 'Processando...') {
+            document.querySelector('.loading-text').textContent = text;
+            document.getElementById('loadingOverlay').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('active');
+        }
+
         function logEvent(message, type = 'normal') {
             const container = document.getElementById('logContainer');
             const time = new Date().toLocaleTimeString('pt-BR');
@@ -1323,10 +1765,11 @@
             entry.innerHTML = `<span class="log-time">[${time}]</span> ${message}`;
             container.appendChild(entry);
             container.scrollTop = container.scrollHeight;
-        }
-
-        function clearLog() {
-            document.getElementById('logContainer').innerHTML = '<div class="log-entry">Log limpo...</div>';
+            
+            // Limitar log
+            while (container.children.length > 50) {
+                container.removeChild(container.firstChild);
+            }
         }
 
         function checkOnlineStatus() {
@@ -1343,43 +1786,79 @@
                     text.textContent = 'Offline';
                 }
             };
-            
+
             window.addEventListener('online', () => {
                 updateStatus();
-                logEvent('Conexão restaurada', 'success');
-                showToast('Conexão restaurada!', 'success');
+                showToast('Conexão restaurada', 'success');
+                logEvent('Conexão com internet restaurada', 'success');
             });
-            
+
             window.addEventListener('offline', () => {
                 updateStatus();
-                logEvent('Conexão perdida', 'error');
-                showToast('Modo offline ativado', 'error');
+                showToast('Modo offline ativado', 'warning');
+                logEvent('Conexão perdida - Modo offline', 'warning');
             });
-            
+
             updateStatus();
         }
 
-        function closeModal() {
-            document.getElementById('previewModal').classList.remove('active');
+        function formatDate(dateStr) {
+            if (!dateStr) return 'N/A';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('pt-BR');
         }
 
-        function confirmDownload() {
-            closeModal();
-            showToast('Download confirmado!', 'success');
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
-        // Atalhos de teclado
-        document.addEventListener('keydown', (e) => {
-            // Ctrl+Enter para salvar
-            if (e.ctrlKey && e.key === 'Enter') {
-                addNote();
+        function toggleMenu() {
+            // Menu simplificado
+            const options = [
+                { label: 'Sincronizar Dados', action: () => showToast('Sincronizando...', 'success') },
+                { label: 'Configurações', action: () => showToast('Configurações em breve', 'success') },
+                { label: 'Sobre', action: () => showToast('FireGuardian Pro v1.0', 'success') }
+            ];
+            
+            const choice = prompt('Menu:\n1. Sincronizar\n2. Configurações\n3. Sobre\n\nDigite o número:');
+            if (choice && options[parseInt(choice) - 1]) {
+                options[parseInt(choice) - 1].action();
             }
-            // Ctrl+S para backup
-            if (e.ctrlKey && e.key === 's') {
-                e.preventDefault();
-                createBackup();
+        }
+
+        function showSyncStatus() {
+            showToast('Dados sincronizados localmente', 'success');
+            logEvent('Status: ' + equipments.length + ' equipamentos em cache', 'info');
+        }
+
+        function editEquipment(id) {
+            showToast('Função de edição em desenvolvimento', 'warning');
+        }
+
+        function shareEquipment(id) {
+            const eq = equipments.find(e => e.id === id);
+            if (eq && navigator.share) {
+                navigator.share({
+                    title: `Equipamento ${eq.code}`,
+                    text: `${eq.type.toUpperCase()}: ${eq.code}\nLocal: ${eq.location}\nValidade: ${formatDate(eq.validityDate)}`
+                });
+            } else {
+                showToast('Compartilhamento não suportado', 'error');
             }
+        }
+
+        // Fechar modais ao clicar fora
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
         });
     </script>
 </body>
 </html>
+
