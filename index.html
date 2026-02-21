@@ -1,116 +1,1385 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Editor e Teste de Download PDF</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FireGuardian - Teste de Funcionalidades</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-<style>
-body{
-    font-family: Arial, sans-serif;
-    background:#eef2f7;
-    padding:20px;
-}
-.container{
-    max-width:800px;
-    margin:auto;
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.1);
-}
-h1{
-    text-align:center;
-}
-textarea{
-    width:100%;
-    height:200px;
-    padding:10px;
-    margin-top:10px;
-    border-radius:8px;
-    border:1px solid #ccc;
-    font-size:16px;
-}
-button{
-    padding:12px 20px;
-    margin-top:10px;
-    margin-right:10px;
-    border:none;
-    border-radius:6px;
-    font-size:16px;
-    cursor:pointer;
-}
-.btn-primary{
-    background:#1976D2;
-    color:white;
-}
-.btn-success{
-    background:#2e7d32;
-    color:white;
-}
-.btn-warning{
-    background:#f57c00;
-    color:white;
-}
-.preview{
-    margin-top:20px;
-    padding:15px;
-    border:1px solid #ddd;
-    background:#fafafa;
-    border-radius:6px;
-}
-</style>
+        :root {
+            --primary: #B3261E;
+            --primary-container: #F9DEDC;
+            --on-primary: #FFFFFF;
+            --surface: #FFFBFE;
+            --surface-variant: #E7E0EC;
+            --outline: #79747E;
+            --error: #BA1A1A;
+            --success: #4CAF50;
+            --warning: #FF9800;
+        }
 
-<!-- Biblioteca jsPDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --surface: #1C1B1F;
+                --surface-variant: #49454F;
+                --on-surface: #E6E1E5;
+            }
+        }
 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--surface);
+            color: var(--on-surface);
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+
+        .app-bar {
+            background: var(--primary);
+            color: var(--on-primary);
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .app-bar h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: var(--surface-variant);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Seção de Anotações */
+        .note-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 16px;
+            border: 2px solid var(--outline);
+            border-radius: 12px;
+            font-size: 16px;
+            resize: vertical;
+            background: var(--surface);
+            color: inherit;
+            font-family: inherit;
+        }
+
+        .note-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 4px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--on-primary);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background: var(--surface-variant);
+            color: var(--primary);
+            border: 1px solid var(--outline);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-error {
+            background: var(--error);
+            color: white;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        /* Lista de Anotações */
+        .notes-list {
+            margin-top: 20px;
+        }
+
+        .note-item {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary);
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .note-date {
+            font-size: 12px;
+            color: var(--outline);
+            margin-bottom: 8px;
+        }
+
+        .note-text {
+            font-size: 15px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .note-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--surface-variant);
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--outline);
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: var(--surface-variant);
+            color: var(--primary);
+        }
+
+        .icon-btn.delete:hover {
+            color: var(--error);
+        }
+
+        /* Status Bar */
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            border-top: 1px solid var(--surface-variant);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            z-index: 99;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.offline {
+            background: var(--error);
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Test Section */
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .test-btn {
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px dashed var(--outline);
+            background: transparent;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .test-btn:active {
+            background: var(--surface-variant);
+            border-color: var(--primary);
+        }
+
+        .test-btn .icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .test-btn .label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Log de Eventos */
+        .log-container {
+            background: #1a1a2e;
+            color: #00ff00;
+            padding: 16px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 12px;
+        }
+
+        .log-entry {
+            margin-bottom: 4px;
+            padding: 2px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .log-time {
+            color: #888;
+        }
+
+        .log-error {
+            color: #ff4444;
+        }
+
+        .log-success {
+            color: #44ff44;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: #323232;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--error);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--outline);
+        }
+
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--primary-container);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--outline);
+            margin-top: 4px;
+        }
+    </style>
 </head>
 <body>
+    <!-- App Bar -->
+    <div class="app-bar">
+        <h1>
+            <span>🛡️</span>
+            FireGuardian Test
+        </h1>
+    </div>
 
-<div class="container">
+    <div class="container">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="noteCount">0</div>
+                <div class="stat-label">Anotações</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="pdfCount">0</div>
+                <div class="stat-label">PDFs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="backupDate">-</div>
+                <div class="stat-label">Último Backup</div>
+            </div>
+        </div>
 
-<h1>Editor de Documento</h1>
+        <!-- Nova Anotação -->
+        <div class="card">
+            <div class="card-title">
+                <span>📝</span>
+                Nova Anotação
+            </div>
+            <textarea 
+                class="note-input" 
+                id="noteInput" 
+                placeholder="Digite sua anotação aqui..."
+            ></textarea>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="addNote()">
+                    <span>💾</span> Salvar Nota
+                </button>
+                <button class="btn btn-secondary" onclick="clearInput()">
+                    <span>🗑️</span> Limpar
+                </button>
+            </div>
+        </div>
 
-<label>Digite seu texto:</label>
-<textarea id="texto">
-Digite aqui seu texto para gerar o PDF...
-</textarea>
+        <!-- Testes de Exportação -->
+        <div class="card">
+            <div class="card-title">
+                <span>📄</span>
+                Testes de Exportação (PDF)
+            </div>
+            <div class="test-grid">
+                <button class="test-btn" onclick="testPDFMethod1()">
+                    <div class="icon">📄</div>
+                    <div class="label">PDF Método 1<br>window.print()</div>
+                </button>
+                <button class="test-btn" onclick="testPDFMethod2()">
+                    <div class="icon">📑</div>
+                    <div class="label">PDF Método 2<br>jsPDF</div>
+                </button>
+                <button class="test-btn" onclick="testPDFMethod3()">
+                    <div class="icon">📃</div>
+                    <div class="label">PDF Método 3<br>Base64 → Android</div>
+                </button>
+                <button class="test-btn" onclick="testPDFMethod4()">
+                    <div class="icon">🎯</div>
+                    <div class="label">PDF Método 4<br>Blob Download</div>
+                </button>
+            </div>
+        </div>
 
-<br>
+        <!-- Testes de Excel -->
+        <div class="card">
+            <div class="card-title">
+                <span>📊</span>
+                Testes de Exportação (Excel)
+            </div>
+            <div class="test-grid">
+                <button class="test-btn" onclick="testExcelMethod1()">
+                    <div class="icon">📊</div>
+                    <div class="label">Excel Método 1<br>CSV</div>
+                </button>
+                <button class="test-btn" onclick="testExcelMethod2()">
+                    <div class="icon">📈</div>
+                    <div class="label">Excel Método 2<br>SheetJS</div>
+                </button>
+                <button class="test-btn" onclick="testExcelMethod3()">
+                    <div class="icon">📉</div>
+                    <div class="label">Excel Método 3<br>Base64 → Android</div>
+                </button>
+                <button class="test-btn" onclick="testExcelMethod4()">
+                    <div class="icon">🎲</div>
+                    <div class="label">Excel Método 4<br>URI Scheme</div>
+                </button>
+            </div>
+        </div>
 
-<button class="btn-primary" onclick="visualizar()">Visualizar</button>
-<button class="btn-success" onclick="gerarPDF()">Gerar e Baixar PDF</button>
+        <!-- Testes de Backup -->
+        <div class="card">
+            <div class="card-title">
+                <span>💾</span>
+                Testes de Backup & Compartilhamento
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="createBackup()">
+                    <span>💾</span> Criar Backup JSON
+                </button>
+                <button class="btn btn-warning" onclick="requestRestore()">
+                    <span>📂</span> Restaurar Backup
+                </button>
+                <button class="btn btn-secondary" onclick="shareNotes()">
+                    <span>📤</span> Compartilhar Texto
+                </button>
+                <button class="btn btn-primary" onclick="shareFile()">
+                    <span>🔗</span> Compartilhar Arquivo
+                </button>
+            </div>
+        </div>
 
-<br><br>
+        <!-- Testes de Interface Android -->
+        <div class="card">
+            <div class="card-title">
+                <span>🤖</span>
+                Testes de Interface Android
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="testAndroidInterface()">
+                    <span>🔍</span> Verificar Interface
+                </button>
+                <button class="btn btn-secondary" onclick="getAndroidVersion()">
+                    <span>📱</span> Versão do App
+                </button>
+                <button class="btn btn-secondary" onclick="testVibration()">
+                    <span>📳</span> Vibrar
+                </button>
+                <button class="btn btn-secondary" onclick="testToast()">
+                    <span>🍞</span> Toast Nativo
+                </button>
+            </div>
+        </div>
 
-<a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf">
-    <button class="btn-warning">Testar Download PDF Externo</button>
-</a>
+        <!-- Log de Eventos -->
+        <div class="card">
+            <div class="card-title">
+                <span>🪵</span>
+                Log de Eventos
+                <button class="icon-btn" onclick="clearLog()" style="margin-left: auto;">
+                    🗑️
+                </button>
+            </div>
+            <div class="log-container" id="logContainer">
+                <div class="log-entry">Sistema iniciado...</div>
+            </div>
+        </div>
 
-<div class="preview" id="preview"></div>
+        <!-- Lista de Anotações -->
+        <div class="card">
+            <div class="card-title">
+                <span>📋</span>
+                Minhas Anotações
+            </div>
+            <div id="notesList" class="notes-list">
+                <div class="empty-state">
+                    <div class="icon">📝</div>
+                    <p>Nenhuma anotação ainda</p>
+                    <p style="font-size: 14px; margin-top: 8px;">Digite algo acima para começar!</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-</div>
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-item">
+            <div class="status-dot" id="statusDot"></div>
+            <span id="statusText">Online</span>
+        </div>
+        <div class="status-item">
+            <span>🔋 FireGuardian v1.0</span>
+        </div>
+    </div>
 
-<script>
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
 
-function visualizar(){
-    const texto = document.getElementById("texto").value;
-    document.getElementById("preview").innerText = texto;
-}
+    <!-- Modal de Preview -->
+    <div class="modal" id="previewModal">
+        <div class="modal-content">
+            <div class="modal-title">Preview do PDF</div>
+            <div id="previewContent" style="margin-bottom: 16px;"></div>
+            <div class="btn-group" style="justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="closeModal()">Fechar</button>
+                <button class="btn btn-primary" onclick="confirmDownload()">Baixar</button>
+            </div>
+        </div>
+    </div>
 
-async function gerarPDF(){
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <script>
+        // Estado da aplicação
+        let notes = JSON.parse(localStorage.getItem('fireguardian_notes') || '[]');
+        let currentPDFData = null;
+        let currentFileName = '';
 
-    const texto = document.getElementById("texto").value;
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            renderNotes();
+            updateStats();
+            checkOnlineStatus();
+            logEvent('Aplicativo inicializado', 'success');
+            
+            // Verificar interface Android
+            setTimeout(() => {
+                if (window.AndroidInterface) {
+                    logEvent('Interface Android detectada!', 'success');
+                } else {
+                    logEvent('Interface Android NÃO detectada - Modo Web', 'error');
+                }
+            }, 1000);
+        });
 
-    doc.setFontSize(14);
-    doc.text(texto, 10, 20);
+        // Gerenciamento de Anotações
+        function addNote() {
+            const input = document.getElementById('noteInput');
+            const text = input.value.trim();
+            
+            if (!text) {
+                showToast('Digite algo primeiro!', 'error');
+                return;
+            }
 
-    doc.save("documento_teste.pdf");
-}
+            const note = {
+                id: Date.now(),
+                text: text,
+                date: new Date().toLocaleString('pt-BR'),
+                timestamp: Date.now()
+            };
 
-</script>
+            notes.unshift(note);
+            saveNotes();
+            input.value = '';
+            renderNotes();
+            updateStats();
+            showToast('Anotação salva!', 'success');
+            logEvent(`Nota criada: ${text.substring(0, 30)}...`, 'success');
+            
+            // Vibrar se disponível
+            if (navigator.vibrate) navigator.vibrate(50);
+        }
 
+        function deleteNote(id) {
+            if (confirm('Deseja excluir esta anotação?')) {
+                notes = notes.filter(n => n.id !== id);
+                saveNotes();
+                renderNotes();
+                updateStats();
+                showToast('Anotação excluída', 'success');
+                logEvent('Nota excluída', 'success');
+            }
+        }
+
+        function editNote(id) {
+            const note = notes.find(n => n.id === id);
+            if (note) {
+                const newText = prompt('Editar anotação:', note.text);
+                if (newText !== null && newText.trim() !== '') {
+                    note.text = newText.trim();
+                    note.date = new Date().toLocaleString('pt-BR') + ' (editado)';
+                    saveNotes();
+                    renderNotes();
+                    showToast('Anotação atualizada!', 'success');
+                }
+            }
+        }
+
+        function saveNotes() {
+            localStorage.setItem('fireguardian_notes', JSON.stringify(notes));
+        }
+
+        function renderNotes() {
+            const container = document.getElementById('notesList');
+            
+            if (notes.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📝</div>
+                        <p>Nenhuma anotação ainda</p>
+                        <p style="font-size: 14px; margin-top: 8px;">Digite algo acima para começar!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = notes.map(note => `
+                <div class="note-item">
+                    <div class="note-date">${note.date}</div>
+                    <div class="note-text">${escapeHtml(note.text)}</div>
+                    <div class="note-actions">
+                        <button class="icon-btn" onclick="editNote(${note.id})" title="Editar">
+                            ✏️
+                        </button>
+                        <button class="icon-btn" onclick="shareNote(${note.id})" title="Compartilhar">
+                            📤
+                        </button>
+                        <button class="icon-btn delete" onclick="deleteNote(${note.id})" title="Excluir">
+                            🗑️
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function clearInput() {
+            document.getElementById('noteInput').value = '';
+            showToast('Campo limpo', 'success');
+        }
+
+        // Estatísticas
+        function updateStats() {
+            document.getElementById('noteCount').textContent = notes.length;
+            
+            const pdfs = JSON.parse(localStorage.getItem('pdf_count') || '0');
+            document.getElementById('pdfCount').textContent = pdfs;
+            
+            const lastBackup = localStorage.getItem('last_backup');
+            document.getElementById('backupDate').textContent = lastBackup || '-';
+        }
+
+        // ============================================
+        // TESTES DE PDF - Múltiplos métodos
+        // ============================================
+
+        // Método 1: window.print() - Gera PDF nativo do navegador
+        function testPDFMethod1() {
+            logEvent('Testando PDF Método 1: window.print()', 'success');
+            
+            const printWindow = window.open('', '_blank');
+            const content = generatePDFContent();
+            
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>FireGuardian - Anotações</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 40px; }
+                        h1 { color: #B3261E; border-bottom: 2px solid #B3261E; padding-bottom: 10px; }
+                        .note { margin: 20px 0; padding: 15px; background: #f5f5f5; border-radius: 8px; }
+                        .date { color: #666; font-size: 12px; margin-bottom: 5px; }
+                        @media print { .no-print { display: none; } }
+                    </style>
+                </head>
+                <body>
+                    ${content}
+                    <div class="no-print" style="margin-top: 30px; text-align: center;">
+                        <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px;">
+                            🖨️ Clique para Imprimir/Salvar PDF
+                        </button>
+                    </div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            
+            showToast('PDF aberto em nova aba', 'success');
+        }
+
+        // Método 2: jsPDF - Gera PDF via biblioteca JavaScript
+        function testPDFMethod2() {
+            logEvent('Testando PDF Método 2: jsPDF', 'success');
+            
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Cabeçalho
+                doc.setFillColor(179, 38, 30);
+                doc.rect(0, 0, 210, 30, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(20);
+                doc.text('FireGuardian - Relatório', 20, 20);
+                
+                // Conteúdo
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(12);
+                let y = 40;
+                
+                doc.text(`Data: ${new Date().toLocaleString('pt-BR')}`, 20, y);
+                doc.text(`Total de anotações: ${notes.length}`, 20, y + 10);
+                
+                y += 30;
+                
+                notes.forEach((note, index) => {
+                    if (y > 250) {
+                        doc.addPage();
+                        y = 20;
+                    }
+                    
+                    doc.setFillColor(240, 240, 240);
+                    doc.roundedRect(15, y - 5, 180, 25, 3, 3, 'F');
+                    doc.setFontSize(10);
+                    doc.setTextColor(100, 100, 100);
+                    doc.text(note.date, 20, y + 5);
+                    doc.setTextColor(0, 0, 0);
+                    doc.setFontSize(11);
+                    
+                    const text = doc.splitTextToSize(note.text.substring(0, 100), 170);
+                    doc.text(text, 20, y + 15);
+                    
+                    y += 35;
+                });
+                
+                // Salvar
+                const fileName = `fireguardian_relatorio_${Date.now()}.pdf`;
+                doc.save(fileName);
+                
+                incrementPDFCount();
+                showToast('PDF gerado com jsPDF!', 'success');
+                logEvent(`PDF gerado: ${fileName}`, 'success');
+                
+            } catch (error) {
+                logEvent('Erro jsPDF: ' + error.message, 'error');
+                showToast('Erro ao gerar PDF', 'error');
+            }
+        }
+
+        // Método 3: Base64 → Android - Envia para o app Android salvar
+        function testPDFMethod3() {
+            logEvent('Testando PDF Método 3: Base64 → Android', 'success');
+            
+            if (!window.AndroidInterface) {
+                showToast('Interface Android não disponível', 'error');
+                logEvent('AndroidInterface não encontrada', 'error');
+                // Fallback para download direto
+                testPDFMethod4();
+                return;
+            }
+
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                doc.setFontSize(16);
+                doc.text('FireGuardian - Backup PDF', 20, 20);
+                doc.setFontSize(12);
+                doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 20, 30);
+                
+                let y = 50;
+                notes.forEach(note => {
+                    if (y > 280) {
+                        doc.addPage();
+                        y = 20;
+                    }
+                    doc.text(`[${note.date}] ${note.text.substring(0, 80)}`, 20, y);
+                    y += 10;
+                });
+
+                // Converter para Base64
+                const pdfBase64 = doc.output('datauristring').split(',')[1];
+                const fileName = `fireguardian_backup_${Date.now()}.pdf`;
+                
+                // Enviar para Android
+                window.AndroidInterface.savePDF(pdfBase64, fileName);
+                
+                showToast('PDF enviado para o Android!', 'success');
+                logEvent(`PDF enviado ao Android: ${fileName}`, 'success');
+                incrementPDFCount();
+                
+            } catch (error) {
+                logEvent('Erro: ' + error.message, 'error');
+                showToast('Erro ao enviar PDF', 'error');
+            }
+        }
+
+        // Método 4: Blob Download - Download direto via navegador
+        function testPDFMethod4() {
+            logEvent('Testando PDF Método 4: Blob Download', 'success');
+            
+            const content = `
+                FireGuardian - Exportação de Dados
+                Data: ${new Date().toLocaleString('pt-BR')}
+                
+                ANOTAÇÕES:
+                ${notes.map(n => `
+                [${n.date}]
+                ${n.text}
+                ---`).join('\n')}
+            `;
+            
+            const blob = new Blob([content], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `fireguardian_export_${Date.now()}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('Download iniciado!', 'success');
+            logEvent('Download PDF iniciado via Blob', 'success');
+            incrementPDFCount();
+        }
+
+        // ============================================
+        // TESTES DE EXCEL - Múltiplos métodos
+        // ============================================
+
+        // Método 1: CSV - Formato simples compatível com Excel
+        function testExcelMethod1() {
+            logEvent('Testando Excel Método 1: CSV', 'success');
+            
+            let csv = 'ID,Data,Texto\n';
+            notes.forEach(note => {
+                csv += `${note.id},"${note.date}","${note.text.replace(/"/g, '""')}"\n`;
+            });
+            
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `fireguardian_notas_${Date.now()}.csv`;
+            link.click();
+            
+            showToast('CSV baixado! Abra no Excel', 'success');
+            logEvent('CSV gerado com sucesso', 'success');
+        }
+
+        // Método 2: SheetJS (XLSX) - Excel nativo
+        function testExcelMethod2() {
+            logEvent('Testando Excel Método 2: SheetJS XLSX', 'success');
+            
+            try {
+                const wb = XLSX.utils.book_new();
+                wb.Props = {
+                    Title: "FireGuardian Backup",
+                    Subject: "Anotações",
+                    Author: "FireGuardian App",
+                    CreatedDate: new Date()
+                };
+                
+                const data = notes.map(n => ({
+                    'ID': n.id,
+                    'Data': n.date,
+                    'Anotação': n.text,
+                    'Timestamp': n.timestamp
+                }));
+                
+                const ws = XLSX.utils.json_to_sheet(data);
+                XLSX.utils.book_append_sheet(wb, ws, "Anotações");
+                
+                const fileName = `fireguardian_excel_${Date.now()}.xlsx`;
+                XLSX.writeFile(wb, fileName);
+                
+                showToast('Excel gerado com SheetJS!', 'success');
+                logEvent(`Excel gerado: ${fileName}`, 'success');
+                
+            } catch (error) {
+                logEvent('Erro SheetJS: ' + error.message, 'error');
+                showToast('Erro ao gerar Excel', 'error');
+            }
+        }
+
+        // Método 3: Base64 → Android - Envia para app Android
+        function testExcelMethod3() {
+            logEvent('Testando Excel Método 3: Base64 → Android', 'success');
+            
+            if (!window.AndroidInterface) {
+                showToast('Interface Android não disponível', 'error');
+                testExcelMethod2(); // Fallback
+                return;
+            }
+
+            try {
+                const wb = XLSX.utils.book_new();
+                const data = notes.map(n => ({
+                    'Data': n.date,
+                    'Anotação': n.text
+                }));
+                
+                const ws = XLSX.utils.json_to_sheet(data);
+                XLSX.utils.book_append_sheet(wb, ws, "Anotações");
+                
+                // Gerar Base64
+                const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
+                const fileName = `fireguardian_backup_${Date.now()}.xlsx`;
+                
+                // Enviar para Android
+                window.AndroidInterface.saveExcel(wbout, fileName);
+                
+                showToast('Excel enviado para Android!', 'success');
+                logEvent(`Excel enviado: ${fileName}`, 'success');
+                
+            } catch (error) {
+                logEvent('Erro: ' + error.message, 'error');
+                showToast('Erro ao enviar Excel', 'error');
+            }
+        }
+
+        // Método 4: URI Scheme - Tenta abrir app de planilhas
+        function testExcelMethod4() {
+            logEvent('Testando Excel Método 4: URI Scheme', 'success');
+            
+            const csv = notes.map(n => `${n.date},${n.text.replace(/,/g, ';')}`).join('\n');
+            const encoded = encodeURIComponent(csv);
+            const uri = `ms-excel:ofe|u|data:text/csv;base64,${btoa(csv)}`;
+            
+            // Tentar abrir app externo
+            window.location.href = uri;
+            
+            showToast('Tentando abrir app de planilhas...', 'success');
+            logEvent('URI Scheme disparado', 'success');
+            
+            // Fallback após 1 segundo
+            setTimeout(() => {
+                testExcelMethod1();
+            }, 1000);
+        }
+
+        // ============================================
+        // BACKUP & RESTAURAÇÃO
+        // ============================================
+
+        function createBackup() {
+            logEvent('Criando backup JSON...', 'success');
+            
+            const backupData = {
+                app: 'FireGuardian',
+                version: '1.0',
+                created: new Date().toISOString(),
+                notes: notes,
+                stats: {
+                    totalNotes: notes.length,
+                    lastExport: new Date().toLocaleString('pt-BR')
+                }
+            };
+            
+            const json = JSON.stringify(backupData, null, 2);
+            
+            // Tentar enviar para Android primeiro
+            if (window.AndroidInterface) {
+                try {
+                    window.AndroidInterface.createBackup(json);
+                    showToast('Backup enviado ao Android!', 'success');
+                    logEvent('Backup enviado via AndroidInterface', 'success');
+                } catch (e) {
+                    // Fallback: download direto
+                    downloadJSON(json);
+                }
+            } else {
+                downloadJSON(json);
+            }
+            
+            localStorage.setItem('last_backup', new Date().toLocaleDateString('pt-BR'));
+            updateStats();
+        }
+
+        function downloadJSON(json) {
+            const blob = new Blob([json], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `fireguardian_backup_${Date.now()}.json`;
+            a.click();
+            showToast('Backup baixado!', 'success');
+            logEvent('Backup baixado via navegador', 'success');
+        }
+
+        function requestRestore() {
+            logEvent('Solicitando restauração...', 'success');
+            
+            if (window.AndroidInterface) {
+                window.AndroidInterface.restoreBackup();
+                showToast('Solicitação enviada ao Android', 'success');
+            } else {
+                // Fallback: input file
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json,application/json';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            try {
+                                const data = JSON.parse(event.target.result);
+                                if (data.notes && Array.isArray(data.notes)) {
+                                    notes = data.notes;
+                                    saveNotes();
+                                    renderNotes();
+                                    updateStats();
+                                    showToast('Backup restaurado!', 'success');
+                                    logEvent('Backup restaurado com sucesso', 'success');
+                                }
+                            } catch (err) {
+                                showToast('Arquivo inválido', 'error');
+                                logEvent('Erro ao restaurar: ' + err.message, 'error');
+                            }
+                        };
+                        reader.readAsText(file);
+                    }
+                };
+                input.click();
+            }
+        }
+
+        // ============================================
+        // COMPARTILHAMENTO
+        // ============================================
+
+        async function shareNotes() {
+            logEvent('Compartilhando notas...', 'success');
+            
+            const text = notes.map(n => `📝 ${n.date}\n${n.text}`).join('\n\n');
+            
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Minhas Anotações - FireGuardian',
+                        text: text,
+                    });
+                    logEvent('Compartilhamento nativo usado', 'success');
+                } catch (err) {
+                    logEvent('Share cancelado ou erro: ' + err.message, 'error');
+                }
+            } else {
+                // Fallback: copiar para clipboard
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('Texto copiado para área de transferência!', 'success');
+                    logEvent('Texto copiado (fallback)', 'success');
+                });
+            }
+        }
+
+        async function shareFile() {
+            logEvent('Compartilhando arquivo...', 'success');
+            
+            const backupData = {
+                notes: notes,
+                exported: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(backupData)], { type: 'application/json' });
+            const file = new File([blob], 'fireguardian_share.json', { type: 'application/json' });
+            
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: 'FireGuardian Backup',
+                    });
+                    logEvent('Arquivo compartilhado com sucesso', 'success');
+                } catch (err) {
+                    logEvent('Erro no share: ' + err.message, 'error');
+                }
+            } else {
+                showToast('Compartilhamento de arquivos não suportado', 'error');
+                // Fallback: download
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = file.name;
+                a.click();
+            }
+        }
+
+        function shareNote(id) {
+            const note = notes.find(n => n.id === id);
+            if (note && navigator.share) {
+                navigator.share({
+                    title: 'Anotação FireGuardian',
+                    text: `${note.text}\n\n${note.date}`
+                });
+            }
+        }
+
+        // ============================================
+        // TESTES DE INTERFACE ANDROID
+        // ============================================
+
+        function testAndroidInterface() {
+            logEvent('Verificando AndroidInterface...', 'success');
+            
+            const tests = {
+                'AndroidInterface existe': !!window.AndroidInterface,
+                'createBackup': !!(window.AndroidInterface && window.AndroidInterface.createBackup),
+                'restoreBackup': !!(window.AndroidInterface && window.AndroidInterface.restoreBackup),
+                'savePDF': !!(window.AndroidInterface && window.AndroidInterface.savePDF),
+                'saveExcel': !!(window.AndroidInterface && window.AndroidInterface.saveExcel),
+                'getAppVersion': !!(window.AndroidInterface && window.AndroidInterface.getAppVersion),
+                'isAndroidApp': !!(window.AndroidInterface && window.AndroidInterface.isAndroidApp)
+            };
+            
+            Object.entries(tests).forEach(([name, result]) => {
+                logEvent(`${name}: ${result ? '✅' : '❌'}`, result ? 'success' : 'error');
+            });
+            
+            showToast(`Interface: ${tests['AndroidInterface existe'] ? 'Detectada' : 'Não detectada'}`, 
+                     tests['AndroidInterface existe'] ? 'success' : 'error');
+        }
+
+        function getAndroidVersion() {
+            if (window.AndroidInterface && window.AndroidInterface.getAppVersion) {
+                try {
+                    const version = window.AndroidInterface.getAppVersion();
+                    logEvent(`Versão do App: ${version}`, 'success');
+                    showToast(`Versão: ${version}`, 'success');
+                } catch (e) {
+                    logEvent('Erro ao obter versão: ' + e.message, 'error');
+                }
+            } else {
+                logEvent('getAppVersion não disponível', 'error');
+                showToast('Interface não disponível', 'error');
+            }
+        }
+
+        function testVibration() {
+            if (navigator.vibrate) {
+                navigator.vibrate([100, 50, 100, 50, 200]);
+                logEvent('Vibração testada', 'success');
+                showToast('📳 Vibrando...', 'success');
+            } else {
+                logEvent('API de vibração não suportada', 'error');
+                showToast('Vibração não suportada', 'error');
+            }
+        }
+
+        function testToast() {
+            // Tentar Toast nativo Android
+            if (window.AndroidInterface && window.AndroidInterface.showToast) {
+                window.AndroidInterface.showToast('Toast nativo Android!');
+                logEvent('Toast nativo enviado', 'success');
+            } else {
+                showToast('Toast JavaScript (fallback)', 'success');
+                logEvent('Toast JavaScript usado (fallback)', 'success');
+            }
+        }
+
+        // ============================================
+        // UTILITÁRIOS
+        // ============================================
+
+        function generatePDFContent() {
+            return `
+                <h1>🛡️ FireGuardian - Relatório de Anotações</h1>
+                <p><strong>Data:</strong> ${new Date().toLocaleString('pt-BR')}</p>
+                <p><strong>Total:</strong> ${notes.length} anotações</p>
+                <hr>
+                ${notes.map(note => `
+                    <div class="note">
+                        <div class="date">${note.date}</div>
+                        <div>${escapeHtml(note.text).replace(/\n/g, '<br>')}</div>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function incrementPDFCount() {
+            const count = parseInt(localStorage.getItem('pdf_count') || '0') + 1;
+            localStorage.setItem('pdf_count', count.toString());
+            updateStats();
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function logEvent(message, type = 'normal') {
+            const container = document.getElementById('logContainer');
+            const time = new Date().toLocaleTimeString('pt-BR');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.innerHTML = `<span class="log-time">[${time}]</span> ${message}`;
+            container.appendChild(entry);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('logContainer').innerHTML = '<div class="log-entry">Log limpo...</div>';
+        }
+
+        function checkOnlineStatus() {
+            const updateStatus = () => {
+                const isOnline = navigator.onLine;
+                const dot = document.getElementById('statusDot');
+                const text = document.getElementById('statusText');
+                
+                if (isOnline) {
+                    dot.classList.remove('offline');
+                    text.textContent = 'Online';
+                } else {
+                    dot.classList.add('offline');
+                    text.textContent = 'Offline';
+                }
+            };
+            
+            window.addEventListener('online', () => {
+                updateStatus();
+                logEvent('Conexão restaurada', 'success');
+                showToast('Conexão restaurada!', 'success');
+            });
+            
+            window.addEventListener('offline', () => {
+                updateStatus();
+                logEvent('Conexão perdida', 'error');
+                showToast('Modo offline ativado', 'error');
+            });
+            
+            updateStatus();
+        }
+
+        function closeModal() {
+            document.getElementById('previewModal').classList.remove('active');
+        }
+
+        function confirmDownload() {
+            closeModal();
+            showToast('Download confirmado!', 'success');
+        }
+
+        // Atalhos de teclado
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+Enter para salvar
+            if (e.ctrlKey && e.key === 'Enter') {
+                addNote();
+            }
+            // Ctrl+S para backup
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                createBackup();
+            }
+        });
+    </script>
 </body>
 </html>
