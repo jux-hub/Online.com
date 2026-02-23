@@ -2,12 +2,10 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FireGuardian Pro</title>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary: #d32f2f;
@@ -407,487 +405,643 @@
     </style>
 </head>
 <body>
-    <!-- Tela de Login Administrador -->
+    <!-- TELA DE LOGIN -->
     <div id="login-screen" class="login-screen">
         <div class="login-bg-particles">
             <span></span><span></span><span></span><span></span><span></span>
         </div>
         <div class="login-box">
             <div class="login-header">
-                <div class="login-icon-wrap"><i class="fas fa-shield-halved"></i></div>
+                <div class="login-icon-wrap">
+                    <i class="fas fa-fire-extinguisher"></i>
+                </div>
                 <h1>FireGuardian Pro</h1>
                 <p>Gestão de Segurança Contra Incêndio</p>
                 <span class="login-version">v2.0 — Acesso Restrito</span>
             </div>
             <div class="login-body">
                 <div class="field-group">
+                    <label><i class="fas fa-user"></i> Usuário</label>
+                    <div class="login-input-wrap">
+                        <input type="text" id="login-usuario" value="Administrador" disabled>
+                    </div>
+                </div>
+                <div class="field-group">
                     <label><i class="fas fa-lock"></i> Senha de Acesso</label>
                     <div class="login-input-wrap">
-                        <input type="password" id="login-senha" placeholder="Digite a senha" value="">
+                        <input type="password" id="login-senha" placeholder="Digite a senha..." onkeypress="if(event.key==='Enter')fazerLogin()">
                         <i class="fas fa-eye toggle-senha" onclick="toggleSenhaLogin()"></i>
                     </div>
                 </div>
                 <div id="login-erro" class="login-error-msg">
-                    <i class="fas fa-exclamation-triangle"></i> Senha incorreta. Tente novamente.
+                    <i class="fas fa-exclamation-circle"></i> Senha incorreta. Tente novamente.
                 </div>
                 <button class="login-btn" onclick="fazerLogin()">
                     <i class="fas fa-sign-in-alt"></i> ENTRAR NO SISTEMA
                 </button>
             </div>
             <div class="login-footer">
-                <i class="fas fa-lock"></i> Sistema protegido — Acesso apenas para administradores
+                <i class="fas fa-shield-alt"></i> Sistema protegido — Acesso apenas para administradores
             </div>
         </div>
     </div>
 
-    <!-- Modal de senha para link compartilhado -->
-    <div id="modal-senha-link" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-link"></i> Acesso via Link</h3>
-                <button class="modal-close" onclick="document.getElementById('modal-senha-link').style.display='none'">&times;</button>
-            </div>
-            <div class="info-box">
-                <i class="fas fa-info-circle"></i> FireGuardian Pro
-            </div>
-            <p>Este link está protegido por senha. Digite a senha fornecida pelo administrador:</p>
-            <div class="field-group">
-                <input type="password" id="acesso-senha-link" placeholder="Senha do link">
-            </div>
-            <div id="senha-erro" class="login-error-msg" style="display: none;">
-                <i class="fas fa-exclamation-triangle"></i> Senha incorreta!
-            </div>
-            <button class="login-btn" onclick="verificarSenhaLink()">
-                <i class="fas fa-unlock-alt"></i> ACESSAR
+    <!-- BANNER MODO LEITURA -->
+    <div id="readonly-banner" class="readonly-banner">
+        <i class="fas fa-eye"></i> MODO VISUALIZAÇÃO (Somente Leitura) — Edição Bloqueada
+    </div>
+
+    <!-- BANNER CONEXÃO -->
+    <div id="connection-banner" class="connection-banner">
+        <i class="fas fa-wifi"></i> <span id="connection-text">Online</span>
+    </div>
+
+    <!-- HEADER DA APLICAÇÃO -->
+    <header class="app-header">
+        <h1><i class="fas fa-fire-extinguisher"></i> FireGuardian Pro</h1>
+        <p>Gestão Inteligente de Segurança Contra Incêndio</p>
+    </header>
+
+    <div class="container">
+        <!-- NAVEGAÇÃO -->
+        <nav class="main-nav">
+            <button class="nav-btn active" onclick="navegar('dashboard')" id="nav-dashboard">
+                <i class="fas fa-chart-pie"></i> Dashboard
             </button>
-        </div>
-    </div>
+            <button class="nav-btn" onclick="navegar('cadastro')" id="nav-cadastro">
+                <i class="fas fa-plus-circle"></i> Cadastro
+            </button>
+            <button class="nav-btn" onclick="navegar('busca')" id="nav-busca">
+                <i class="fas fa-search"></i> Busca
+            </button>
+            <button class="nav-btn" onclick="navegar('lista')" id="nav-lista">
+                <i class="fas fa-list"></i> Equipamentos
+            </button>
+            <button class="nav-btn" onclick="navegar('organizacao')" id="nav-organizacao">
+                <i class="fas fa-sitemap"></i> Por Área
+            </button>
+            <button class="nav-btn" onclick="navegar('exportar-filtrado')" id="nav-exportar">
+                <i class="fas fa-file-export"></i> Exportar
+            </button>
+            <button class="nav-btn" onclick="navegar('backup')" id="nav-backup">
+                <i class="fas fa-database"></i> Backup
+            </button>
+            <button class="nav-btn" onclick="navegar('relatorios')" id="nav-relatorios">
+                <i class="fas fa-share-alt"></i> Relatórios
+            </button>
+        </nav>
 
-    <!-- Aplicação Principal -->
-    <div id="app">
-        <!-- Banner de somente leitura -->
-        <div id="readonly-banner" class="readonly-banner">
-            <i class="fas fa-eye"></i> MODO VISUALIZAÇÃO (Somente Leitura) — Edição Bloqueada
-        </div>
-        <!-- Banner de conexão -->
-        <div id="connection-banner" class="connection-banner">
-            <i class="fas fa-wifi"></i> Online
-        </div>
-
-        <!-- Header -->
-        <div class="app-header">
-            <h1>
-                <i class="fas fa-shield-halved"></i> FireGuardian Pro
-            </h1>
-            <p>Gestão Inteligente de Segurança Contra Incêndio</p>
-        </div>
-
-        <!-- Navegação Principal -->
-        <div class="container">
-            <div class="main-nav">
-                <button class="nav-btn active" onclick="navegar('dashboard')"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
-                <button class="nav-btn" onclick="navegar('cadastro')"><i class="fas fa-plus-circle"></i><span>Cadastro</span></button>
-                <button class="nav-btn" onclick="navegar('busca')"><i class="fas fa-search"></i><span>Busca</span></button>
-                <button class="nav-btn" onclick="navegar('equipamentos')"><i class="fas fa-list"></i><span>Equipamentos</span></button>
-                <button class="nav-btn" onclick="navegar('organizacao')"><i class="fas fa-layer-group"></i><span>Por Área</span></button>
-                <button class="nav-btn" onclick="navegar('exportar-filtrado')" id="btn-exportar-filtrado"><i class="fas fa-file-export"></i><span>Exportar</span></button>
-                <button class="nav-btn" onclick="navegar('backup')" id="btn-backup"><i class="fas fa-database"></i><span>Backup</span></button>
-                <button class="nav-btn" onclick="navegar('relatorios')" id="btn-relatorios"><i class="fas fa-file-pdf"></i><span>Relatórios</span></button>
-            </div>
-
-            <!-- Aba Dashboard -->
-            <div id="dashboard" class="tab-content active">
-                <div class="card">
-                    <h2 class="section-title"><i class="fas fa-chart-simple"></i> Visão Geral do Sistema</h2>
-                    <div class="dash-grid">
-                        <div class="stat-card bg-blue" onclick="navegar('equipamentos')">
-                            <i class="fas fa-cubes"></i>
-                            <strong id="dash-total">0</strong>
-                            <span>Total de Itens</span>
-                        </div>
-                        <div class="stat-card bg-green">
-                            <i class="fas fa-check-circle"></i>
-                            <strong id="dash-ok">0</strong>
-                            <span>Em Conformidade</span>
-                        </div>
-                        <div class="stat-card bg-orange">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <strong id="dash-warn">0</strong>
-                            <span>Atenção (30d)</span>
-                        </div>
-                        <div class="stat-card bg-red">
-                            <i class="fas fa-clock"></i>
-                            <strong id="dash-expired">0</strong>
-                            <span>Vencidos</span>
-                        </div>
-                        <div class="stat-card bg-grey">
-                            <i class="fas fa-box"></i>
-                            <strong id="dash-inventory">0</strong>
-                            <span>Sem Validade</span>
-                        </div>
-                        <div class="stat-card bg-purple">
-                            <i class="fas fa-map-pin"></i>
-                            <strong id="dash-areas">0</strong>
-                            <span>Áreas</span>
-                        </div>
-                        <div class="stat-card bg-teal">
-                            <i class="fas fa-fire-extinguisher"></i>
-                            <strong id="dash-mangueiras">0</strong>
-                            <span>Mangueiras</span>
-                        </div>
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="tab-content active">
+            <div class="card">
+                <h3 class="section-title"><i class="fas fa-chart-line"></i> Visão Geral do Sistema</h3>
+                <div class="dash-grid">
+                    <div class="stat-card bg-blue" onclick="navegar('lista')">
+                        <i class="fas fa-boxes"></i>
+                        <strong id="dash-total">0</strong>
+                        <span>Total de Itens</span>
                     </div>
-                </div>
-                <div class="card">
-                    <h3><i class="fas fa-chart-pie"></i> Distribuição de Status</h3>
-                    <div class="chart-container">
-                        <canvas id="statusChart"></canvas>
+                    <div class="stat-card bg-green" onclick="filtrarPorStatus('ok')">
+                        <i class="fas fa-check-circle"></i>
+                        <strong id="dash-ok">0</strong>
+                        <span>Em Conformidade</span>
                     </div>
-                </div>
-                <div class="card">
-                    <h3><i class="fas fa-chart-line"></i> Indicadores de Conformidade</h3>
-                    <div class="progress-container">
-                        <div class="progress-item">
-                            <div class="progress-label"><span><i class="fas fa-thumbs-up"></i> Taxa de Conformidade</span> <span id="conformidade-percent">0%</span></div>
-                            <div class="progress-bar-bg"><div class="progress-bar" id="conformidade-bar" style="width:0%; background:#43a047;"></div></div>
-                        </div>
-                        <div class="progress-item">
-                            <div class="progress-label"><span><i class="fas fa-exclamation-circle"></i> Itens Requerendo Atenção</span> <span id="atencao-percent">0%</span></div>
-                            <div class="progress-bar-bg"><div class="progress-bar" id="atencao-bar" style="width:0%; background:#ff9800;"></div></div>
-                        </div>
-                        <div class="progress-item">
-                            <div class="progress-label"><span><i class="fas fa-calendar-times"></i> Taxa de Vencimento</span> <span id="vencido-percent">0%</span></div>
-                            <div class="progress-bar-bg"><div class="progress-bar" id="vencido-bar" style="width:0%; background:#c62828;"></div></div>
-                        </div>
+                    <div class="stat-card bg-orange" onclick="filtrarPorStatus('warning')">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong id="dash-warn">0</strong>
+                        <span>Atenção (30d)</span>
+                    </div>
+                    <div class="stat-card bg-red" onclick="filtrarPorStatus('expired')">
+                        <i class="fas fa-times-circle"></i>
+                        <strong id="dash-expired">0</strong>
+                        <span>Vencidos</span>
+                    </div>
+                    <div class="stat-card bg-grey" onclick="filtrarPorStatus('nodata')">
+                        <i class="fas fa-infinity"></i>
+                        <strong id="dash-inventory">0</strong>
+                        <span>Sem Validade</span>
+                    </div>
+                    <div class="stat-card bg-purple" onclick="navegar('organizacao')">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <strong id="dash-areas">0</strong>
+                        <span>Áreas</span>
+                    </div>
+                    <div class="stat-card bg-teal" onclick="filtrarPorTipo('mangueira')">
+                        <i class="fas fa-fire-hose"></i>
+                        <strong id="dash-mangueiras">0</strong>
+                        <span>Mangueiras</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Aba Cadastro -->
-            <div id="cadastro" class="tab-content">
-                <div class="card">
-                    <h2 id="cadastro-titulo" class="section-title"><i class="fas fa-plus-circle"></i> Novo Cadastro</h2>
-                    <div class="form-type-selector">
-                        <button id="btn-mode-data" class="type-btn active" onclick="setCadastroMode(true)"><i class="fas fa-calendar-alt"></i> Com Validade</button>
-                        <button id="btn-mode-nodata" class="type-btn" onclick="setCadastroMode(false)"><i class="fas fa-calendar-times"></i> Sem Validade</button>
+            <div class="card">
+                <h3 class="section-title"><i class="fas fa-chart-pie"></i> Distribuição de Status</h3>
+                <div class="chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="section-title"><i class="fas fa-tachometer-alt"></i> Indicadores de Conformidade</h3>
+                <div class="progress-container">
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span><i class="fas fa-check-circle" style="color: var(--ok)"></i> Taxa de Conformidade</span>
+                            <strong id="conformidade-percent">0%</strong>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar" id="conformidade-bar" style="width: 0%; background: linear-gradient(90deg, var(--ok), #66bb6a);"></div>
+                        </div>
                     </div>
-                    <div class="cadastro-split">
-                        <div>
-                            <form id="form-equipamento">
-                                <input type="hidden" id="edit-id">
-                                <div class="field-group">
-                                    <label><i class="fas fa-cube"></i> Tipo de Equipamento *</label>
-                                    <select id="cad-tipo" required>
-                                        <option value="">-- Selecione --</option>
-                                        <option value="Extintor">Extintor</option>
-                                        <option value="Mangueira">Mangueira</option>
-                                        <option value="Hidrante">Hidrante</option>
-                                        <option value="Sprinkler">Sprinkler</option>
-                                        <option value="Alarme">Alarme</option>
-                                        <option value="Iluminação">Iluminação</option>
-                                        <option value="Sinalização">Sinalização</option>
-                                        <option value="Outros">Outros</option>
-                                    </select>
-                                </div>
-                                <div class="field-group">
-                                    <label><i class="fas fa-tag"></i> Código/TAG *</label>
-                                    <input type="text" id="cad-codigo" placeholder="Ex: AK - 001" required>
-                                </div>
-                                <div class="field-group" id="mangueira-config" style="display: none;">
-                                    <label><i class="fas fa-tools"></i> Configurações de Mangueira</label>
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span><i class="fas fa-exclamation-triangle" style="color: var(--warn)"></i> Itens Requerendo Atenção</span>
+                            <strong id="atencao-percent">0%</strong>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar" id="atencao-bar" style="width: 0%; background: linear-gradient(90deg, var(--warn), #ffb74d);"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span><i class="fas fa-times-circle" style="color: var(--danger)"></i> Taxa de Vencimento</span>
+                            <strong id="vencido-percent">0%</strong>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar" id="vencido-bar" style="width: 0%; background: linear-gradient(90deg, var(--danger), #ef5350);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="section-title"><i class="fas fa-bolt"></i> Ações Rápidas</h3>
+                <div class="export-actions">
+                    <button class="btn-export btn-export-pdf" onclick="navegar('cadastro')">
+                        <i class="fas fa-plus"></i> Novo Item
+                    </button>
+                    <button class="btn-export" style="background: linear-gradient(135deg, #1976d2, #1565c0); color: white;" onclick="navegar('busca')">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                    <button class="btn-export" style="background: linear-gradient(135deg, #f57c00, #ef6c00); color: white;" onclick="navegar('exportar-filtrado')">
+                        <i class="fas fa-file-export"></i> Exportar
+                    </button>
+                    <button class="btn-export" style="background: linear-gradient(135deg, #388e3c, #2e7d32); color: white;" onclick="navegar('backup')">
+                        <i class="fas fa-database"></i> Backup
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CADASTRO -->
+        <div id="cadastro" class="tab-content">
+            <div class="card">
+                <h3 id="cadastro-titulo" class="section-title"><i class="fas fa-plus-circle"></i> Novo Cadastro</h3>
+                <div class="cadastro-split">
+                    <form id="form-equipamento" onsubmit="salvarEquipamento(event)">
+                        <div class="form-type-selector">
+                            <button type="button" id="btn-mode-data" class="type-btn active" onclick="setCadastroMode(true)">
+                                <i class="fas fa-calendar-alt"></i> Com Validade
+                            </button>
+                            <button type="button" id="btn-mode-nodata" class="type-btn" onclick="setCadastroMode(false)">
+                                <i class="fas fa-infinity"></i> Sem Validade
+                            </button>
+                        </div>
+
+                        <div class="field-group">
+                            <label><i class="fas fa-copy"></i> Usar modelo existente</label>
+                            <select id="modelo-select" onchange="aplicarModelo()">
+                                <option value="">-- Selecione para preencher automaticamente --</option>
+                            </select>
+                        </div>
+
+                        <input type="hidden" id="edit-id">
+
+                        <div class="field-group">
+                            <label><i class="fas fa-tools"></i> Tipo de Equipamento *</label>
+                            <select id="cad-tipo" required onchange="verificarTipoMangueira()">
+                                <option value="">Selecione...</option>
+                                <option value="Extintor">Extintor</option>
+                                <option value="Mangueira">Mangueira</option>
+                                <option value="Hidrante">Hidrante</option>
+                                <option value="Sinalização">Sinalização</option>
+                                <option value="Alarme">Alarme</option>
+                                <option value="Outros">Outros</option>
+                            </select>
+                        </div>
+
+                        <div class="field-group">
+                            <label><i class="fas fa-barcode"></i> Código/TAG *</label>
+                            <input type="text" id="cad-codigo" required placeholder="AK - ">
+                        </div>
+
+                        <div id="mangueira-config" class="field-group" style="display: none; background: #f5f5f5; padding: 15px; border-radius: 10px;">
+                            <label style="margin-top: 0;"><i class="fas fa-fire-hose"></i> Configurações de Mangueira</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div>
+                                    <label style="font-size: 0.85rem;">Chave Storz</label>
                                     <select id="cad-chave-storz">
                                         <option value="">-- Selecione --</option>
                                         <option value="sim">Sim</option>
                                         <option value="nao">Não</option>
                                     </select>
+                                </div>
+                                <div>
+                                    <label style="font-size: 0.85rem;">Adaptador Storz</label>
                                     <select id="cad-adaptador-storz">
                                         <option value="">-- Selecione --</option>
                                         <option value="sim">Sim</option>
                                         <option value="nao">Não</option>
                                     </select>
                                 </div>
-                                <div class="field-group">
-                                    <label><i class="fas fa-align-left"></i> Descrição *</label>
-                                    <input type="text" id="cad-descricao" placeholder="Breve descrição" required>
-                                </div>
-                                <div class="field-group">
-                                    <label><i class="fas fa-map-marker-alt"></i> Área *</label>
-                                    <input type="text" id="cad-area" list="lista-areas" placeholder="Ex: Setor A" required>
-                                    <datalist id="lista-areas"></datalist>
-                                </div>
-                                <div class="field-group">
-                                    <label><i class="fas fa-location-dot"></i> Local Específico *</label>
-                                    <input type="text" id="cad-local" placeholder="Ex: Corredor principal" required>
-                                </div>
-                                <fieldset id="datas-fieldset">
-                                    <legend>Datas de Controle</legend>
-                                    <div class="field-group">
-                                        <label><i class="fas fa-calendar-check"></i> Última Inspeção</label>
-                                        <input type="date" id="cad-ultima">
-                                    </div>
-                                    <div class="field-group">
-                                        <label><i class="fas fa-calendar-alt"></i> Próxima Validade/Inspeção *</label>
-                                        <input type="date" id="cad-validade" onchange="validarDatas()">
-                                        <small id="data-erro" style="color: var(--danger); display: none;">A validade deve ser posterior à última inspeção</small>
-                                    </div>
-                                </fieldset>
-                                <div class="field-group">
-                                    <label><i class="fas fa-pencil-alt"></i> Observações</label>
-                                    <textarea id="cad-obs" rows="2"></textarea>
-                                </div>
-                                <button type="button" id="btn-salvar" class="btn-save" onclick="salvarEquipamento()"><i class="fas fa-save"></i> SALVAR EQUIPAMENTO</button>
-                                <button type="button" id="btn-cancelar-edicao" class="btn-save" style="background: #607d8b; display: none; margin-top: 10px;" onclick="cancelarEdicao()"><i class="fas fa-times"></i> CANCELAR EDIÇÃO</button>
-                            </form>
-                        </div>
-                        <div class="equipamentos-recentes">
-                            <h4><i class="fas fa-history"></i> <span id="recentes-count">Equipamentos Cadastrados (0)</span></h4>
-                            <div id="lista-recentes">
-                                Nenhum equipamento cadastrado ainda
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Aba Busca -->
-            <div id="busca" class="tab-content">
-                <div class="card">
-                    <h2 class="section-title"><i class="fas fa-search"></i> Busca Avançada de Equipamentos</h2>
-                    <div class="search-filters">
-                        <div class="filter-chip active" onclick="filtrarBusca('all', this)">Todos</div>
-                        <div class="filter-chip" onclick="filtrarBusca('ok', this)">Válidos</div>
-                        <div class="filter-chip" onclick="filtrarBusca('warn', this)">Atenção</div>
-                        <div class="filter-chip" onclick="filtrarBusca('expired', this)">Vencidos</div>
-                        <div class="filter-chip" onclick="filtrarBusca('nodata', this)">Sem Data</div>
-                    </div>
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="busca-input" placeholder="Buscar por código, descrição, área..." onkeyup="filtrarBusca()">
-                    </div>
-                    <div id="busca-resultados" class="item-list">
-                        Digite acima para buscar equipamentos
-                    </div>
-                    <div id="busca-contador" class="info-box" style="margin-top: 10px;">0 resultado(s) encontrado(s)</div>
-                </div>
-            </div>
-
-            <!-- Aba Equipamentos (lista completa) -->
-            <div id="equipamentos" class="tab-content">
-                <div class="card">
-                    <h2 class="section-title"><i class="fas fa-list"></i> Lista Completa de Equipamentos</h2>
-                    <div class="sub-tabs">
-                        <button class="sub-tab active" id="subtab-com-data" onclick="mudarSubAbaLista('com-data')">Com Validade</button>
-                        <button class="sub-tab" id="subtab-sem-data" onclick="mudarSubAbaLista('sem-data')">Sem Validade</button>
-                    </div>
-                    <div id="lista-com-data">
-                        <div id="lista-equipamentos" class="item-list">
-                            Clique nos cards para detalhes
+                        <div class="field-group">
+                            <label><i class="fas fa-align-left"></i> Descrição *</label>
+                            <input type="text" id="cad-descricao" required placeholder="Descreva o equipamento...">
                         </div>
-                        <div id="contador-com-data" class="info-box" style="margin-top: 10px;"></div>
-                    </div>
-                    <div id="lista-sem-data" class="d-none">
-                        <div id="lista-equipamentos-sem-data" class="item-list">
-                            Itens sem controle de validade
+
+                        <div class="field-group">
+                            <label><i class="fas fa-map-marker-alt"></i> Área *</label>
+                            <input type="text" id="cad-area" list="lista-areas" required placeholder="Ex: Prédio A, Térreo...">
+                            <datalist id="lista-areas"></datalist>
                         </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Aba Organização por Área -->
-            <div id="organizacao" class="tab-content">
-                <div class="card">
-                    <h2 class="section-title"><i class="fas fa-layer-group"></i> Organização por Áreas</h2>
-                    <p class="info-box"><i class="fas fa-info-circle"></i> Clique no cabeçalho de cada área para expandir/recolher.</p>
-                    <div id="areas-container"></div>
-                </div>
-            </div>
+                        <div class="field-group">
+                            <label><i class="fas fa-location-arrow"></i> Local Específico *</label>
+                            <input type="text" id="cad-local" required placeholder="Ex: Corredor principal, Sala 101...">
+                        </div>
 
-            <!-- Aba Exportar Filtrado (Pydroid) -->
-            <div id="exportar-filtrado" class="tab-content">
-                <div class="card">
-                    <h2 class="section-title"><i class="fas fa-file-pdf"></i> Exportação Filtrada <span class="pydroid-badge"><i class="fas fa-android"></i> Pydroid 3</span></h2>
-                    <div class="info-box">
-                        <i class="fas fa-lightbulb"></i> Selecione os filtros e clique em "Gerar Script Python". O código gerado pode ser executado no Pydroid 3 para criar o PDF diretamente no seu Android.
-                    </div>
-                    <div class="export-filters">
-                        <div class="export-filter-group">
-                            <h4><i class="fas fa-check-circle"></i> Status de Validade</h4>
-                            <div class="filter-options">
-                                <label class="filter-option"><input type="checkbox" id="filtro-status-ok" checked> Em Conformidade</label>
-                                <label class="filter-option"><input type="checkbox" id="filtro-status-warn" checked> Atenção (30 dias)</label>
-                                <label class="filter-option"><input type="checkbox" id="filtro-status-expired" checked> Vencidos</label>
-                                <label class="filter-option"><input type="checkbox" id="filtro-status-nodata" checked> Sem Validade</label>
+                        <fieldset id="datas-fieldset" style="border: none; padding: 0; margin: 0;">
+                            <legend style="font-weight: 600; margin-bottom: 15px; color: var(--text-main);"><i class="fas fa-calendar-check"></i> Datas de Controle</legend>
+                            <div class="field-group">
+                                <label><i class="fas fa-history"></i> Última Inspeção</label>
+                                <input type="date" id="cad-ultima">
                             </div>
-                        </div>
-                        <div class="export-filter-group">
-                            <h4><i class="fas fa-cube"></i> Tipo de Equipamento</h4>
-                            <div class="filter-options">
-                                <label class="filter-option"><input type="checkbox" id="filtro-tipo-mangueira" checked> Mangueira</label>
-                                <label class="filter-option"><input type="checkbox" id="filtro-tipo-extintor" checked> Extintor</label>
-                                <label class="filter-option"><input type="checkbox" id="filtro-tipo-hidrante" checked> Hidrante</label>
-                                <label class="filter-option"><input type="checkbox" id="filtro-tipo-outros" checked> Outros</label>
+                            <div class="field-group">
+                                <label><i class="fas fa-calendar-times"></i> Próxima Validade/Inspeção *</label>
+                                <input type="date" id="cad-validade" required onchange="validarDatas()">
+                                <small id="data-erro" style="color: var(--danger); display: none;"><i class="fas fa-exclamation-circle"></i> A validade deve ser posterior à última inspeção</small>
                             </div>
+                        </fieldset>
+
+                        <div class="field-group">
+                            <label><i class="fas fa-sticky-note"></i> Observações</label>
+                            <textarea id="cad-obs" rows="3" placeholder="Observações adicionais..."></textarea>
                         </div>
-                        <div class="export-filter-group">
-                            <h4><i class="fas fa-fire-extinguisher"></i> Especificações de Mangueira</h4>
-                            <div class="filter-options">
-                                <label class="filter-option"><input type="checkbox" id="filtro-mangueira-chave-storz" checked> Com Chave Storz</label>
-                                <label class="filter-option"><input type="checkbox" id="filtro-mangueira-sem-chave-storz" checked> Sem Chave Storz</label>
-                                <label class="filter-option"><input type="checkbox" id="filtro-mangueira-adaptador-storz" checked> Com Adaptador Storz</label>
-                                <label class="filter-option"><input type="checkbox" id="filtro-mangueira-sem-adaptador-storz" checked> Sem Adaptador Storz</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="export-preview">
-                        <h4><i class="fas fa-eye"></i> Preview da Exportação</h4>
-                        <div class="export-stats">
-                            <div class="export-stat"><strong id="preview-total">0</strong><span>Total</span></div>
-                            <div class="export-stat"><strong id="preview-ok">0</strong><span>Conformes</span></div>
-                            <div class="export-stat"><strong id="preview-warn">0</strong><span>Atenção</span></div>
-                            <div class="export-stat"><strong id="preview-expired">0</strong><span>Vencidos</span></div>
-                            <div class="export-stat"><strong id="preview-mangueiras">0</strong><span>Mangueiras</span></div>
-                        </div>
-                        <div id="preview-empty" class="empty-state" style="padding: 20px;">
-                            <i class="fas fa-filter"></i>
-                            <p>Selecione filtros para visualizar</p>
-                        </div>
-                    </div>
-                    <div class="export-actions">
-                        <button class="btn-export btn-export-pdf" onclick="gerarScriptPython()">
-                            <i class="fas fa-file-code"></i> Gerar Script Python (Pydroid 3)
+
+                        <button type="submit" id="btn-salvar" class="btn-save">
+                            <i class="fas fa-save"></i> SALVAR EQUIPAMENTO
                         </button>
+                        <button type="button" id="btn-cancelar-edicao" class="btn-save" style="background: linear-gradient(135deg, #757575, #616161); margin-top: 10px; display: none;" onclick="cancelarEdicao()">
+                            <i class="fas fa-times"></i> CANCELAR EDIÇÃO
+                        </button>
+                    </form>
+
+                    <div class="equipamentos-recentes">
+                        <h4><i class="fas fa-history"></i> <span id="recentes-count">Equipamentos Cadastrados (0)</span></h4>
+                        <div id="lista-recentes">
+                            <div class="empty-state" style="padding: 40px 20px;">
+                                <i class="fas fa-box-open"></i>
+                                <p>Nenhum equipamento cadastrado ainda</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="card" id="script-python-container" style="display: none;">
+            </div>
+        </div>
+
+        <!-- BUSCA -->
+        <div id="busca" class="tab-content">
+            <div class="card">
+                <h3 class="section-title"><i class="fas fa-search"></i> Busca Avançada de Equipamentos</h3>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="busca-input" placeholder="Buscar por código, descrição, área ou local..." oninput="realizarBusca()">
+                </div>
+                <div class="search-filters">
+                    <div class="filter-chip active" onclick="setFiltroBusca('all')"><i class="fas fa-th-large"></i> Todos</div>
+                    <div class="filter-chip" onclick="setFiltroBusca('ok')"><i class="fas fa-check-circle"></i> Válidos</div>
+                    <div class="filter-chip" onclick="setFiltroBusca('warning')"><i class="fas fa-exclamation-triangle"></i> Atenção</div>
+                    <div class="filter-chip" onclick="setFiltroBusca('expired')"><i class="fas fa-times-circle"></i> Vencidos</div>
+                    <div class="filter-chip" onclick="setFiltroBusca('nodata')"><i class="fas fa-infinity"></i> Sem Data</div>
+                </div>
+                <div id="resultados-busca">
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <p>Digite acima para buscar equipamentos</p>
+                    </div>
+                </div>
+                <p id="contador-busca" class="text-center" style="color: var(--text-sub); margin-top: 15px;">0 resultado(s) encontrado(s)</p>
+            </div>
+        </div>
+
+        <!-- LISTA -->
+        <div id="lista" class="tab-content">
+            <div class="card">
+                <h3 class="section-title"><i class="fas fa-list"></i> Lista Completa de Equipamentos</h3>
+                <div class="sub-tabs">
+                    <button class="sub-tab active" id="subtab-com-data" onclick="mudarSubAbaLista('com-data')">Com Validade</button>
+                    <button class="sub-tab" id="subtab-sem-data" onclick="mudarSubAbaLista('sem-data')">Sem Validade</button>
+                </div>
+                <div id="lista-com-data" class="item-list">
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>Clique nos cards para detalhes</p>
+                    </div>
+                </div>
+                <div id="lista-sem-data" class="item-list d-none">
+                    <div class="empty-state">
+                        <i class="fas fa-box"></i>
+                        <p>Itens sem controle de validade</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ORGANIZAÇÃO -->
+        <div id="organizacao" class="tab-content">
+            <div class="card">
+                <h3 class="section-title"><i class="fas fa-sitemap"></i> Organização por Áreas</h3>
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i> Clique no cabeçalho de cada área para expandir/recolher.
+                </div>
+                <div id="areas-container">
+                    <div class="empty-state">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <p>Nenhuma área cadastrada</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXPORTAR -->
+        <div id="exportar-filtrado" class="tab-content">
+            <div class="card">
+                <h3 class="section-title"><i class="fas fa-file-export"></i> Exportação Filtrada <span class="pydroid-badge"><i class="fab fa-python"></i> Pydroid 3</span></h3>
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i>
+                    Selecione os filtros e clique em "Gerar Script Python". O código gerado pode ser executado no Pydroid 3 para criar o PDF diretamente no seu Android.
+                </div>
+                
+                <div class="export-filters">
+                    <div class="export-filter-group">
+                        <h4><i class="fas fa-check-circle"></i> Status de Validade</h4>
+                        <div class="filter-options">
+                            <label class="filter-option"><input type="checkbox" id="filtro-ok" checked onchange="atualizarPreviewExportacao()"> <label for="filtro-ok">Em Conformidade</label></label>
+                            <label class="filter-option"><input type="checkbox" id="filtro-warning" checked onchange="atualizarPreviewExportacao()"> <label for="filtro-warning">Atenção (30 dias)</label></label>
+                            <label class="filter-option"><input type="checkbox" id="filtro-expired" checked onchange="atualizarPreviewExportacao()"> <label for="filtro-expired">Vencidos</label></label>
+                            <label class="filter-option"><input type="checkbox" id="filtro-nodata" checked onchange="atualizarPreviewExportacao()"> <label for="filtro-nodata">Sem Validade</label></label>
+                        </div>
+                    </div>
+                    <div class="export-filter-group">
+                        <h4><i class="fas fa-tools"></i> Tipo de Equipamento</h4>
+                        <div class="filter-options">
+                            <label class="filter-option"><input type="checkbox" id="filtro-mangueira" checked onchange="atualizarPreviewExportacao()"> <label for="filtro-mangueira">Mangueira</label></label>
+                            <label class="filter-option"><input type="checkbox" id="filtro-extintor" checked onchange="atualizarPreviewExportacao()"> <label for="filtro-extintor">Extintor</label></label>
+                            <label class="filter-option"><input type="checkbox" id="filtro-hidrante" checked onchange="atualizarPreviewExportacao()"> <label for="filtro-hidrante">Hidrante</label></label>
+                            <label class="filter-option"><input type="checkbox" id="filtro-outros" checked onchange="atualizarPreviewExportacao()"> <label for="filtro-outros">Outros</label></label>
+                        </div>
+                    </div>
+                    <div class="export-filter-group" id="filtros-mangueira" style="display: none;">
+                        <h4><i class="fas fa-fire-hose"></i> Especificações de Mangueira</h4>
+                        <div class="filter-options">
+                            <label class="filter-option"><input type="checkbox" id="filtro-chave-sim" checked onchange="atualizarPreviewExportacao()"> <label for="filtro-chave-sim">Com Chave Storz</label></label>
+                            <label class="filter-option"><input type="checkbox" id="filtro-chave-nao" checked onchange="atualizarPreviewExportacao()"> <label for="filtro-chave-nao">Sem Chave Storz</label></label>
+                            <label class="filter-option"><input type="checkbox" id="filtro-adaptador-sim" checked onchange="atualizarPreviewExportacao()"> <label for="filtro-adaptador-sim">Com Adaptador Storz</label></label>
+                            <label class="filter-option"><input type="checkbox" id="filtro-adaptador-nao" checked onchange="atualizarPreviewExportacao()"> <label for="filtro-adaptador-nao">Sem Adaptador Storz</label></label>
+                        </div>
+                    </div>
+                    <div class="export-filter-group">
+                        <h4><i class="fas fa-calendar"></i> Controle de Data</h4>
+                        <div class="filter-options">
+                            <label class="filter-option"><input type="checkbox" id="filtro-com-data" checked onchange="atualizarPreviewExportacao()"> <label for="filtro-com-data">Com Data de Validade</label></label>
+                            <label class="filter-option"><input type="checkbox" id="filtro-sem-data" checked onchange="atualizarPreviewExportacao()"> <label for="filtro-sem-data">Sem Data de Validade</label></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="export-preview">
+                    <h4><i class="fas fa-eye"></i> Preview da Exportação</h4>
+                    <div class="export-stats">
+                        <div class="export-stat"><strong id="preview-total">0</strong><span>Total</span></div>
+                        <div class="export-stat"><strong id="preview-ok">0</strong><span>Conformes</span></div>
+                        <div class="export-stat"><strong id="preview-warning">0</strong><span>Atenção</span></div>
+                        <div class="export-stat"><strong id="preview-expired">0</strong><span>Vencidos</span></div>
+                        <div class="export-stat"><strong id="preview-mangueiras">0</strong><span>Mangueiras</span></div>
+                    </div>
+                    <div id="preview-lista" style="max-height: 200px; overflow-y: auto;">
+                        <p class="text-center" style="color: var(--text-sub);">Selecione filtros para visualizar</p>
+                    </div>
+                </div>
+
+                <div class="export-actions">
+                    <button class="btn-export btn-export-pdf" onclick="gerarScriptPython()">
+                        <i class="fab fa-python"></i> Gerar Script Python (Pydroid 3)
+                    </button>
+                </div>
+
+                <div id="codigo-gerado-container" class="codigo-fonte-container" style="display: none; margin-top: 20px;">
                     <div class="codigo-fonte-header">
                         <h4><i class="fas fa-code"></i> Script Python — Execute no Pydroid 3</h4>
-                        <button class="btn-copiar-codigo" onclick="copiarScriptPython()"><i class="fas fa-copy"></i> Copiar</button>
-                    </div>
-                    <textarea id="script-python-output" class="codigo-fonte-textarea" readonly></textarea>
-                    <p class="info-box" style="margin-top: 10px;"><i class="fas fa-android"></i> Pydroid 3 — Instale a dependência: <code>pip install reportlab</code></p>
-                </div>
-            </div>
-
-            <!-- Aba Backup -->
-            <div id="backup" class="tab-content">
-                <div class="card">
-                    <h2 class="section-title"><i class="fas fa-database"></i> Backup e Restauração Local</h2>
-                    <div class="info-box">
-                        <i class="fas fa-info-circle"></i> Faça backup dos seus dados em JSON. Caso o download automático não funcione no WebView, o sistema exibirá os dados para cópia manual. Para restaurar, cole o conteúdo do backup no campo de texto abaixo.
-                    </div>
-                    <div class="backup-options">
-                        <div class="backup-card">
-                            <i class="fas fa-cloud-download-alt"></i>
-                            <h4>Criar Backup</h4>
-                            <p>Gera um arquivo JSON com todos os dados. Compatível com WebView e navegadores.</p>
-                            <button class="file-input-label" onclick="fazerBackup()"><i class="fas fa-download"></i> GERAR BACKUP</button>
-                        </div>
-                        <div class="backup-card">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <h4>Restaurar Backup</h4>
-                            <p>Selecione um arquivo JSON ou cole o conteúdo abaixo para restaurar seus dados.</p>
-                            <div class="file-input-wrapper">
-                                <input type="file" id="restore-file" accept=".json" onchange="restaurarBackupArquivo(event)">
-                                <label for="restore-file" class="file-input-label"><i class="fas fa-folder-open"></i> SELECIONAR ARQUIVO</label>
-                            </div>
-                            <div class="backup-paste-area">
-                                <textarea id="backup-paste" placeholder="Ou cole o conteúdo do backup aqui:"></textarea>
-                                <button class="btn-restaurar-paste" onclick="restaurarBackupTexto()"><i class="fas fa-paste"></i> RESTAURAR DO TEXTO COLADO</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="info-box">
-                        <i class="fas fa-info-circle"></i> <strong>Informações do Sistema</strong><br>
-                        Total de equipamentos: <span id="info-total">0</span><br>
-                        Último backup: <span id="info-ultimo-backup">Nunca</span><br>
-                        Dados salvos em: Armazenamento local do navegador
-                    </div>
-                </div>
-            </div>
-
-            <!-- Aba Relatórios (Script Python Completo) -->
-            <div id="relatorios" class="tab-content">
-                <div class="card">
-                    <h2 class="section-title"><i class="fas fa-file-pdf"></i> Exportação e Compartilhamento</h2>
-                    <div class="share-box">
-                        <h4><i class="fas fa-file-code"></i> Script Python Completo <span class="pydroid-badge"><i class="fas fa-android"></i> Pydroid 3</span></h4>
-                        <p>Gera um script Python com todos os dados cadastrados. Execute no Pydroid 3 (Android) para criar o PDF.</p>
-                        <button class="btn-export btn-export-pdf" onclick="gerarScriptPythonCompleto()">
-                            <i class="fas fa-file-code"></i> GERAR SCRIPT PYTHON COMPLETO
+                        <button class="btn-copiar-codigo" onclick="copiarCodigoGerado()">
+                            <i class="fas fa-copy"></i> Copiar
                         </button>
                     </div>
-                    <div id="script-completo-container" style="display: none; margin-top: 20px;">
-                        <div class="codigo-fonte-header">
-                            <h4><i class="fas fa-code"></i> Script Python Completo</h4>
-                            <button class="btn-copiar-codigo" onclick="copiarScriptCompleto()"><i class="fas fa-copy"></i> Copiar</button>
-                        </div>
-                        <textarea id="script-completo-output" class="codigo-fonte-textarea" readonly></textarea>
-                        <p class="info-box" style="margin-top: 10px;"><i class="fas fa-android"></i> Pydroid 3: <code>pip install reportlab</code></p>
+                    <textarea id="codigo-gerado" class="codigo-fonte-textarea" readonly></textarea>
+                    <div class="info-box" style="margin-top: 15px; margin-bottom: 0;">
+                        <i class="fas fa-terminal"></i> Pydroid 3: <code>pip install reportlab</code>
                     </div>
+                </div>
+            </div>
+        </div>
 
-                    <!-- Compartilhar Link -->
-                    <div class="senha-link-box">
-                        <h4><i class="fas fa-share-alt"></i> Compartilhar Acesso (Somente Leitura)</h4>
-                        <p>Gere um link para visualização somente leitura protegido por senha.<br>O destinatário NÃO precisará da senha de administrador — apenas da senha definida para o link.</p>
-                        <div class="field-group">
-                            <label>Validade do link</label>
-                            <select id="link-validade">
-                                <option value="15">15 Minutos</option>
-                                <option value="60">1 Hora</option>
-                                <option value="1440">24 Horas</option>
-                                <option value="10080">7 Dias</option>
-                            </select>
+        <!-- BACKUP -->
+        <div id="backup" class="tab-content">
+            <div class="card">
+                <h3 class="section-title"><i class="fas fa-database"></i> Backup e Restauração Local</h3>
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i>
+                    Faça backup dos seus dados em JSON. Caso o download automático não funcione no WebView, o sistema exibirá os dados para cópia manual. Para restaurar, cole o conteúdo do backup no campo de texto abaixo.
+                </div>
+
+                <div class="backup-options">
+                    <div class="backup-card">
+                        <i class="fas fa-download"></i>
+                        <h4>Criar Backup</h4>
+                        <p>Gera um arquivo JSON com todos os dados. Compatível com WebView e navegadores.</p>
+                        <button class="btn-save" onclick="criarBackup()" style="margin-top: 0;">
+                            <i class="fas fa-download"></i> GERAR BACKUP
+                        </button>
+                    </div>
+                    <div class="backup-card">
+                        <i class="fas fa-upload"></i>
+                        <h4>Restaurar Backup</h4>
+                        <p>Selecione um arquivo JSON ou cole o conteúdo abaixo para restaurar seus dados.</p>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="arquivo-backup" accept=".json" onchange="restaurarBackupArquivo(this)">
+                            <label for="arquivo-backup" class="file-input-label">
+                                <i class="fas fa-folder-open"></i> SELECIONAR ARQUIVO
+                            </label>
                         </div>
-                        <div class="field-group senha-box">
-                            <label>Senha de Acesso do Link *</label>
-                            <input type="password" id="share-senha" placeholder="Senha para o destinatário">
-                            <i class="fas fa-eye toggle-senha" onclick="toggleSenhaShare()"></i>
-                        </div>
-                        <button class="btn-save" onclick="gerarLinkCompartilhado()"><i class="fas fa-link"></i> GERAR LINK PROTEGIDO</button>
-                        <div id="link-gerado" style="display: none; margin-top: 20px; background: white; padding: 15px; border-radius: 8px;">
-                            <p><strong><i class="fas fa-check-circle" style="color: green;"></i> Link gerado com sucesso:</strong></p>
-                            <div style="background: #f0f0f0; padding: 10px; word-break: break-all; border-radius: 5px;" id="link-url"></div>
-                            <p><strong>Senha do link:</strong> <span id="link-senha"></span></p>
-                            <button class="btn-save" onclick="copiarLink()"><i class="fas fa-copy"></i> COPIAR LINK E SENHA</button>
+                        <div class="backup-paste-area">
+                            <p style="margin: 10px 0; font-size: 0.9rem; color: var(--text-sub);">Ou cole o conteúdo do backup aqui:</p>
+                            <textarea id="backup-paste" placeholder="Cole o conteúdo JSON aqui..."></textarea>
+                            <button class="btn-restaurar-paste" onclick="restaurarBackupTexto()">
+                                <i class="fas fa-undo"></i> RESTAURAR DO TEXTO COLADO
+                            </button>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Histórico de Acessos -->
-                    <div class="access-log">
-                        <h4><i class="fas fa-history"></i> Histórico de Acessos</h4>
-                        <div id="log-container">
-                            Nenhum acesso registrado.
-                        </div>
+                <div class="card" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef);">
+                    <h4 style="margin-top: 0;"><i class="fas fa-info-circle"></i> Informações do Sistema</h4>
+                    <p><i class="fas fa-database"></i> Total de equipamentos: <strong id="info-total">0</strong></p>
+                    <p><i class="fas fa-clock"></i> Último backup: <strong id="info-ultimo-backup">Nunca</strong></p>
+                    <p><i class="fas fa-hdd"></i> Dados salvos em: <strong>Armazenamento local do navegador</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RELATÓRIOS -->
+        <div id="relatorios" class="tab-content">
+            <div class="card">
+                <h3 class="section-title"><i class="fas fa-share-alt"></i> Exportação e Compartilhamento</h3>
+                
+                <div class="info-box" style="background: linear-gradient(135deg, #fff3e0, #ffe0b2); border-left-color: #fb8c00;">
+                    <i class="fas fa-code"></i>
+                    <strong>Script Python Completo</strong> <span class="pydroid-badge"><i class="fab fa-python"></i> Pydroid 3</span>
+                    <p style="margin: 10px 0 0 0; font-size: 0.9rem;">
+                        Gera um script Python com todos os dados cadastrados. Execute no Pydroid 3 (Android) para criar o PDF.
+                    </p>
+                </div>
+
+                <button class="btn-save" onclick="gerarScriptPythonCompleto()" style="margin-bottom: 20px;">
+                    <i class="fab fa-python"></i> GERAR SCRIPT PYTHON COMPLETO
+                </button>
+
+                <div id="codigo-completo-container" class="codigo-fonte-container" style="display: none;">
+                    <div class="codigo-fonte-header">
+                        <h4><i class="fas fa-code"></i> Script Python Completo</h4>
+                        <button class="btn-copiar-codigo" onclick="copiarCodigoCompleto()">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+                    <textarea id="codigo-completo" class="codigo-fonte-textarea" readonly></textarea>
+                    <div class="info-box" style="margin-top: 15px; margin-bottom: 0;">
+                        <i class="fas fa-terminal"></i> Pydroid 3: <code>pip install reportlab</code>
+                    </div>
+                </div>
+
+                <hr style="border: none; border-top: 2px solid #e0e0e0; margin: 30px 0;">
+
+                <h4 style="color: var(--primary); margin-bottom: 15px;"><i class="fas fa-link"></i> Compartilhar Acesso (Somente Leitura)</h4>
+                <p style="color: var(--text-sub); margin-bottom: 20px; font-size: 0.95rem;">
+                    Gere um link para visualização somente leitura protegido por senha.
+                    O destinatário NÃO precisará da senha de administrador — apenas da senha definida para o link.
+                </p>
+
+                <div class="field-group">
+                    <label><i class="fas fa-clock"></i> Validade do link</label>
+                    <select id="share-validade">
+                        <option value="15">15 Minutos</option>
+                        <option value="60">1 Hora</option>
+                        <option value="1440">24 Horas</option>
+                        <option value="10080">7 Dias</option>
+                    </select>
+                </div>
+
+                <div class="field-group senha-link-box">
+                    <label><i class="fas fa-lock"></i> Senha de Acesso do Link *</label>
+                    <div class="senha-box">
+                        <input type="password" id="share-senha" placeholder="Defina uma senha para o link..." style="padding-right: 45px;">
+                        <i class="fas fa-eye toggle-senha" onclick="toggleSenhaShare()"></i>
+                    </div>
+                    <small style="color: var(--text-sub); display: block; margin-top: 5px;">
+                        <i class="fas fa-info-circle"></i> O destinatário precisará apenas desta senha para acessar o link
+                    </small>
+                </div>
+
+                <button class="btn-save" onclick="gerarLinkCompartilhado()" style="margin-top: 15px;">
+                    <i class="fas fa-link"></i> GERAR LINK PROTEGIDO
+                </button>
+
+                <div id="share-result" class="share-box" style="display: none; margin-top: 20px;">
+                    <h4 style="margin-top: 0; color: #1976d2;"><i class="fas fa-check-circle"></i> Link gerado com sucesso:</h4>
+                    <div class="field-group" style="margin-bottom: 10px;">
+                        <input type="text" id="share-link-url" readonly onclick="this.select()" style="font-family: monospace; font-size: 0.85rem;">
+                    </div>
+                    <div style="background: #fff3e0; padding: 10px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #fb8c00;">
+                        <strong><i class="fas fa-key"></i> Senha do link:</strong> <span id="share-link-senha" style="font-family: monospace; font-weight: bold; color: #e65100;"></span>
+                    </div>
+                    <button class="btn-save" onclick="copiarLinkESenha()" style="background: linear-gradient(135deg, #1976d2, #1565c0); margin-top: 0;">
+                        <i class="fas fa-copy"></i> COPIAR LINK E SENHA
+                    </button>
+                </div>
+
+                <div class="access-log">
+                    <h4><i class="fas fa-history"></i> Histórico de Acessos</h4>
+                    <div id="lista-acessos">
+                        <div class="log-item">Nenhum acesso registrado</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal de Detalhes do Equipamento -->
-    <div id="modal-detalhes" class="modal-overlay">
+    <!-- MODAL DE DETALHES -->
+    <div id="modal-detalhes" class="modal-overlay" onclick="if(event.target===this)fecharModal()">
         <div class="modal-content">
             <div class="modal-header">
                 <h3><i class="fas fa-info-circle"></i> Detalhes do Equipamento</h3>
                 <button class="modal-close" onclick="fecharModal()">&times;</button>
             </div>
-            <div id="detalhes-conteudo"></div>
+            <div id="modal-conteudo"></div>
         </div>
     </div>
 
-    <!-- Modal de Backup (cópia manual) -->
-    <div id="modal-backup" class="modal-overlay">
-        <div class="modal-content backup-modal-content">
+    <!-- MODAL DE SENHA DO LINK -->
+    <div id="modal-senha-link" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="max-width: 400px;">
             <div class="modal-header">
-                <h3 style="color: white;"><i class="fas fa-copy"></i> Copiar Dados de Backup</h3>
-                <button class="modal-close" onclick="document.getElementById('modal-backup').style.display='none'">&times;</button>
+                <h3><i class="fas fa-lock"></i> Acesso via Link</h3>
             </div>
-            <p style="color: #ccc;">O download automático não está disponível neste ambiente. Copie o texto abaixo e salve em um arquivo .json.</p>
-            <textarea id="backup-text" class="backup-modal-textarea" readonly></textarea>
-            <button class="btn-save" style="margin-top: 15px;" onclick="copiarBackup()"><i class="fas fa-copy"></i> COPIAR TUDO PARA A ÁREA DE TRANSFERÊNCIA</button>
+            <div style="text-align: center; padding: 20px 0;">
+                <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h4 style="margin: 0 0 10px 0; color: var(--text-main);">FireGuardian Pro</h4>
+                <p style="color: var(--text-sub); margin-bottom: 20px;">Este link está protegido por senha. Digite a senha fornecida pelo administrador:</p>
+                <div class="field-group" style="text-align: left;">
+                    <input type="password" id="acesso-senha-link" placeholder="Senha do link..." style="text-align: center; font-size: 1.1rem;" onkeypress="if(event.key==='Enter')verificarSenhaLink()">
+                </div>
+                <button class="btn-save" onclick="verificarSenhaLink()" style="margin-top: 10px;">
+                    <i class="fas fa-unlock"></i> ACESSAR
+                </button>
+                <div id="senha-erro" style="color: var(--danger); margin-top: 15px; display: none; font-weight: 600;">
+                    <i class="fas fa-times-circle"></i> Senha incorreta!
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Toast -->
+    <!-- MODAL DE BACKUP MANUAL -->
+    <div id="modal-backup" class="modal-overlay" style="display: none;" onclick="if(event.target===this)fecharModalBackup()">
+        <div class="modal-content backup-modal-content" style="max-width: 600px; width: 95%;">
+            <div class="modal-header" style="border-bottom-color: #444;">
+                <h3 style="color: #fff;"><i class="fas fa-copy"></i> Copiar Dados de Backup</h3>
+                <button class="modal-close" style="background: #333; color: #fff;" onclick="fecharModalBackup()">&times;</button>
+            </div>
+            <div style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem;">
+                <i class="fas fa-info-circle"></i> O download automático não está disponível neste ambiente. Copie o texto abaixo e salve em um arquivo .json.
+            </div>
+            <textarea id="backup-manual-texto" class="backup-modal-textarea" readonly></textarea>
+            <button class="btn-copiar-codigo" onclick="copiarBackupManual()" style="width: 100%; margin-top: 15px; justify-content: center;">
+                <i class="fas fa-copy"></i> COPIAR TUDO PARA A ÁREA DE TRANSFERÊNCIA
+            </button>
+        </div>
+    </div>
+
+    <!-- TOAST -->
     <div id="toast" class="toast"></div>
 
     <script>
@@ -906,7 +1060,7 @@
         let linkSenhaTemp = null;
 
         // ====================================================
-        // INICIALIZAÇÃO
+        // INICIALIZAÇÃO — VERIFICA LINK ANTES DO LOGIN
         // ====================================================
         document.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
@@ -922,18 +1076,19 @@
                 }, 300);
             }
 
-            // Inicializa gráfico e dados
-            inicializarGrafico();
+            atualizarUI();
             inicializarDatasDefault();
+            inicializarGrafico();
             configurarCampoCodigo();
             verificarTipoMangueira();
-            atualizarUI();
+            atualizarInfoBackup();
+            atualizarLogAcessos();
 
             document.getElementById('form-equipamento').addEventListener('input', () => { formModificado = true; });
         });
 
         // ====================================================
-        // FUNÇÕES DE LOGIN E COMPARTILHAMENTO
+        // VERIFICAÇÃO DE TOKEN (ACESSO VIA LINK)
         // ====================================================
         function verificarTokenCompartilhado(token) {
             try {
@@ -964,11 +1119,6 @@
             }
         }
 
-        function mostrarErroAcesso(titulo, mensagem) {
-            alert(titulo + ': ' + mensagem);
-            window.location.href = window.location.pathname; // remove token
-        }
-
         function verificarSenhaLink() {
             const senhaInput = document.getElementById('acesso-senha-link').value;
             const erroDiv = document.getElementById('senha-erro');
@@ -986,6 +1136,9 @@
             }
         }
 
+        // ====================================================
+        // LOGIN ADMINISTRADOR
+        // ====================================================
         function fazerLogin() {
             const senhaInput = document.getElementById('login-senha').value;
             const erroDiv = document.getElementById('login-erro');
@@ -1031,7 +1184,7 @@
         function ativarModoSomenteLeitura() {
             isReadOnly = true;
             document.getElementById('readonly-banner').style.display = 'block';
-            ['btn-relatorios', 'btn-exportar-filtrado', 'btn-backup'].forEach(id => {
+            ['btn-relatorios','btn-exportar-filtrado','btn-backup'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.style.display = 'none';
             });
@@ -1045,40 +1198,7 @@
         }
 
         // ====================================================
-        // UTILITÁRIOS
-        // ====================================================
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 3000);
-        }
-
-        function registrarLog(acao, detalhe) {
-            const log = { data: new Date().toLocaleString(), acao, detalhe };
-            accessLog.unshift(log);
-            if (accessLog.length > 50) accessLog.pop();
-            localStorage.setItem('fire_access_log', JSON.stringify(accessLog));
-            atualizarLogAcessos();
-        }
-
-        function atualizarLogAcessos() {
-            const container = document.getElementById('log-container');
-            if (accessLog.length === 0) {
-                container.innerHTML = 'Nenhum acesso registrado.';
-                return;
-            }
-            container.innerHTML = accessLog.map(l => `
-                <div class="log-item ${l.detalhe.includes('correta') ? 'success' : l.detalhe.includes('incorreta') ? 'error' : ''}">
-                    <i class="fas fa-clock"></i> ${l.data}<br>
-                    <strong>${l.acao}</strong><br>
-                    <small>${l.detalhe}</small>
-                </div>
-            `).join('');
-        }
-
-        // ====================================================
-        // INICIALIZAÇÃO DE CAMPOS
+        // INICIALIZAÇÃO DE DATAS E CAMPOS
         // ====================================================
         function inicializarDatasDefault() {
             const hoje = new Date().toISOString().split('T')[0];
@@ -1094,44 +1214,49 @@
             if (!campo.value.startsWith(prefixo)) campo.value = prefixo;
             campo.addEventListener('input', function() {
                 if (!this.value.startsWith(prefixo)) this.value = prefixo + this.value.replace(prefixo, '');
+                if (this.value.length < prefixo.length) this.value = prefixo;
+            });
+            campo.addEventListener('focus', function() {
+                if (this.value === prefixo) {
+                    setTimeout(() => {
+                        this.setSelectionRange(prefixo.length, prefixo.length);
+                    }, 0);
+                }
             });
         }
 
         function verificarTipoMangueira() {
             const tipo = document.getElementById('cad-tipo').value;
             const configDiv = document.getElementById('mangueira-config');
-            configDiv.style.display = (tipo === 'Mangueira') ? 'block' : 'none';
-        }
-
-        document.getElementById('cad-tipo').addEventListener('change', verificarTipoMangueira);
-
-        function validarDatas() {
-            const ultima = document.getElementById('cad-ultima').value;
-            const validade = document.getElementById('cad-validade').value;
-            const erro = document.getElementById('data-erro');
-            if (ultima && validade && new Date(validade) < new Date(ultima)) {
-                erro.style.display = 'block';
-                return false;
+            if (tipo === 'Mangueira') {
+                configDiv.style.display = 'block';
             } else {
-                erro.style.display = 'none';
-                return true;
+                configDiv.style.display = 'none';
+                document.getElementById('cad-chave-storz').value = '';
+                document.getElementById('cad-adaptador-storz').value = '';
             }
         }
 
         // ====================================================
-        // NAVEGAÇÃO
+        // NAVEGAÇÃO E ABAS
         // ====================================================
         function navegar(tabId) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b => (b.getAttribute('onclick') || '').includes(tabId));
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) targetTab.classList.add('active');
+            
+            const btn = document.getElementById('nav-' + tabId);
             if (btn) btn.classList.add('active');
+            
             if (tabId === 'organizacao') renderizarOrganizacao();
             if (tabId === 'cadastro') atualizarListaRecentes();
             if (tabId === 'dashboard') atualizarGrafico();
-            if (tabId === 'exportar-filtrado') atualizarPreviewExportacao();
+            if (tabId === 'exportar-filtrado') { atualizarPreviewExportacao(); verificarFiltrosMangueira(); }
             if (tabId === 'backup') atualizarInfoBackup();
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function mudarSubAbaLista(tipo) {
@@ -1156,29 +1281,34 @@
             document.getElementById('cad-validade').required = comData;
         }
 
+        function validarDatas() {
+            const ultima = document.getElementById('cad-ultima').value;
+            const validade = document.getElementById('cad-validade').value;
+            const erro = document.getElementById('data-erro');
+            const btn = document.getElementById('btn-salvar');
+            
+            if (ultima && validade && new Date(validade) <= new Date(ultima)) {
+                erro.style.display = 'block';
+                btn.disabled = true;
+            } else {
+                erro.style.display = 'none';
+                btn.disabled = false;
+            }
+        }
+
         // ====================================================
-        // CRUD DE EQUIPAMENTOS
+        // CRUD EQUIPAMENTOS
         // ====================================================
         function salvarEquipamento(e) {
-            e = e || window.event;
-            if (isReadOnly) {
-                showToast('❌ Modo somente leitura — não é possível salvar.');
-                return;
-            }
-            if (!validarDatas()) return;
-
-            const form = document.getElementById('form-equipamento');
-            if (!form.checkValidity()) {
-                form.reportValidity();
-                return;
-            }
+            e.preventDefault();
+            if (isReadOnly) return;
 
             const btnSalvar = document.getElementById('btn-salvar');
+            const editId = document.getElementById('edit-id').value;
+
             btnSalvar.disabled = true;
             btnSalvar.classList.add('loading');
-            btnSalvar.innerHTML = ' SALVANDO...';
-
-            const editId = document.getElementById('edit-id').value;
+            btnSalvar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SALVANDO...';
 
             setTimeout(() => {
                 const itemData = {
@@ -1196,14 +1326,17 @@
 
                 if (editId) {
                     const index = db.findIndex(i => i.id == editId);
-                    if (index !== -1) { db[index] = { ...db[index], ...itemData }; showToast('✅ Equipamento atualizado!'); }
+                    if (index !== -1) { 
+                        db[index] = { ...db[index], ...itemData }; 
+                        showToast('✅ Equipamento atualizado!'); 
+                    }
                 } else {
                     db.push({ id: Date.now(), ...itemData });
                     showToast('✅ Equipamento cadastrado!');
                 }
 
                 localStorage.setItem('fire_db', JSON.stringify(db));
-                form.reset();
+                e.target.reset();
                 document.getElementById('edit-id').value = '';
                 document.getElementById('cadastro-titulo').textContent = 'Novo Cadastro';
                 document.getElementById('btn-cancelar-edicao').style.display = 'none';
@@ -1212,7 +1345,7 @@
                 document.getElementById('cad-codigo').value = 'AK - ';
                 btnSalvar.disabled = false;
                 btnSalvar.classList.remove('loading');
-                btnSalvar.innerHTML = ' SALVAR EQUIPAMENTO';
+                btnSalvar.innerHTML = '<i class="fas fa-save"></i> SALVAR EQUIPAMENTO';
                 atualizarUI();
                 atualizarListaRecentes();
                 verificarTipoMangueira();
@@ -1223,6 +1356,7 @@
             if (isReadOnly) return;
             const item = db.find(i => i.id === id);
             if (!item) return;
+            
             document.getElementById('edit-id').value = item.id;
             document.getElementById('cad-tipo').value = item.tipo;
             document.getElementById('cad-codigo').value = item.codigo;
@@ -1230,11 +1364,13 @@
             document.getElementById('cad-area').value = item.area;
             document.getElementById('cad-local').value = item.local;
             document.getElementById('cad-obs').value = item.obs || '';
+            
             setCadastroMode(!!item.validade);
             if (item.validade) {
                 document.getElementById('cad-ultima').value = item.ultima || '';
                 document.getElementById('cad-validade').value = item.validade;
             }
+            
             document.getElementById('cad-chave-storz').value = item.chaveStorz || '';
             document.getElementById('cad-adaptador-storz').value = item.adaptadorStorz || '';
             document.getElementById('cadastro-titulo').textContent = '✏️ Editar Cadastro';
@@ -1263,69 +1399,107 @@
             if (isReadOnly) return;
             const item = db.find(i => i.id === id);
             if (!item) return;
+            
             if (confirm('⚠️ Deseja realmente excluir o item:\n\n' + item.codigo + ' - ' + item.tipo + '\n' + item.descricao + '\n\nEsta ação não pode ser desfeita!')) {
                 db = db.filter(i => i.id !== id);
                 localStorage.setItem('fire_db', JSON.stringify(db));
-                atualizarUI(); atualizarListaRecentes(); fecharModal();
+                atualizarUI(); 
+                atualizarListaRecentes(); 
+                fecharModal();
                 showToast('🗑️ Item excluído com sucesso');
             }
-        }
-
-        function verDetalhes(id) {
-            const item = db.find(i => i.id === id);
-            if (!item) return;
-            const status = getStatus(item.validade);
-            const content = document.getElementById('detalhes-conteudo');
-            content.innerHTML = `
-                <p><strong>Código:</strong> ${item.codigo}</p>
-                <p><strong>Tipo:</strong> ${item.tipo}</p>
-                <p><strong>Descrição:</strong> ${item.descricao}</p>
-                <p><strong>Área:</strong> ${item.area}</p>
-                <p><strong>Local:</strong> ${item.local}</p>
-                <p><strong>Status:</strong> <span style="color:${status.cor};">${status.text}</span></p>
-                ${item.validade ? `<p><strong>Validade:</strong> ${item.validade}</p>` : ''}
-                ${item.ultima ? `<p><strong>Última Inspeção:</strong> ${item.ultima}</p>` : ''}
-                ${item.chaveStorz ? `<p><strong>Chave Storz:</strong> ${item.chaveStorz}</p>` : ''}
-                ${item.adaptadorStorz ? `<p><strong>Adaptador Storz:</strong> ${item.adaptadorStorz}</p>` : ''}
-                <p><strong>Observações:</strong> ${item.obs || 'Nenhuma'}</p>
-            `;
-            document.getElementById('modal-detalhes').style.display = 'flex';
-        }
-
-        function fecharModal() {
-            document.getElementById('modal-detalhes').style.display = 'none';
         }
 
         // ====================================================
         // STATUS
         // ====================================================
         function getStatus(validade) {
-            if (!validade) return { class: 'nodata', text: 'Sem validade', days: null, priority: 3, cor: '#78909c' };
-            const hoje = new Date(); hoje.setHours(0,0,0,0);
-            const venc = new Date(validade); venc.setHours(0,0,0,0);
+            if (!validade) return { class: 'nodata', text: 'Sem validade', days: null, priority: 3, icon: 'fa-box' };
+            
+            const hoje = new Date(); 
+            hoje.setHours(0,0,0,0);
+            const venc = new Date(validade); 
+            venc.setHours(0,0,0,0);
             const diffDays = Math.ceil((venc - hoje) / (1000 * 60 * 60 * 24));
-            if (diffDays < 0) return { class: 'expired', text: 'Vencido', days: diffDays, priority: 0, cor: '#c62828' };
-            if (diffDays <= 30) return { class: 'warning', text: 'Atenção', days: diffDays, priority: 1, cor: '#ff9800' };
-            return { class: 'ok', text: 'OK', days: diffDays, priority: 2, cor: '#2e7d32' };
+            
+            if (diffDays < 0) return { class: 'expired', text: 'Vencido', days: diffDays, priority: 1, icon: 'fa-times-circle' };
+            if (diffDays <= 30) return { class: 'warning', text: 'Atenção', days: diffDays, priority: 2, icon: 'fa-exclamation-triangle' };
+            return { class: 'ok', text: 'Conforme', days: diffDays, priority: 4, icon: 'fa-check-circle' };
         }
 
         // ====================================================
-        // ATUALIZAÇÃO DA UI
+        // UI UPDATES
         // ====================================================
         function atualizarUI() {
+            renderizarLista();
             atualizarDashboard();
-            atualizarListas();
-            atualizarDatalistAreas();
             atualizarModelos();
-            atualizarPreviewExportacao();
-            atualizarInfoBackup();
+            atualizarDatalistAreas();
+        }
+
+        function renderizarLista() {
+            const listData = document.getElementById('lista-com-data');
+            const listNoData = document.getElementById('lista-sem-data');
+            if (!listData || !listNoData) return;
+
+            const comData = [], semData = [];
+            db.forEach(item => {
+                if (item.validade) comData.push({ item, status: getStatus(item.validade) });
+                else semData.push(item);
+            });
+            
+            comData.sort((a, b) => a.status.priority - b.status.priority);
+            
+            listData.innerHTML = comData.length === 0
+                ? '<div class="empty-state"><i class="fas fa-clipboard-check"></i><p>Nenhum equipamento com controle de validade</p></div>'
+                : comData.map(({ item, status }) => criarCardItem(item, status)).join('');
+                
+            listNoData.innerHTML = semData.length === 0
+                ? '<div class="empty-state"><i class="fas fa-box"></i><p>Nenhum item sem validade cadastrado</p></div>'
+                : semData.map(item => criarCardItem(item, getStatus(null))).join('');
+                
+            document.getElementById('contador-com-data').innerText = '📊 ' + comData.length + ' item(ns) com controle de validade';
+        }
+
+        function criarCardItem(item, status) {
+            const btnEdit = isReadOnly ? '' : `<button class="btn-icon btn-edit" onclick="event.stopPropagation(); editarItem(${item.id})"><i class="fas fa-edit"></i></button>`;
+            const btnDelete = isReadOnly ? '' : `<button class="btn-icon btn-del" onclick="event.stopPropagation(); excluirItem(${item.id})"><i class="fas fa-trash"></i></button>`;
+            
+            const badgeColor = { 'expired': '#c62828', 'warning': '#ff9800', 'ok': '#2e7d32', 'nodata': '#78909c' }[status.class];
+            
+            const validadeInfo = item.validade
+                ? `<span class="badge" style="background: ${badgeColor};"><i class="fas ${status.icon}"></i> ${status.text} (${status.days}d) | ${item.validade.split('-').reverse().join('/')}</span>`
+                : '<span class="badge" style="background: #78909c;"><i class="fas fa-infinity"></i> Sem validade</span>';
+                
+            let mangueiraIndicators = '';
+            if (item.tipo && item.tipo.toLowerCase() === 'mangueira') {
+                if (item.chaveStorz) mangueiraIndicators += `<span class="mangueira-indicator">${item.chaveStorz === 'sim' ? 'C' : 'S/C'}</span>`;
+                if (item.adaptadorStorz) mangueiraIndicators += `<span class="mangueira-indicator">${item.adaptadorStorz === 'sim' ? 'A' : 'S/A'}</span>`;
+            }
+            
+            return `
+                <div class="item-card ${status.class}" onclick="abrirModal(${item.id})">
+                    <div class="item-info">
+                        <h4>${item.codigo} - ${item.tipo} ${mangueiraIndicators}</h4>
+                        <p><i class="fas fa-align-left"></i> ${item.descricao}</p>
+                        <p><i class="fas fa-map-marker-alt"></i> ${item.area} › ${item.local}</p>
+                        ${validadeInfo}
+                    </div>
+                    <div class="actions">
+                        ${btnEdit}
+                        ${btnDelete}
+                    </div>
+                </div>
+            `;
         }
 
         function atualizarDashboard() {
             let counts = { ok: 0, warn: 0, expired: 0, nodata: 0, total: 0, mangueiras: 0 };
             const areasSet = new Set();
+            
             db.forEach(item => {
-                counts.total++; areasSet.add(item.area);
+                counts.total++; 
+                areasSet.add(item.area);
                 if (item.tipo && item.tipo.toLowerCase() === 'mangueira') counts.mangueiras++;
                 if (item.validade) {
                     const st = getStatus(item.validade);
@@ -1334,6 +1508,7 @@
                     if (st.class === 'expired') counts.expired++;
                 } else counts.nodata++;
             });
+            
             document.getElementById('dash-total').innerText = counts.total;
             document.getElementById('dash-ok').innerText = counts.ok;
             document.getElementById('dash-warn').innerText = counts.warn;
@@ -1341,31 +1516,100 @@
             document.getElementById('dash-inventory').innerText = counts.nodata;
             document.getElementById('dash-areas').innerText = areasSet.size;
             document.getElementById('dash-mangueiras').innerText = counts.mangueiras;
+
             const totalComData = counts.ok + counts.warn + counts.expired;
             if (totalComData > 0) {
                 const cp = Math.round((counts.ok / totalComData) * 100);
                 const ap = Math.round((counts.warn / totalComData) * 100);
                 const vp = Math.round((counts.expired / totalComData) * 100);
+                
                 document.getElementById('conformidade-percent').textContent = cp + '%';
                 document.getElementById('conformidade-bar').style.width = cp + '%';
                 document.getElementById('atencao-percent').textContent = ap + '%';
                 document.getElementById('atencao-bar').style.width = ap + '%';
                 document.getElementById('vencido-percent').textContent = vp + '%';
                 document.getElementById('vencido-bar').style.width = vp + '%';
-            } else {
-                document.getElementById('conformidade-percent').textContent = '0%';
-                document.getElementById('conformidade-bar').style.width = '0%';
-                document.getElementById('atencao-percent').textContent = '0%';
-                document.getElementById('atencao-bar').style.width = '0%';
-                document.getElementById('vencido-percent').textContent = '0%';
-                document.getElementById('vencido-bar').style.width = '0%';
             }
             atualizarGrafico();
         }
 
+        function atualizarModelos() {
+            const sel = document.getElementById('modelo-select');
+            sel.innerHTML = '<option value="">-- Usar modelo existente --</option>';
+            const unicos = new Set();
+            
+            db.forEach(item => {
+                const key = item.tipo + ' - ' + item.descricao;
+                if (!unicos.has(key)) {
+                    unicos.add(key);
+                    const opt = document.createElement('option');
+                    opt.value = JSON.stringify(item);
+                    opt.textContent = key;
+                    sel.appendChild(opt);
+                }
+            });
+        }
+
+        function atualizarDatalistAreas() {
+            const dl = document.getElementById('lista-areas'); 
+            dl.innerHTML = '';
+            [...new Set(db.map(i => i.area))].sort().forEach(a => {
+                const opt = document.createElement('option'); 
+                opt.value = a; 
+                dl.appendChild(opt);
+            });
+        }
+
+        function atualizarListaRecentes() {
+            const container = document.getElementById('lista-recentes');
+            const count = document.getElementById('recentes-count');
+            
+            if (db.length === 0) {
+                container.innerHTML = '<div class="empty-state" style="padding: 40px 20px;"><i class="fas fa-box-open"></i><p>Nenhum equipamento cadastrado ainda</p></div>';
+                count.textContent = 'Equipamentos Cadastrados (0)';
+                return;
+            }
+            
+            const recentes = [...db].reverse().slice(0, 10);
+            container.innerHTML = recentes.map(item => {
+                const st = getStatus(item.validade);
+                const cor = { 'expired': '#c62828', 'warning': '#ff9800', 'ok': '#2e7d32', 'nodata': '#78909c' }[st.class];
+                let mi = '';
+                if (item.tipo && item.tipo.toLowerCase() === 'mangueira') {
+                    mi = '[' + (item.chaveStorz === 'sim' ? 'C' : 'S/C') + '|' + (item.adaptadorStorz === 'sim' ? 'A' : 'S/A') + ']';
+                }
+                return `<div class="mini-item-card" onclick="abrirModal(${item.id})" style="border-left-color: ${cor};">
+                    <strong>${item.codigo}</strong> - ${item.tipo} ${mi}<br>
+                    <small>${item.area}</small>
+                </div>`;
+            }).join('');
+            
+            count.textContent = 'Equipamentos Cadastrados (' + db.length + ')';
+        }
+
+        function aplicarModelo() {
+            const sel = document.getElementById('modelo-select');
+            if (!sel.value) return;
+            
+            const item = JSON.parse(sel.value);
+            document.getElementById('cad-tipo').value = item.tipo;
+            document.getElementById('cad-descricao').value = item.descricao;
+            document.getElementById('cad-area').value = item.area;
+            document.getElementById('cad-chave-storz').value = item.chaveStorz || '';
+            document.getElementById('cad-adaptador-storz').value = item.adaptadorStorz || '';
+            setCadastroMode(!!item.validade);
+            verificarTipoMangueira();
+            formModificado = true;
+            showToast('📋 Modelo aplicado!');
+        }
+
+        // ====================================================
+        // GRÁFICO
+        // ====================================================
         function inicializarGrafico() {
             const ctx = document.getElementById('statusChart');
             if (!ctx) return;
+            
             statusChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -1373,7 +1617,8 @@
                     datasets: [{ data: [0,0,0,0], backgroundColor: ['#43a047','#fb8c00','#e53935','#78909c'], borderWidth: 0 }]
                 },
                 options: {
-                    responsive: true, maintainAspectRatio: true,
+                    responsive: true, 
+                    maintainAspectRatio: true,
                     plugins: {
                         legend: { position: 'bottom', labels: { padding: 15, font: { size: 12 } } },
                         tooltip: {
@@ -1391,149 +1636,20 @@
 
         function atualizarGrafico() {
             if (!statusChart) return;
+            
             let c = { ok:0, warn:0, expired:0, nodata:0 };
             db.forEach(item => {
-                if (item.validade) { const st = getStatus(item.validade); if(st.class==='ok')c.ok++; if(st.class==='warning')c.warn++; if(st.class==='expired')c.expired++; }
+                if (item.validade) { 
+                    const st = getStatus(item.validade); 
+                    if(st.class==='ok')c.ok++; 
+                    if(st.class==='warning')c.warn++; 
+                    if(st.class==='expired')c.expired++; 
+                }
                 else c.nodata++;
             });
+            
             statusChart.data.datasets[0].data = [c.ok, c.warn, c.expired, c.nodata];
             statusChart.update();
-        }
-
-        function atualizarListas() {
-            const comData = [], semData = [];
-            db.forEach(item => {
-                if (item.validade) comData.push({ item, status: getStatus(item.validade) });
-                else semData.push(item);
-            });
-            comData.sort((a, b) => a.status.priority - b.status.priority);
-            document.getElementById('lista-equipamentos').innerHTML = comData.length === 0
-                ? '<div class="empty-state">Nenhum equipamento com controle de validade</div>'
-                : comData.map(({ item, status }) => criarCardItem(item, status)).join('');
-            document.getElementById('lista-equipamentos-sem-data').innerHTML = semData.length === 0
-                ? '<div class="empty-state">Nenhum item sem validade cadastrado</div>'
-                : semData.map(item => criarCardItem(item, getStatus(null))).join('');
-            document.getElementById('contador-com-data').innerText = '📊 ' + comData.length + ' item(ns) com controle de validade';
-        }
-
-        function criarCardItem(item, status) {
-            const btnEdit = isReadOnly ? '' : `<button class="btn-icon btn-edit" onclick="editarItem(${item.id})" title="Editar"><i class="fas fa-edit"></i></button>`;
-            const btnDelete = isReadOnly ? '' : `<button class="btn-icon btn-del" onclick="excluirItem(${item.id})" title="Excluir"><i class="fas fa-trash"></i></button>`;
-            const validadeInfo = item.validade
-                ? `<span class="badge" style="background:${status.cor}"><i class="fas ${status.class==='ok'?'fa-check-circle':status.class==='warning'?'fa-exclamation-triangle':status.class==='expired'?'fa-clock':'fa-box'}"></i> ${status.text} ${status.days !== null ? '(' + status.days + 'd)' : ''} | ${item.validade.split('-').reverse().join('/')}</span>`
-                : `<span class="badge" style="background:#78909c"><i class="fas fa-box"></i> Sem validade</span>`;
-            let mangueiraIndicators = '';
-            if (item.tipo && item.tipo.toLowerCase() === 'mangueira') {
-                if (item.chaveStorz) mangueiraIndicators += `<span class="mangueira-indicator"><i class="fas fa-key"></i> ${item.chaveStorz === 'sim' ? 'C' : 'S/C'}</span>`;
-                if (item.adaptadorStorz) mangueiraIndicators += `<span class="mangueira-indicator"><i class="fas fa-plug"></i> ${item.adaptadorStorz === 'sim' ? 'A' : 'S/A'}</span>`;
-            }
-            return `
-                <div class="item-card ${status.class}" onclick="verDetalhes(${item.id})">
-                    <div class="item-info">
-                        <h4>${item.codigo} - ${item.tipo} ${mangueiraIndicators}</h4>
-                        <p><i class="fas fa-align-left"></i> ${item.descricao}</p>
-                        <p><i class="fas fa-map-pin"></i> ${item.area} › ${item.local}</p>
-                        ${validadeInfo}
-                    </div>
-                    <div class="actions" onclick="event.stopPropagation()">
-                        ${btnEdit}
-                        ${btnDelete}
-                    </div>
-                </div>
-            `;
-        }
-
-        function atualizarModelos() {
-            const sel = document.getElementById('modelo-select');
-            if (!sel) return;
-            sel.innerHTML = '<option value="">-- Selecione --</option>';
-            const unicos = new Set();
-            db.forEach(item => {
-                const key = item.tipo + ' - ' + item.descricao;
-                if (!unicos.has(key)) {
-                    unicos.add(key);
-                    const opt = document.createElement('option');
-                    opt.value = JSON.stringify(item);
-                    opt.textContent = key;
-                    sel.appendChild(opt);
-                }
-            });
-        }
-
-        function atualizarDatalistAreas() {
-            const dl = document.getElementById('lista-areas'); dl.innerHTML = '';
-            [...new Set(db.map(i => i.area))].sort().forEach(a => {
-                const opt = document.createElement('option'); opt.value = a; dl.appendChild(opt);
-            });
-        }
-
-        function atualizarListaRecentes() {
-            const container = document.getElementById('lista-recentes');
-            const count = document.getElementById('recentes-count');
-            if (db.length === 0) {
-                container.innerHTML = '<div class="empty-state">Nenhum equipamento cadastrado</div>';
-                count.textContent = 'Equipamentos Cadastrados (0)';
-                return;
-            }
-            const recentes = [...db].reverse().slice(0, 10);
-            container.innerHTML = recentes.map(item => {
-                const st = getStatus(item.validade);
-                const cor = st.cor;
-                let mi = '';
-                if (item.tipo && item.tipo.toLowerCase() === 'mangueira') {
-                    mi = ` [${item.chaveStorz === 'sim' ? 'C' : 'S/C'}|${item.adaptadorStorz === 'sim' ? 'A' : 'S/A'}]`;
-                }
-                return `<div class="mini-item-card" onclick="editarItem(${item.id})">
-                    <strong>${item.codigo}</strong> - ${item.tipo}${mi}<br>
-                    <small>${item.area} - ${item.local}</small>
-                    <span style="float:right; color:${cor};">${st.text}</span>
-                </div>`;
-            }).join('');
-            count.textContent = 'Equipamentos Cadastrados (' + db.length + ')';
-        }
-
-        function aplicarModelo() {
-            const sel = document.getElementById('modelo-select');
-            if (!sel || !sel.value) return;
-            const item = JSON.parse(sel.value);
-            document.getElementById('cad-tipo').value = item.tipo;
-            document.getElementById('cad-descricao').value = item.descricao;
-            document.getElementById('cad-area').value = item.area;
-            document.getElementById('cad-chave-storz').value = item.chaveStorz || '';
-            document.getElementById('cad-adaptador-storz').value = item.adaptadorStorz || '';
-            setCadastroMode(!!item.validade);
-            if (item.validade) {
-                document.getElementById('cad-ultima').value = item.ultima || '';
-                document.getElementById('cad-validade').value = item.validade;
-            }
-            verificarTipoMangueira();
-            formModificado = true;
-            showToast('📋 Modelo aplicado!');
-        }
-
-        // ====================================================
-        // BUSCA
-        // ====================================================
-        function filtrarBusca(tipo, el) {
-            if (tipo) {
-                filtroAtivoBusca = tipo;
-                document.querySelectorAll('.filter-chip').forEach(chip => chip.classList.remove('active'));
-                if (el) el.classList.add('active');
-            }
-            const termo = document.getElementById('busca-input').value.toLowerCase();
-            let resultados = db.filter(item => {
-                const status = getStatus(item.validade).class;
-                if (filtroAtivoBusca !== 'all' && status !== filtroAtivoBusca) return false;
-                return item.codigo.toLowerCase().includes(termo) ||
-                       item.descricao.toLowerCase().includes(termo) ||
-                       item.area.toLowerCase().includes(termo) ||
-                       item.local.toLowerCase().includes(termo) ||
-                       (item.tipo && item.tipo.toLowerCase().includes(termo));
-            });
-            document.getElementById('busca-resultados').innerHTML = resultados.length === 0
-                ? '<div class="empty-state">Nenhum equipamento encontrado</div>'
-                : resultados.map(item => criarCardItem(item, getStatus(item.validade))).join('');
-            document.getElementById('busca-contador').innerHTML = resultados.length + ' resultado(s) encontrado(s)';
         }
 
         // ====================================================
@@ -1542,341 +1658,802 @@
         function renderizarOrganizacao() {
             const container = document.getElementById('areas-container');
             container.innerHTML = '';
+            
             const areas = {};
             db.forEach(item => {
                 const n = item.area || 'Sem Área';
                 if (!areas[n]) areas[n] = [];
                 areas[n].push(item);
             });
+            
             if (Object.keys(areas).length === 0) {
-                container.innerHTML = '<div class="empty-state">Nenhuma área cadastrada</div>';
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-map-marked-alt"></i><p>Nenhuma área cadastrada</p></div>';
                 return;
             }
+            
             Object.keys(areas).sort().forEach(nomeArea => {
                 const itens = areas[nomeArea];
                 let sc = { ok:0, warn:0, expired:0, nodata:0 };
-                itens.forEach(item => { const st = getStatus(item.validade); sc[st.class] = (sc[st.class]||0) + 1; });
-                let itensHtml = '';
-                itens.forEach(item => {
+                itens.forEach(item => { 
+                    const st = getStatus(item.validade); 
+                    sc[st.class] = (sc[st.class]||0) + 1; 
+                });
+                
+                let itensHtml = itens.map(item => {
                     const st = getStatus(item.validade);
-                    const cor = st.cor;
+                    const cor = { 'expired':'#c62828','warning':'#ff9800','ok':'#2e7d32','nodata':'#78909c' }[st.class];
                     let mi = '';
                     if (item.tipo && item.tipo.toLowerCase() === 'mangueira') {
-                        mi = ` [${item.chaveStorz === 'sim' ? 'C' : 'S/C'}|${item.adaptadorStorz === 'sim' ? 'A' : 'S/A'}]`;
+                        mi = '<span class="mangueira-indicator">' + (item.chaveStorz==='sim'?'C':'S/C') + '|' + (item.adaptadorStorz==='sim'?'A':'S/A') + '</span>';
                     }
-                    itensHtml += `<div class="mini-item-card" onclick="verDetalhes(${item.id})">
-                        <strong>${item.codigo}</strong> - ${item.tipo}${mi}<br>
-                        <small>${item.local}</small>
-                        <span style="float:right; color:${cor};">${st.text}</span>
+                    return `<div class="mini-item-card" onclick="abrirModal(${item.id})" style="border-left: 4px solid ${cor}; margin-bottom: 8px;">
+                        <strong>${item.codigo}</strong> - ${item.tipo} ${mi}<br>
+                        <small>${item.local} | ${item.validade ? item.validade.split('-').reverse().join('/') : 'Sem validade'}</small>
                     </div>`;
-                });
-                container.innerHTML += `
-                    <div class="area-section">
-                        <div class="area-header" onclick="toggleArea(this)">
-                            <span><i class="fas fa-chevron-down"></i> ${nomeArea} (${itens.length})</span>
-                            <span>
-                                <span style="color:#2e7d32;"><i class="fas fa-check-circle"></i> ${sc.ok}</span> |
-                                <span style="color:#ff9800;"><i class="fas fa-exclamation-triangle"></i> ${sc.warn}</span> |
-                                <span style="color:#c62828;"><i class="fas fa-clock"></i> ${sc.expired}</span> |
-                                <span style="color:#78909c;"><i class="fas fa-box"></i> ${sc.nodata}</span>
-                            </span>
-                        </div>
-                        <div class="area-content open">
-                            ${itensHtml}
-                        </div>
+                }).join('');
+                
+                const section = document.createElement('div');
+                section.className = 'area-section';
+                section.innerHTML = `
+                    <div class="area-header" onclick="toggleArea(this)">
+                        <span><i class="fas fa-map-marker-alt"></i> ${nomeArea} (${itens.length} itens)</span>
+                        <span>
+                            ${sc.ok > 0 ? '<span style="color: #2e7d32; margin-right: 10px;"><i class="fas fa-check-circle"></i> ' + sc.ok + '</span>' : ''}
+                            ${sc.warning > 0 ? '<span style="color: #ff9800; margin-right: 10px;"><i class="fas fa-exclamation-triangle"></i> ' + sc.warning + '</span>' : ''}
+                            ${sc.expired > 0 ? '<span style="color: #c62828; margin-right: 10px;"><i class="fas fa-times-circle"></i> ' + sc.expired + '</span>' : ''}
+                            <i class="fas fa-chevron-down"></i>
+                        </span>
                     </div>
+                    <div class="area-content">${itensHtml}</div>
                 `;
+                container.appendChild(section);
             });
         }
 
         function toggleArea(header) {
             const content = header.nextElementSibling;
-            const icon = header.querySelector('i');
+            const icon = header.querySelector('.fa-chevron-down');
             content.classList.toggle('open');
-            icon.classList.toggle('fa-chevron-down');
-            icon.classList.toggle('fa-chevron-up');
+            icon.style.transform = content.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
         }
 
         // ====================================================
-        // EXPORTAÇÃO E SCRIPT PYTHON
+        // BUSCA
         // ====================================================
-        function atualizarPreviewExportacao() {
-            const filtros = obterFiltrosExportacao();
-            const itensFiltrados = filtrarItensExportacao(filtros);
-            const total = itensFiltrados.length;
-            let ok = 0, warn = 0, expired = 0, mangueiras = 0;
-            itensFiltrados.forEach(item => {
-                if (item.tipo && item.tipo.toLowerCase() === 'mangueira') mangueiras++;
-                const st = getStatus(item.validade).class;
-                if (st === 'ok') ok++;
-                else if (st === 'warning') warn++;
-                else if (st === 'expired') expired++;
+        function setFiltroBusca(filtro) {
+            filtroAtivoBusca = filtro;
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            realizarBusca();
+        }
+
+        function realizarBusca() {
+            const termo = document.getElementById('busca-input').value.toLowerCase();
+            const container = document.getElementById('resultados-busca');
+            const contador = document.getElementById('contador-busca');
+            
+            let filtrados = db.filter(item => {
+                const matchTermo = !termo || 
+                    item.codigo.toLowerCase().includes(termo) ||
+                    item.descricao.toLowerCase().includes(termo) ||
+                    item.area.toLowerCase().includes(termo) ||
+                    item.local.toLowerCase().includes(termo);
+                    
+                if (!matchTermo) return false;
+                
+                if (filtroAtivoBusca === 'all') return true;
+                if (filtroAtivoBusca === 'nodata') return !item.validade;
+                
+                const st = getStatus(item.validade);
+                return st.class === filtroAtivoBusca;
             });
-            document.getElementById('preview-total').innerText = total;
-            document.getElementById('preview-ok').innerText = ok;
-            document.getElementById('preview-warn').innerText = warn;
-            document.getElementById('preview-expired').innerText = expired;
-            document.getElementById('preview-mangueiras').innerText = mangueiras;
-            if (total === 0) document.getElementById('preview-empty').style.display = 'block';
-            else document.getElementById('preview-empty').style.display = 'none';
+            
+            contador.textContent = filtrados.length + ' resultado(s) encontrado(s)';
+            
+            if (filtrados.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><p>Nenhum resultado encontrado</p></div>';
+                return;
+            }
+            
+            container.innerHTML = filtrados.map(item => criarCardItem(item, getStatus(item.validade))).join('');
         }
 
-        function obterFiltrosExportacao() {
-            return {
-                status: {
-                    ok: document.getElementById('filtro-status-ok').checked,
-                    warn: document.getElementById('filtro-status-warn').checked,
-                    expired: document.getElementById('filtro-status-expired').checked,
-                    nodata: document.getElementById('filtro-status-nodata').checked
-                },
-                tipo: {
-                    mangueira: document.getElementById('filtro-tipo-mangueira').checked,
-                    extintor: document.getElementById('filtro-tipo-extintor').checked,
-                    hidrante: document.getElementById('filtro-tipo-hidrante').checked,
-                    outros: document.getElementById('filtro-tipo-outros').checked
-                },
-                mangueira: {
-                    chaveSim: document.getElementById('filtro-mangueira-chave-storz').checked,
-                    chaveNao: document.getElementById('filtro-mangueira-sem-chave-storz').checked,
-                    adaptadorSim: document.getElementById('filtro-mangueira-adaptador-storz').checked,
-                    adaptadorNao: document.getElementById('filtro-mangueira-sem-adaptador-storz').checked
+        function filtrarPorStatus(status) {
+            navegar('lista');
+            if (status === 'nodata') {
+                mudarSubAbaLista('sem-data');
+            } else {
+                mudarSubAbaLista('com-data');
+                // Aqui você pode adicionar lógica adicional para filtrar visualmente
+            }
+        }
+
+        function filtrarPorTipo(tipo) {
+            navegar('lista');
+            // Lógica de filtro por tipo pode ser implementada aqui
+        }
+
+        // ====================================================
+        // MODAL
+        // ====================================================
+        function abrirModal(id) {
+            const item = db.find(i => i.id === id);
+            if (!item) return;
+            
+            const st = getStatus(item.validade);
+            const cor = { 'expired': '#c62828', 'warning': '#ff9800', 'ok': '#2e7d32', 'nodata': '#78909c' }[st.class];
+            
+            let mangueiraInfo = '';
+            if (item.tipo === 'Mangueira') {
+                mangueiraInfo = `
+                    <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <h4 style="margin-top: 0; color: var(--primary);"><i class="fas fa-fire-hose"></i> Especificações da Mangueira</h4>
+                        <p><strong>Chave Storz:</strong> ${item.chaveStorz === 'sim' ? 'Sim' : (item.chaveStorz === 'nao' ? 'Não' : 'Não especificado')}</p>
+                        <p><strong>Adaptador Storz:</strong> ${item.adaptadorStorz === 'sim' ? 'Sim' : (item.adaptadorStorz === 'nao' ? 'Não' : 'Não especificado')}</p>
+                    </div>
+                `;
+            }
+            
+            const conteudo = `
+                <div style="margin-bottom: 20px;">
+                    <span class="badge" style="background: ${cor}; font-size: 1rem; padding: 8px 15px;">
+                        <i class="fas ${st.icon}"></i> ${st.text} ${st.days !== null ? '(' + st.days + ' dias)' : ''}
+                    </span>
+                </div>
+                <div class="field-group">
+                    <label>Código/TAG</label>
+                    <p style="font-size: 1.2rem; font-weight: bold; color: var(--primary);">${item.codigo}</p>
+                </div>
+                <div class="field-group">
+                    <label>Tipo</label>
+                    <p>${item.tipo}</p>
+                </div>
+                <div class="field-group">
+                    <label>Descrição</label>
+                    <p>${item.descricao}</p>
+                </div>
+                <div class="field-group">
+                    <label>Localização</label>
+                    <p><i class="fas fa-map-marker-alt"></i> ${item.area} › ${item.local}</p>
+                </div>
+                ${item.validade ? `
+                <div class="field-group">
+                    <label>Controle de Validade</label>
+                    <p><i class="fas fa-calendar-check"></i> Última inspeção: ${item.ultima ? item.ultima.split('-').reverse().join('/') : 'Não informada'}</p>
+                    <p><i class="fas fa-calendar-times"></i> Próxima validade: ${item.validade.split('-').reverse().join('/')}</p>
+                </div>
+                ` : '<div class="field-group"><label>Validade</label><p><i class="fas fa-infinity"></i> Item sem controle de validade</p></div>'}
+                ${mangueiraInfo}
+                ${item.obs ? `
+                <div class="field-group">
+                    <label>Observações</label>
+                    <p style="background: #f5f5f5; padding: 10px; border-radius: 8px;">${item.obs}</p>
+                </div>
+                ` : ''}
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    ${!isReadOnly ? `
+                    <button class="btn-save" style="flex: 1; background: linear-gradient(135deg, #1976d2, #1565c0);" onclick="fecharModal(); editarItem(${item.id})">
+                        <i class="fas fa-edit"></i> EDITAR
+                    </button>
+                    <button class="btn-save" style="flex: 1; background: linear-gradient(135deg, #c62828, #b71c1c);" onclick="excluirItem(${item.id})">
+                        <i class="fas fa-trash"></i> EXCLUIR
+                    </button>
+                    ` : ''}
+                </div>
+            `;
+            
+            document.getElementById('modal-conteudo').innerHTML = conteudo;
+            document.getElementById('modal-detalhes').style.display = 'flex';
+        }
+
+        function fecharModal() {
+            document.getElementById('modal-detalhes').style.display = 'none';
+        }
+
+        function fecharModalBackup() {
+            document.getElementById('modal-backup').style.display = 'none';
+        }
+
+        // ====================================================
+        // EXPORTAÇÃO PYTHON (PYDROID 3)
+        // ====================================================
+        function verificarFiltrosMangueira() {
+            const temMangueiras = db.some(i => i.tipo === 'Mangueira');
+            document.getElementById('filtros-mangueira').style.display = temMangueiras ? 'block' : 'none';
+        }
+
+        function atualizarPreviewExportacao() {
+            const filtrados = filtrarParaExportacao();
+            
+            let stats = { total: 0, ok: 0, warning: 0, expired: 0, mangueiras: 0 };
+            filtrados.forEach(item => {
+                stats.total++;
+                if (item.tipo === 'Mangueira') stats.mangueiras++;
+                if (item.validade) {
+                    const st = getStatus(item.validade);
+                    if (st.class === 'ok') stats.ok++;
+                    if (st.class === 'warning') stats.warning++;
+                    if (st.class === 'expired') stats.expired++;
                 }
+            });
+            
+            document.getElementById('preview-total').textContent = stats.total;
+            document.getElementById('preview-ok').textContent = stats.ok;
+            document.getElementById('preview-warning').textContent = stats.warning;
+            document.getElementById('preview-expired').textContent = stats.expired;
+            document.getElementById('preview-mangueiras').textContent = stats.mangueiras;
+            
+            const previewLista = document.getElementById('preview-lista');
+            if (filtrados.length === 0) {
+                previewLista.innerHTML = '<p class="text-center" style="color: var(--text-sub);">Nenhum item corresponde aos filtros selecionados</p>';
+            } else {
+                previewLista.innerHTML = filtrados.slice(0, 10).map(item => {
+                    const st = getStatus(item.validade);
+                    return `<div style="padding: 8px; background: white; margin-bottom: 5px; border-radius: 5px; border-left: 3px solid ${st.class === 'ok' ? '#43a047' : st.class === 'warning' ? '#fb8c00' : st.class === 'expired' ? '#e53935' : '#78909c'};">
+                        <small><strong>${item.codigo}</strong> - ${item.tipo}</small>
+                    </div>`;
+                }).join('') + (filtrados.length > 10 ? `<p style="text-align: center; color: var(--text-sub); margin-top: 10px;">... e mais ${filtrados.length - 10} itens</p>` : '');
+            }
+        }
+
+        function filtrarParaExportacao() {
+            const filtros = {
+                ok: document.getElementById('filtro-ok').checked,
+                warning: document.getElementById('filtro-warning').checked,
+                expired: document.getElementById('filtro-expired').checked,
+                nodata: document.getElementById('filtro-nodata').checked,
+                mangueira: document.getElementById('filtro-mangueira').checked,
+                extintor: document.getElementById('filtro-extintor').checked,
+                hidrante: document.getElementById('filtro-hidrante').checked,
+                outros: document.getElementById('filtro-outros').checked,
+                comData: document.getElementById('filtro-com-data').checked,
+                semData: document.getElementById('filtro-sem-data').checked
             };
-        }
 
-        function filtrarItensExportacao(filtros) {
             return db.filter(item => {
-                const status = getStatus(item.validade).class;
-                if (!filtros.status[status]) return false;
+                // Filtro de tipo
+                const tipoLower = item.tipo.toLowerCase();
+                let tipoOk = false;
+                if (filtros.mangueira && tipoLower === 'mangueira') tipoOk = true;
+                if (filtros.extintor && tipoLower === 'extintor') tipoOk = true;
+                if (filtros.hidrante && tipoLower === 'hidrante') tipoOk = true;
+                if (filtros.outros && !['mangueira', 'extintor', 'hidrante'].includes(tipoLower)) tipoOk = true;
+                if (!tipoOk) return false;
 
-                const tipo = item.tipo ? item.tipo.toLowerCase() : '';
-                if (!filtros.tipo.mangueira && tipo === 'mangueira') return false;
-                if (!filtros.tipo.extintor && tipo === 'extintor') return false;
-                if (!filtros.tipo.hidrante && tipo === 'hidrante') return false;
-                if (!filtros.tipo.outros && !['mangueira','extintor','hidrante'].includes(tipo)) return false;
-
-                if (tipo === 'mangueira') {
-                    const chave = item.chaveStorz ? item.chaveStorz.toLowerCase() : '';
-                    const adaptador = item.adaptadorStorz ? item.adaptadorStorz.toLowerCase() : '';
-                    if (!filtros.mangueira.chaveSim && chave === 'sim') return false;
-                    if (!filtros.mangueira.chaveNao && chave === 'nao') return false;
-                    if (!filtros.mangueira.adaptadorSim && adaptador === 'sim') return false;
-                    if (!filtros.mangueira.adaptadorNao && adaptador === 'nao') return false;
+                // Filtro de data/status
+                if (!item.validade) {
+                    if (!filtros.semData) return false;
+                    if (!filtros.nodata) return false;
+                } else {
+                    if (!filtros.comData) return false;
+                    const st = getStatus(item.validade);
+                    if (st.class === 'ok' && !filtros.ok) return false;
+                    if (st.class === 'warning' && !filtros.warning) return false;
+                    if (st.class === 'expired' && !filtros.expired) return false;
                 }
+
+                // Filtro de mangueira específico
+                if (item.tipo === 'Mangueira') {
+                    const chaveSim = document.getElementById('filtro-chave-sim').checked;
+                    const chaveNao = document.getElementById('filtro-chave-nao').checked;
+                    const adaptadorSim = document.getElementById('filtro-adaptador-sim').checked;
+                    const adaptadorNao = document.getElementById('filtro-adaptador-nao').checked;
+                    
+                    if (!chaveSim && item.chaveStorz === 'sim') return false;
+                    if (!chaveNao && item.chaveStorz === 'nao') return false;
+                    if (!adaptadorSim && item.adaptadorStorz === 'sim') return false;
+                    if (!adaptadorNao && item.adaptadorStorz === 'nao') return false;
+                }
+
                 return true;
             });
         }
 
         function gerarScriptPython() {
-            const filtros = obterFiltrosExportacao();
-            const itens = filtrarItensExportacao(filtros);
-            if (itens.length === 0) {
-                showToast('❌ Nenhum item corresponde aos filtros selecionados.');
+            const items = filtrarParaExportacao();
+            if (items.length === 0) {
+                showToast('⚠️ Nenhum item para exportar!');
                 return;
             }
-            const script = gerarCodigoPython(itens);
-            document.getElementById('script-python-output').value = script;
-            document.getElementById('script-python-container').style.display = 'block';
-            showToast('🐍 Script Python gerado! Copie e execute no Pydroid 3.');
+
+            const data = {
+                generatedAt: new Date().toISOString(),
+                total: items.length,
+                items: items
+            };
+
+            const script = `#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Script gerado pelo FireGuardian Pro
+Execute no Pydroid 3: pip install reportlab
+"""
+
+import json
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4, landscape
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import cm
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from datetime import datetime
+
+# Dados exportados
+DATA = ${JSON.stringify(data, null, 2)}
+
+def create_pdf(filename="fireguardian_relatorio.pdf"):
+    doc = SimpleDocTemplate(
+        filename,
+        pagesize=landscape(A4),
+        rightMargin=2*cm,
+        leftMargin=2*cm,
+        topMargin=2*cm,
+        bottomMargin=2*cm
+    )
+    
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # Título
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=20,
+        textColor=colors.HexColor('#d32f2f'),
+        alignment=1,  # Center
+        spaceAfter=30
+    )
+    
+    elements.append(Paragraph("FireGuardian Pro - Relatório de Equipamentos", title_style))
+    elements.append(Paragraph(f"Gerado em: {datetime.now().strftime('%d/%m/%Y %H:%M')}", styles['Normal']))
+    elements.append(Spacer(1, 20))
+    
+    # Tabela
+    table_data = [['Código', 'Tipo', 'Descrição', 'Área', 'Local', 'Validade', 'Status']]
+    
+    for item in DATA['items']:
+        status = "Sem Validade"
+        status_color = colors.grey
+        
+        if item.get('validade'):
+            venc = datetime.strptime(item['validade'], '%Y-%m-%d')
+            hoje = datetime.now()
+            dias = (venc - hoje).days
+            
+            if dias < 0:
+                status = f"Vencido ({dias}d)"
+                status_color = colors.red
+            elif dias <= 30:
+                status = f"Atenção ({dias}d)"
+                status_color = colors.orange
+            else:
+                status = "Conforme"
+                status_color = colors.green
+        
+        table_data.append([
+            item.get('codigo', ''),
+            item.get('tipo', ''),
+            item.get('descricao', '')[:30],
+            item.get('area', ''),
+            item.get('local', ''),
+            item.get('validade', 'N/A').split('-')[::-1] if item.get('validade') else 'N/A',
+            status
+        ])
+    
+    table = Table(table_data, colWidths=[3*cm, 3*cm, 5*cm, 3*cm, 4*cm, 2.5*cm, 3*cm])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#d32f2f')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('FONTSIZE', (0, 1), (-1, -1), 9),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    ]))
+    
+    elements.append(table)
+    elements.append(Spacer(1, 20))
+    elements.append(Paragraph(f"Total de equipamentos: {DATA['total']}", styles['Normal']))
+    
+    doc.build(elements)
+    print(f"PDF gerado com sucesso: {filename}")
+
+if __name__ == "__main__":
+    create_pdf()`;
+
+            document.getElementById('codigo-gerado').value = script;
+            document.getElementById('codigo-gerado-container').style.display = 'block';
+            showToast('✅ Script Python gerado!');
         }
 
         function gerarScriptPythonCompleto() {
             if (db.length === 0) {
-                showToast('❌ Nenhum dado cadastrado.');
+                showToast('⚠️ Nenhum dado para exportar!');
                 return;
             }
-            const script = gerarCodigoPython(db);
-            document.getElementById('script-completo-output').value = script;
-            document.getElementById('script-completo-container').style.display = 'block';
-            showToast('🐍 Script Python completo gerado!');
-        }
 
-        function gerarCodigoPython(itens) {
-            const dataStr = JSON.stringify(itens, null, 2);
-            return `# Script gerado pelo FireGuardian Pro
-# Execute no Pydroid 3 com: pip install reportlab
+            const data = {
+                generatedAt: new Date().toISOString(),
+                total: db.length,
+                items: db
+            };
+
+            const script = `#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+FireGuardian Pro - Exportação Completa
+Execute no Pydroid 3: pip install reportlab
+"""
 
 import json
+from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4, landscape
-from reportlab.pdfgen import canvas
-from reportlab.lib.utils import ImageReader
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import cm
 from datetime import datetime
 
-dados = ${dataStr}
+# Dados completos do FireGuardian Pro
+DATA = ${JSON.stringify(data, null, 2)}
 
-def gerar_pdf(lista_equipamentos, nome_arquivo="relatorio_fireguardian.pdf"):
-    c = canvas.Canvas(nome_arquivo, pagesize=landscape(A4))
-    width, height = landscape(A4)
+def create_complete_pdf(filename="fireguardian_completo.pdf"):
+    doc = SimpleDocTemplate(
+        filename,
+        pagesize=landscape(A4),
+        rightMargin=1.5*cm,
+        leftMargin=1.5*cm,
+        topMargin=2*cm,
+        bottomMargin=2*cm
+    )
     
-    # Título
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(50, height - 50, "Relatório de Equipamentos - FireGuardian Pro")
-    c.setFont("Helvetica", 10)
-    c.drawString(50, height - 70, f"Gerado em: {datetime.now().strftime('%d/%m/%Y %H:%M')}")
+    elements = []
+    styles = getSampleStyleSheet()
     
-    y = height - 100
-    for i, item in enumerate(lista_equipamentos):
-        if y < 50:
-            c.showPage()
-            y = height - 50
-            c.setFont("Helvetica-Bold", 16)
-            c.drawString(50, height - 50, "Relatório de Equipamentos - FireGuardian Pro (continuação)")
-            y = height - 80
+    # Capa
+    title_style = ParagraphStyle(
+        'Title',
+        parent=styles['Heading1'],
+        fontSize=24,
+        textColor=colors.HexColor('#d32f2f'),
+        alignment=1,
+        spaceAfter=20
+    )
+    
+    elements.append(Paragraph("FireGuardian Pro", title_style))
+    elements.append(Paragraph("Relatório Completo de Segurança Contra Incêndio", styles['Heading2']))
+    elements.append(Paragraph(f"Total de Equipamentos: {DATA['total']}", styles['Normal']))
+    elements.append(Paragraph(f"Gerado em: {datetime.now().strftime('%d/%m/%Y %H:%M')}", styles['Normal']))
+    elements.append(PageBreak())
+    
+    # Resumo por status
+    elements.append(Paragraph("Resumo por Status", styles['Heading2']))
+    
+    status_count = {'Conforme': 0, 'Atenção': 0, 'Vencido': 0, 'Sem Validade': 0}
+    for item in DATA['items']:
+        if not item.get('validade'):
+            status_count['Sem Validade'] += 1
+        else:
+            venc = datetime.strptime(item['validade'], '%Y-%m-%d')
+            dias = (venc - datetime.now()).days
+            if dias < 0:
+                status_count['Vencido'] += 1
+            elif dias <= 30:
+                status_count['Atenção'] += 1
+            else:
+                status_count['Conforme'] += 1
+    
+    summary_data = [['Status', 'Quantidade', 'Percentual']]
+    for status, count in status_count.items():
+        pct = (count / DATA['total'] * 100) if DATA['total'] > 0 else 0
+        summary_data.append([status, str(count), f"{pct:.1f}%"])
+    
+    summary_table = Table(summary_data, colWidths=[6*cm, 4*cm, 4*cm])
+    summary_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#d32f2f')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+    ]))
+    elements.append(summary_table)
+    elements.append(PageBreak())
+    
+    # Lista completa
+    elements.append(Paragraph("Lista Completa de Equipamentos", styles['Heading2']))
+    
+    table_data = [['Código', 'Tipo', 'Descrição', 'Área', 'Local', 'Validade', 'Status']]
+    
+    for item in DATA['items']:
+        status = "Sem Validade"
+        if item.get('validade'):
+            venc = datetime.strptime(item['validade'], '%Y-%m-%d')
+            dias = (venc - datetime.now()).days
+            if dias < 0:
+                status = f"Vencido ({dias}d)"
+            elif dias <= 30:
+                status = f"Atenção ({dias}d)"
+            else:
+                status = "Conforme"
         
-        c.setFont("Helvetica-Bold", 11)
-        c.drawString(50, y, f"{i+1}. {item.get('codigo', 'N/A')} - {item.get('tipo', 'N/A')}")
-        y -= 15
-        c.setFont("Helvetica", 9)
-        c.drawString(65, y, f"Descrição: {item.get('descricao', 'N/A')}")
-        y -= 12
-        c.drawString(65, y, f"Área: {item.get('area', 'N/A')} / Local: {item.get('local', 'N/A')}")
-        y -= 12
-        c.drawString(65, y, f"Validade: {item.get('validade', 'Sem data')} | Última inspeção: {item.get('ultima', 'N/A')}")
-        y -= 12
-        if item.get('tipo') == 'Mangueira':
-            c.drawString(65, y, f"Chave Storz: {item.get('chaveStorz', 'N/A')} | Adaptador Storz: {item.get('adaptadorStorz', 'N/A')}")
-            y -= 12
-        c.drawString(65, y, f"Obs: {item.get('obs', 'Nenhuma')}")
-        y -= 20
+        table_data.append([
+            item.get('codigo', ''),
+            item.get('tipo', ''),
+            item.get('descricao', '')[:25],
+            item.get('area', '')[:15],
+            item.get('local', '')[:20],
+            item.get('validade', 'N/A').split('-')[::-1] if item.get('validade') else 'N/A',
+            status
+        ])
     
-    c.save()
-    print(f"PDF gerado: {nome_arquivo}")
+    table = Table(table_data, colWidths=[2.5*cm, 2.5*cm, 4*cm, 3*cm, 4*cm, 2.5*cm, 3*cm])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#d32f2f')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 9),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+        ('FONTSIZE', (0, 1), (-1, -1), 8),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    ]))
+    
+    elements.append(table)
+    
+    doc.build(elements)
+    print(f"PDF completo gerado: {filename}")
 
-gerar_pdf(dados)
-print("Processo concluído. Verifique o arquivo PDF no seu dispositivo.")
-`;
+if __name__ == "__main__":
+    create_complete_pdf()`;
+
+            document.getElementById('codigo-completo').value = script;
+            document.getElementById('codigo-completo-container').style.display = 'block';
+            showToast('✅ Script completo gerado!');
         }
 
-        function copiarScriptPython() {
-            const textarea = document.getElementById('script-python-output');
+        function copiarCodigoGerado() {
+            const textarea = document.getElementById('codigo-gerado');
             textarea.select();
-            navigator.clipboard.writeText(textarea.value).then(() => {
-                showToast('📋 Script copiado!');
-            });
+            document.execCommand('copy');
+            showToast('📋 Código copiado!');
         }
 
-        function copiarScriptCompleto() {
-            const textarea = document.getElementById('script-completo-output');
+        function copiarCodigoCompleto() {
+            const textarea = document.getElementById('codigo-completo');
             textarea.select();
-            navigator.clipboard.writeText(textarea.value).then(() => {
-                showToast('📋 Script copiado!');
-            });
+            document.execCommand('copy');
+            showToast('📋 Código completo copiado!');
         }
 
         // ====================================================
         // BACKUP E RESTAURAÇÃO
         // ====================================================
-        function atualizarInfoBackup() {
-            document.getElementById('info-total').innerText = db.length;
-            const lastBackup = localStorage.getItem('fire_last_backup');
-            document.getElementById('info-ultimo-backup').innerText = lastBackup ? new Date(lastBackup).toLocaleString() : 'Nunca';
-        }
+        function criarBackup() {
+            if (db.length === 0) {
+                showToast('⚠️ Nenhum dado para backup!');
+                return;
+            }
 
-        function fazerBackup() {
-            const backupStr = JSON.stringify(db, null, 2);
-            // Tenta download automático
+            const backupData = {
+                version: '2.0',
+                createdAt: new Date().toISOString(),
+                data: db
+            };
+
+            const jsonStr = JSON.stringify(backupData, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            
+            // Tentar download automático
             try {
-                const blob = new Blob([backupStr], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `fireguardian_backup_${new Date().toISOString().slice(0,10)}.json`;
+                a.download = `fireguardian_backup_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
                 a.click();
+                document.body.removeChild(a);
                 URL.revokeObjectURL(url);
+                
                 localStorage.setItem('fire_last_backup', new Date().toISOString());
-                showToast('✅ Backup baixado com sucesso!');
+                atualizarInfoBackup();
+                showToast('💾 Backup gerado e download iniciado!');
             } catch (e) {
-                // Fallback: modal de cópia
-                document.getElementById('backup-text').value = backupStr;
+                // Fallback: mostrar modal com texto
+                document.getElementById('backup-manual-texto').value = jsonStr;
                 document.getElementById('modal-backup').style.display = 'flex';
+                showToast('⚠️ Use o modo manual de cópia');
             }
-            atualizarInfoBackup();
         }
 
-        function copiarBackup() {
-            const textarea = document.getElementById('backup-text');
-            textarea.select();
-            navigator.clipboard.writeText(textarea.value).then(() => {
-                showToast('📋 Backup copiado para área de transferência!');
-            });
-        }
-
-        function restaurarBackupArquivo(event) {
-            const file = event.target.files[0];
+        function restaurarBackupArquivo(input) {
+            const file = input.files[0];
             if (!file) return;
+
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = function(e) {
                 try {
-                    const dados = JSON.parse(e.target.result);
-                    if (Array.isArray(dados)) {
-                        db = dados;
-                        localStorage.setItem('fire_db', JSON.stringify(db));
-                        localStorage.setItem('fire_last_backup', new Date().toISOString());
-                        atualizarUI();
-                        showToast('✅ Backup restaurado com sucesso!');
+                    const backup = JSON.parse(e.target.result);
+                    if (backup.data && Array.isArray(backup.data)) {
+                        if (confirm(`Restaurar backup de ${new Date(backup.createdAt).toLocaleString()}?\n\nIsso substituirá todos os dados atuais (${db.length} itens por ${backup.data.length} itens).`)) {
+                            db = backup.data;
+                            localStorage.setItem('fire_db', JSON.stringify(db));
+                            atualizarUI();
+                            showToast('✅ Backup restaurado com sucesso!');
+                        }
                     } else {
-                        showToast('❌ Formato de arquivo inválido.');
+                        throw new Error('Formato inválido');
                     }
-                } catch (ex) {
-                    showToast('❌ Erro ao ler o arquivo JSON.');
+                } catch (err) {
+                    alert('❌ Erro ao restaurar backup: ' + err.message);
                 }
             };
             reader.readAsText(file);
+            input.value = '';
         }
 
         function restaurarBackupTexto() {
-            const texto = document.getElementById('backup-paste').value;
+            const texto = document.getElementById('backup-paste').value.trim();
             if (!texto) {
-                showToast('❌ Cole o conteúdo do backup.');
+                showToast('⚠️ Cole o conteúdo do backup primeiro!');
                 return;
             }
+
             try {
-                const dados = JSON.parse(texto);
-                if (Array.isArray(dados)) {
-                    db = dados;
-                    localStorage.setItem('fire_db', JSON.stringify(db));
-                    localStorage.setItem('fire_last_backup', new Date().toISOString());
-                    atualizarUI();
-                    showToast('✅ Backup restaurado com sucesso!');
+                const backup = JSON.parse(texto);
+                if (backup.data && Array.isArray(backup.data)) {
+                    if (confirm(`Restaurar backup com ${backup.data.length} itens?\n\nIsso substituirá todos os dados atuais.`)) {
+                        db = backup.data;
+                        localStorage.setItem('fire_db', JSON.stringify(db));
+                        document.getElementById('backup-paste').value = '';
+                        atualizarUI();
+                        showToast('✅ Backup restaurado do texto!');
+                    }
                 } else {
-                    showToast('❌ Formato inválido.');
+                    throw new Error('Formato inválido');
                 }
-            } catch (ex) {
-                showToast('❌ Erro ao interpretar JSON.');
+            } catch (err) {
+                alert('❌ Erro ao restaurar: ' + err.message);
             }
         }
 
+        function copiarBackupManual() {
+            const textarea = document.getElementById('backup-manual-texto');
+            textarea.select();
+            document.execCommand('copy');
+            showToast('📋 Backup copiado! Cole em um arquivo .json');
+        }
+
+        function atualizarInfoBackup() {
+            document.getElementById('info-total').textContent = db.length;
+            const ultimo = localStorage.getItem('fire_last_backup');
+            document.getElementById('info-ultimo-backup').textContent = ultimo ? new Date(ultimo).toLocaleString() : 'Nunca';
+        }
+
         // ====================================================
-        // COMPARTILHAR LINK
+        // LINK COMPARTILHADO
         // ====================================================
         function gerarLinkCompartilhado() {
+            const validadeMin = parseInt(document.getElementById('share-validade').value);
             const senha = document.getElementById('share-senha').value;
-            if (!senha) {
-                showToast('❌ Defina uma senha para o link.');
+
+            if (!senha || senha.length < 4) {
+                showToast('⚠️ Defina uma senha de pelo menos 4 caracteres!');
+                document.getElementById('share-senha').focus();
                 return;
             }
-            const validadeMin = parseInt(document.getElementById('link-validade').value);
-            const exp = Date.now() + validadeMin * 60 * 1000;
+
+            const expiracao = Date.now() + (validadeMin * 60 * 1000);
             const payload = {
-                exp: exp,
-                pwd: btoa(senha)  // codifica a senha em base64
+                exp: expiracao,
+                pwd: btoa(senha),
+                readonly: true
             };
+
             const token = btoa(JSON.stringify(payload));
-            const link = window.location.href.split('?')[0] + '?token=' + token;
-            document.getElementById('link-url').innerText = link;
-            document.getElementById('link-senha').innerText = senha;
-            document.getElementById('link-gerado').style.display = 'block';
-            registrarLog('Link compartilhado gerado', 'Validade: ' + validadeMin + ' min');
+            const url = window.location.origin + window.location.pathname + '?token=' + token;
+
+            document.getElementById('share-link-url').value = url;
+            document.getElementById('share-link-senha').textContent = senha;
+            document.getElementById('share-result').style.display = 'block';
+            
+            registrarLog('Link compartilhado gerado', `Expira em ${validadeMin} minutos`);
+            showToast('🔗 Link gerado com sucesso!');
         }
 
-        function copiarLink() {
-            const link = document.getElementById('link-url').innerText;
-            const senha = document.getElementById('link-senha').innerText;
-            const texto = `Link: ${link}\nSenha: ${senha}`;
+        function copiarLinkESenha() {
+            const url = document.getElementById('share-link-url').value;
+            const senha = document.getElementById('share-link-senha').textContent;
+            const texto = `FireGuardian Pro - Acesso Compartilhado\n\nLink: ${url}\nSenha: ${senha}\n\nAcesse e digite a senha acima para visualizar.`;
+            
             navigator.clipboard.writeText(texto).then(() => {
+                showToast('📋 Link e senha copiados!');
+            }).catch(() => {
+                // Fallback
+                const textarea = document.createElement('textarea');
+                textarea.value = texto;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
                 showToast('📋 Link e senha copiados!');
             });
         }
+
+        // ====================================================
+        // LOG DE ACESSOS
+        // ====================================================
+        function registrarLog(acao, detalhes) {
+            accessLog.unshift({
+                data: new Date().toISOString(),
+                acao: acao,
+                detalhes: detalhes,
+                userAgent: navigator.userAgent.substring(0, 50)
+            });
+            
+            if (accessLog.length > 50) accessLog.pop();
+            localStorage.setItem('fire_access_log', JSON.stringify(accessLog));
+            atualizarLogAcessos();
+        }
+
+        function atualizarLogAcessos() {
+            const container = document.getElementById('lista-acessos');
+            if (!container) return;
+            
+            if (accessLog.length === 0) {
+                container.innerHTML = '<div class="log-item">Nenhum acesso registrado</div>';
+                return;
+            }
+            
+            container.innerHTML = accessLog.slice(0, 10).map(log => {
+                const data = new Date(log.data);
+                const sucesso = log.detalhes.includes('liberado') || log.detalhes.includes('sucesso');
+                return `<div class="log-item ${sucesso ? 'success' : 'error'}">
+                    <strong>${data.toLocaleString()}</strong><br>
+                    ${log.acao}: ${log.detalhes}
+                </div>`;
+            }).join('');
+        }
+
+        function mostrarErroAcesso(titulo, mensagem) {
+            document.body.innerHTML = `
+                <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #1a1a2e, #b71c1c); padding: 20px;">
+                    <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; color: white;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 4rem; margin-bottom: 20px;"></i>
+                        <h2 style="margin-bottom: 15px;">${titulo}</h2>
+                        <p style="opacity: 0.9; margin-bottom: 25px;">${mensagem}</p>
+                        <button onclick="window.location.href=window.location.pathname" style="padding: 12px 30px; background: white; color: #b71c1c; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                            <i class="fas fa-home"></i> Página Inicial
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ====================================================
+        // UTILITÁRIOS
+        // ====================================================
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 3000);
+        }
+
+        // Verificar conexão
+        window.addEventListener('online', () => {
+            document.getElementById('connection-banner').classList.remove('offline');
+            document.getElementById('connection-text').textContent = 'Online';
+        });
+
+        window.addEventListener('offline', () => {
+            document.getElementById('connection-banner').classList.add('offline');
+            document.getElementById('connection-text').textContent = 'Offline';
+        });
     </script>
 </body>
 </html>
