@@ -1391,6 +1391,63 @@
             padding: 20px;
             margin-top: 20px;
         }
+
+        /* Código fonte textarea */
+        .codigo-fonte-container {
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .codigo-fonte-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .codigo-fonte-header h4 {
+            margin: 0;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .codigo-fonte-textarea {
+            width: 100%;
+            min-height: 400px;
+            background: #2d2d2d;
+            color: #4caf50;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            resize: vertical;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .btn-copiar-codigo {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-copiar-codigo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -1420,7 +1477,7 @@
                 <i class="fas fa-sign-in-alt"></i> ENTRAR NO SISTEMA
             </button>
             
-            <!-- Removida a dica da senha padrão -->
+            <!-- REMOVIDO: Informação sobre senha padrão -->
         </div>
     </div>
 
@@ -1848,12 +1905,12 @@
         <div id="exportar-filtrado" class="tab-content">
             <div class="card">
                 <h3 class="section-title">
-                    <i class="fas fa-filter"></i> Exportação Filtrada de Equipamentos (PDF)
+                    <i class="fas fa-filter"></i> Exportação Filtrada de Equipamentos (Código Fonte)
                 </h3>
 
                 <div class="info-box">
                     <i class="fas fa-info-circle"></i>
-                    Selecione os filtros desejados abaixo e visualize em tempo real quantos equipamentos serão exportados para PDF.
+                    Selecione os filtros desejados abaixo e visualize em tempo real quantos equipamentos serão exportados. O sistema gerará o código-fonte completo do PDF.
                 </div>
 
                 <!-- Filtros de Exportação -->
@@ -1978,11 +2035,22 @@
                     </div>
                 </div>
 
-                <!-- Botões de Exportação (apenas PDF) -->
+                <!-- Botões de Exportação (Código Fonte) -->
                 <div class="export-actions">
-                    <button class="btn-export btn-export-pdf" onclick="exportarFiltradoPDF()" id="btn-export-pdf" disabled>
-                        <i class="fas fa-file-pdf"></i> Exportar em PDF
+                    <button class="btn-export btn-export-pdf" onclick="gerarCodigoFontePDF()" id="btn-export-pdf" disabled>
+                        <i class="fas fa-code"></i> Gerar Código Fonte PDF
                     </button>
+                </div>
+
+                <!-- Área do Código Fonte -->
+                <div id="codigo-fonte-container" class="codigo-fonte-container" style="display: none;">
+                    <div class="codigo-fonte-header">
+                        <h4><i class="fas fa-file-code"></i> Código Fonte Completo do PDF</h4>
+                        <button class="btn-copiar-codigo" onclick="copiarCodigoFonte()">
+                            <i class="fas fa-copy"></i> Copiar Código
+                        </button>
+                    </div>
+                    <textarea id="codigo-fonte-textarea" class="codigo-fonte-textarea" readonly></textarea>
                 </div>
             </div>
         </div>
@@ -2054,13 +2122,27 @@
                 </h3>
                 
                 <h4 style="margin: 0 0 15px 0; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-download"></i> Exportar Todos os Dados (PDF)
+                    <i class="fas fa-code"></i> Exportar Código Fonte do PDF
                 </h4>
                 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 30px;">
-                    <button class="btn-save" style="background: linear-gradient(135deg, #e53935, #c62828);" onclick="gerarPDF()">
-                        <i class="fas fa-file-pdf"></i> Exportar PDF
-                    </button>
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i>
+                    Clique no botão abaixo para gerar o código-fonte completo do PDF com todos os dados cadastrados.
+                </div>
+
+                <button class="btn-save" style="background: linear-gradient(135deg, #7b1fa2, #4a148c); margin-bottom: 20px;" onclick="gerarCodigoFontePDFCompleto()">
+                    <i class="fas fa-code"></i> GERAR CÓDIGO FONTE PDF COMPLETO
+                </button>
+
+                <!-- Área do Código Fonte Completo -->
+                <div id="codigo-fonte-completo-container" class="codigo-fonte-container" style="display: none;">
+                    <div class="codigo-fonte-header">
+                        <h4><i class="fas fa-file-code"></i> Código Fonte Completo do PDF</h4>
+                        <button class="btn-copiar-codigo" onclick="copiarCodigoFonteCompleto()">
+                            <i class="fas fa-copy"></i> Copiar Código
+                        </button>
+                    </div>
+                    <textarea id="codigo-fonte-completo-textarea" class="codigo-fonte-textarea" readonly></textarea>
                 </div>
 
                 <hr style="margin: 30px 0; border: 0; border-top: 2px solid #e0e0e0;">
@@ -2179,7 +2261,7 @@
     let formModificado = false;
     let filtroAtivoBusca = 'all';
     let statusChart = null;
-    // Senha padrão alterada para Dev3545@36
+    // ALTERADO: Senha padrão modificada para Dev3545@36
     let senhaAtual = localStorage.getItem('fire_senha') || 'Dev3545@36';
     let accessLog = JSON.parse(localStorage.getItem('fire_access_log')) || [];
     let linkSenhaTemp = null; // Senha temporária do link sendo acessado
@@ -2270,7 +2352,7 @@
         const file = input.files[0];
         if (!file) return;
 
-        if (!confirm('⚠️ ATENÇÃO: Isso substituirá todos os dados atuais pelos do backup.\n\nDeseja continuar?')) {
+        if (!confirm('⚠️ ATENÇÃO: Isso substituirá todos os dados atuais pelos do backup.\\n\\nDeseja continuar?')) {
             input.value = '';
             return;
         }
@@ -2618,7 +2700,7 @@
         const item = db.find(i => i.id === id);
         if (!item) return;
         
-        if (confirm(`⚠️ Deseja realmente excluir o item:\n\n${item.codigo} - ${item.tipo}\n${item.descricao}\n\nEsta ação não pode ser desfeita!`)) {
+        if (confirm(`⚠️ Deseja realmente excluir o item:\\n\\n${item.codigo} - ${item.tipo}\\n${item.descricao}\\n\\nEsta ação não pode ser desfeita!`)) {
             db = db.filter(item => item.id !== id);
             localStorage.setItem('fire_db', JSON.stringify(db));
             atualizarUI();
@@ -3154,7 +3236,7 @@
     
     function excluirArea(nomeArea) {
         if(isReadOnly) return;
-        if(confirm(`⚠️ ATENÇÃO: Isso excluirá TODOS os ${db.filter(i => i.area === nomeArea).length} equipamento(s) da área "${nomeArea}".\n\n❌ Esta ação NÃO pode ser desfeita!\n\n✅ Confirmar exclusão?`)) {
+        if(confirm(`⚠️ ATENÇÃO: Isso excluirá TODOS os ${db.filter(i => i.area === nomeArea).length} equipamento(s) da área "${nomeArea}".\\n\\n❌ Esta ação NÃO pode ser desfeita!\\n\\n✅ Confirmar exclusão?`)) {
             db = db.filter(item => item.area !== nomeArea);
             localStorage.setItem('fire_db', JSON.stringify(db));
             atualizarUI();
@@ -3399,7 +3481,7 @@
     }
 
     // ==========================================
-    // EXPORTAÇÃO FILTRADA (PDF apenas) - AGORA ABRE EM NOVA ABA
+    // EXPORTAÇÃO FILTRADA - CÓDIGO FONTE PDF
     // ==========================================
     function verificarFiltrosMangueira() {
         const filtroMangueira = document.getElementById('filtro-tipo-mangueira').checked;
@@ -3533,7 +3615,10 @@
         btnPdf.disabled = itensFiltrados.length === 0;
     }
 
-    function exportarFiltradoPDF() {
+    // ==========================================
+    // GERAÇÃO DE CÓDIGO FONTE PDF (NOVA FUNÇÃO)
+    // ==========================================
+    function gerarCodigoFontePDF() {
         if (isReadOnly) {
             showToast('❌ Função não disponível no modo visualização');
             return;
@@ -3547,94 +3632,50 @@
             return;
         }
         
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+        // Gerar código fonte do PDF
+        const codigoFonte = gerarCodigoPDF(itensFiltrados, 'Exportação Filtrada');
         
-        doc.setFontSize(18);
-        doc.setTextColor(211, 47, 47);
-        doc.text("FireGuardian Pro - Exportação Filtrada", 14, 20);
+        // Mostrar código fonte
+        document.getElementById('codigo-fonte-textarea').value = codigoFonte;
+        document.getElementById('codigo-fonte-container').style.display = 'block';
         
-        doc.setFontSize(10);
-        doc.setTextColor(0, 0, 0);
-        doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 28);
-        doc.text(`Total de Itens: ${itensFiltrados.length}`, 14, 34);
+        showToast('✅ Código fonte gerado! Você pode copiá-lo abaixo.');
         
-        let filtrosTexto = [];
-        if (filtros.status.length > 0) filtrosTexto.push(`Status: ${filtros.status.join(', ')}`);
-        if (filtros.tipos.length > 0) filtrosTexto.push(`Tipos: ${filtros.tipos.join(', ')}`);
-        if (filtros.data.length > 0) filtrosTexto.push(`Data: ${filtros.data.join(', ')}`);
-        
-        if (filtrosTexto.length > 0) {
-            doc.text(`Filtros: ${filtrosTexto.join(' | ')}`, 14, 40);
-        }
-        
-        const tableColumn = ["TAG", "Tipo", "Descrição", "Área", "Local", "Validade", "Status", "Chave Storz", "Adaptador Storz"];
-        const tableRows = [];
-
-        itensFiltrados.forEach(item => {
-            const st = getStatus(item.validade);
-            const validade = item.validade ? item.validade.split('-').reverse().join('/') : 'N/A';
-            const status = st.text;
-            const chaveStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.chaveStorz) 
-                ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            const adaptadorStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.adaptadorStorz) 
-                ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            
-            tableRows.push([
-                item.codigo, 
-                item.tipo, 
-                item.descricao, 
-                item.area, 
-                item.local, 
-                validade,
-                status,
-                chaveStorz,
-                adaptadorStorz
-            ]);
-        });
-
-        doc.autoTable({
-            head: [tableColumn],
-            body: tableRows,
-            startY: filtrosTexto.length > 0 ? 45 : 40,
-            styles: { fontSize: 8, cellPadding: 3 },
-            headStyles: { fillColor: [211, 47, 47], fontStyle: 'bold' },
-            alternateRowStyles: { fillColor: [245, 245, 245] },
-            margin: { top: 40 }
-        });
-
-        // Abre o PDF em uma nova aba (em vez de fazer download)
-        doc.output('dataurlnewwindow');
-        
-        showToast('📄 PDF filtrado gerado!');
+        // Scroll para o código fonte
+        document.getElementById('codigo-fonte-container').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // ==========================================
-    // EXPORTAÇÃO DE TODOS OS DADOS (PDF apenas) - AGORA ABRE EM NOVA ABA
-    // ==========================================
-    function gerarPDF() {
+    function gerarCodigoFontePDFCompleto() {
         if (isReadOnly) {
             showToast('❌ Função não disponível no modo visualização');
             return;
         }
         
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+        if (db.length === 0) {
+            showToast('⚠️ Não há dados para exportar');
+            return;
+        }
         
-        doc.setFontSize(18);
-        doc.setTextColor(211, 47, 47);
-        doc.text("FireGuardian Pro - Relatório Completo", 14, 20);
+        // Gerar código fonte do PDF com todos os dados
+        const codigoFonte = gerarCodigoPDF(db, 'Relatório Completo');
         
-        doc.setFontSize(10);
-        doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 28);
-        doc.text(`Total de Itens: ${db.length}`, 14, 34);
+        // Mostrar código fonte
+        document.getElementById('codigo-fonte-completo-textarea').value = codigoFonte;
+        document.getElementById('codigo-fonte-completo-container').style.display = 'block';
         
-        const tableColumn = ["TAG", "Tipo", "Descrição", "Área", "Local", "Validade", "Status", "Chave Storz", "Adaptador Storz"];
-        const tableRows = [];
+        showToast('✅ Código fonte completo gerado! Você pode copiá-lo abaixo.');
+        
+        // Scroll para o código fonte
+        document.getElementById('codigo-fonte-completo-container').scrollIntoView({ behavior: 'smooth' });
+    }
 
-        db.forEach(item => {
+    function gerarCodigoPDF(itens, titulo) {
+        const dataGeracao = new Date().toLocaleString('pt-BR');
+        const totalItens = itens.length;
+        
+        // Gerar dados da tabela
+        let dadosTabela = '';
+        itens.forEach((item, index) => {
             const st = getStatus(item.validade);
             const validade = item.validade ? item.validade.split('-').reverse().join('/') : 'N/A';
             const status = st.text;
@@ -3645,33 +3686,141 @@
                 ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') 
                 : 'N/A';
             
-            tableRows.push([
-                item.codigo, 
-                item.tipo, 
-                item.descricao, 
-                item.area, 
-                item.local, 
-                validade,
-                status,
-                chaveStorz,
-                adaptadorStorz
-            ]);
+            dadosTabela += `            // Item ${index + 1}
+            [
+                "${item.codigo}", 
+                "${item.tipo}", 
+                "${item.descricao}", 
+                "${item.area}", 
+                "${item.local}", 
+                "${validade}",
+                "${status}",
+                "${chaveStorz}",
+                "${adaptadorStorz}"
+            ]${index < itens.length - 1 ? ',' : ''}
+`;
         });
 
-        doc.autoTable({
-            head: [tableColumn],
-            body: tableRows,
-            startY: 40,
-            styles: { fontSize: 8, cellPadding: 3 },
-            headStyles: { fillColor: [211, 47, 47], fontStyle: 'bold' },
-            alternateRowStyles: { fillColor: [245, 245, 245] },
-            margin: { top: 40 }
-        });
+        // Código fonte completo
+        const codigo = `// ============================================================
+// CÓDIGO FONTE DO PDF - FireGuardian Pro
+// Gerado em: ${dataGeracao}
+// Total de Itens: ${totalItens}
+// Tipo: ${titulo}
+// ============================================================
 
-        // Abre o PDF em uma nova aba (em vez de fazer download)
-        doc.output('dataurlnewwindow');
+// Incluir bibliotecas necessárias:
+// - jspdf (https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js)
+// - jspdf-autotable (https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js)
+
+// Função para gerar o PDF
+function gerarPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Configurações do documento
+    doc.setFontSize(18);
+    doc.setTextColor(211, 47, 47);
+    doc.text("FireGuardian Pro - ${titulo}", 14, 20);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.text("Gerado em: ${dataGeracao}", 14, 28);
+    doc.text("Total de Itens: ${totalItens}", 14, 34);
+    
+    // Definição das colunas
+    const tableColumn = [
+        "TAG", 
+        "Tipo", 
+        "Descrição", 
+        "Área", 
+        "Local", 
+        "Validade", 
+        "Status", 
+        "Chave Storz", 
+        "Adaptador Storz"
+    ];
+    
+    // Dados da tabela
+    const tableRows = [
+${dadosTabela}    ];
+    
+    // Configuração da tabela
+    doc.autoTable({
+        head: [tableColumn],
+        body: tableRows,
+        startY: 40,
+        styles: { 
+            fontSize: 8, 
+            cellPadding: 3 
+        },
+        headStyles: { 
+            fillColor: [211, 47, 47], 
+            fontStyle: 'bold',
+            textColor: 255
+        },
+        alternateRowStyles: { 
+            fillColor: [245, 245, 245] 
+        },
+        margin: { 
+            top: 40 
+        },
+        theme: 'grid'
+    });
+    
+    // Salvar o PDF
+    doc.save("FireGuardian_${titulo.replace(/\\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf");
+}
+
+// Executar geração
+gerarPDF();
+
+// ============================================================
+// FIM DO CÓDIGO FONTE
+// ============================================================
+
+/*
+INSTRUÇÕES DE USO:
+1. Copie todo este código
+2. Abra o console do navegador (F12)
+3. Cole o código e pressione Enter
+4. O PDF será gerado automaticamente
+
+Ou salve este código em um arquivo .js e inclua em uma página HTML
+com as bibliotecas jsPDF carregadas.
+*/`;
         
-        showToast('📄 PDF gerado!');
+        return codigo;
+    }
+
+    function copiarCodigoFonte() {
+        const textarea = document.getElementById('codigo-fonte-textarea');
+        textarea.select();
+        textarea.setSelectionRange(0, 99999);
+        
+        try {
+            navigator.clipboard.writeText(textarea.value).then(() => {
+                showToast('📋 Código fonte copiado para a área de transferência!');
+            });
+        } catch (err) {
+            document.execCommand('copy');
+            showToast('📋 Código fonte copiado!');
+        }
+    }
+
+    function copiarCodigoFonteCompleto() {
+        const textarea = document.getElementById('codigo-fonte-completo-textarea');
+        textarea.select();
+        textarea.setSelectionRange(0, 99999);
+        
+        try {
+            navigator.clipboard.writeText(textarea.value).then(() => {
+                showToast('📋 Código fonte completo copiado para a área de transferência!');
+            });
+        } catch (err) {
+            document.execCommand('copy');
+            showToast('📋 Código fonte completo copiado!');
+        }
     }
 
     // ==========================================
@@ -3724,7 +3873,7 @@
         const copyText = document.getElementById("share-url");
         const senha = document.getElementById("share-senha-display").textContent;
         
-        const textoCompleto = `Link: ${copyText.value}\nSenha: ${senha}`;
+        const textoCompleto = `Link: ${copyText.value}\\nSenha: ${senha}`;
         
         navigator.clipboard.writeText(textoCompleto).then(() => {
             showToast("📋 Link e senha copiados!");
