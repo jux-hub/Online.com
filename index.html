@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     
     <style>
-        /* (mantido o mesmo estilo original) */
+        /* (mesmo estilo original, apenas adicionamos melhorias na tela de login) */
         :root {
             --primary: #d32f2f;
             --primary-dark: #b71c1c;
@@ -1224,14 +1224,14 @@
             margin-right: 8px;
         }
 
-        /* LOGIN SCREEN */
+        /* LOGIN SCREEN - MELHORADA */
         .login-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--bg), #e3f2fd);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -1240,29 +1240,47 @@
         }
 
         .login-box {
-            background: white;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             max-width: 400px;
             width: 100%;
             text-align: center;
             animation: slideInModal 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(255,255,255,0.2);
         }
 
         .login-box .app-header {
             border-radius: 15px;
             margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
         .login-box input {
             margin-bottom: 15px;
             font-size: 1.1rem;
             padding: 15px;
+            border: 2px solid #ddd;
+            transition: all 0.3s;
+        }
+
+        .login-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
         }
 
         .login-box .btn-save {
             margin-top: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-box .btn-save:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
         }
 
         .senha-box {
@@ -1452,7 +1470,7 @@
 </head>
 <body>
 
-    <!-- TELA DE LOGIN -->
+    <!-- TELA DE LOGIN MELHORADA -->
     <div id="login-screen" class="login-screen">
         <div class="login-box">
             <div class="app-header" style="border-radius: 15px; margin-bottom: 30px;">
@@ -1477,7 +1495,7 @@
                 <i class="fas fa-sign-in-alt"></i> ENTRAR NO SISTEMA
             </button>
             
-            <!-- REMOVIDO: Informação sobre senha padrão -->
+            <!-- Informação sutil sobre senha padrão removida -->
         </div>
     </div>
 
@@ -1905,12 +1923,12 @@
         <div id="exportar-filtrado" class="tab-content">
             <div class="card">
                 <h3 class="section-title">
-                    <i class="fas fa-filter"></i> Exportação Filtrada de Equipamentos (Código Fonte)
+                    <i class="fas fa-filter"></i> Exportação Filtrada de Equipamentos (Código Fonte Python)
                 </h3>
 
                 <div class="info-box">
                     <i class="fas fa-info-circle"></i>
-                    Selecione os filtros desejados abaixo e visualize em tempo real quantos equipamentos serão exportados. O sistema gerará o código-fonte completo do PDF.
+                    Selecione os filtros desejados abaixo e visualize em tempo real quantos equipamentos serão exportados. O sistema gerará o código-fonte Python compatível com o Pydroid 3 para gerar o PDF.
                 </div>
 
                 <!-- Filtros de Exportação -->
@@ -2035,22 +2053,25 @@
                     </div>
                 </div>
 
-                <!-- Botões de Exportação (Código Fonte) -->
+                <!-- Botões de Exportação (Código Fonte Python) -->
                 <div class="export-actions">
-                    <button class="btn-export btn-export-pdf" onclick="gerarCodigoFontePDF()" id="btn-export-pdf" disabled>
-                        <i class="fas fa-code"></i> Gerar Código Fonte PDF
+                    <button class="btn-export btn-export-pdf" onclick="gerarCodigoFontePythonPDF()" id="btn-export-pdf" disabled>
+                        <i class="fas fa-code"></i> Gerar Código Fonte Python (Pydroid 3)
                     </button>
                 </div>
 
                 <!-- Área do Código Fonte -->
                 <div id="codigo-fonte-container" class="codigo-fonte-container" style="display: none;">
                     <div class="codigo-fonte-header">
-                        <h4><i class="fas fa-file-code"></i> Código Fonte Completo do PDF</h4>
+                        <h4><i class="fas fa-file-code"></i> Código Fonte Python para Pydroid 3</h4>
                         <button class="btn-copiar-codigo" onclick="copiarCodigoFonte()">
                             <i class="fas fa-copy"></i> Copiar Código
                         </button>
                     </div>
                     <textarea id="codigo-fonte-textarea" class="codigo-fonte-textarea" readonly></textarea>
+                    <div style="color: #aaa; font-size: 0.8rem; margin-top: 10px;">
+                        <i class="fas fa-info-circle"></i> No Pydroid 3, instale a biblioteca fpdf com: pip install fpdf
+                    </div>
                 </div>
             </div>
         </div>
@@ -2122,22 +2143,22 @@
                 </h3>
                 
                 <h4 style="margin: 0 0 15px 0; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-code"></i> Exportar Código Fonte do PDF
+                    <i class="fas fa-code"></i> Exportar Código Fonte Python do PDF Completo
                 </h4>
                 
                 <div class="info-box">
                     <i class="fas fa-info-circle"></i>
-                    Clique no botão abaixo para gerar o código-fonte completo do PDF com todos os dados cadastrados.
+                    Clique no botão abaixo para gerar o código-fonte Python compatível com Pydroid 3 com todos os dados cadastrados.
                 </div>
 
-                <button class="btn-save" style="background: linear-gradient(135deg, #7b1fa2, #4a148c); margin-bottom: 20px;" onclick="gerarCodigoFontePDFCompleto()">
-                    <i class="fas fa-code"></i> GERAR CÓDIGO FONTE PDF COMPLETO
+                <button class="btn-save" style="background: linear-gradient(135deg, #7b1fa2, #4a148c); margin-bottom: 20px;" onclick="gerarCodigoFontePythonPDFCompleto()">
+                    <i class="fas fa-code"></i> GERAR CÓDIGO FONTE PYTHON COMPLETO
                 </button>
 
                 <!-- Área do Código Fonte Completo -->
                 <div id="codigo-fonte-completo-container" class="codigo-fonte-container" style="display: none;">
                     <div class="codigo-fonte-header">
-                        <h4><i class="fas fa-file-code"></i> Código Fonte Completo do PDF</h4>
+                        <h4><i class="fas fa-file-code"></i> Código Fonte Python para Pydroid 3</h4>
                         <button class="btn-copiar-codigo" onclick="copiarCodigoFonteCompleto()">
                             <i class="fas fa-copy"></i> Copiar Código
                         </button>
@@ -2149,12 +2170,12 @@
 
                 <!-- Compartilhamento -->
                 <h4 style="margin: 0 0 10px 0; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-share-alt"></i> Compartilhar Acesso
+                    <i class="fas fa-share-alt"></i> Compartilhar Acesso (Somente Leitura)
                 </h4>
                 
                 <p style="font-size: 0.95rem; color: var(--text-sub); margin-bottom: 20px; line-height: 1.6;">
                     Gere um link temporário para visualização <strong>somente leitura</strong>. 
-                    <br><strong>Importante:</strong> Defina uma senha de acesso para o link. Somente quem tiver a senha poderá visualizar.
+                    <br><strong>Importante:</strong> Defina uma senha de acesso para o link. Quem receber o link poderá visualizar os dados sem precisar da senha de administrador.
                 </p>
 
                 <div class="share-box">
@@ -2261,14 +2282,55 @@
     let formModificado = false;
     let filtroAtivoBusca = 'all';
     let statusChart = null;
-    // ALTERADO: Senha padrão modificada para Dev3545@36
     let senhaAtual = localStorage.getItem('fire_senha') || 'Dev3545@36';
     let accessLog = JSON.parse(localStorage.getItem('fire_access_log')) || [];
     let linkSenhaTemp = null; // Senha temporária do link sendo acessado
 
     // ==========================================
-    // SISTEMA DE LOGIN
+    // VERIFICAÇÃO DE ACESSO COMPARTILHADO ANTES DO LOGIN
     // ==========================================
+    (function verificarTokenInicial() {
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
+
+        if (token) {
+            try {
+                const payload = JSON.parse(atob(token));
+                const agora = Date.now();
+
+                // Verificar expiração
+                if (agora > payload.exp) {
+                    mostrarErroAcesso('Acesso Expirado', 'Este link de compartilhamento não é mais válido.');
+                    return;
+                }
+
+                // Verificar se tem senha
+                if (payload.pwd) {
+                    // Mostrar modal de senha
+                    linkSenhaTemp = atob(payload.pwd);
+                    document.getElementById('modal-senha-link').style.display = 'flex';
+                    document.getElementById('acesso-senha-link').focus();
+                    
+                    // Registrar tentativa
+                    registrarLog('Tentativa de acesso via link', 'Aguardando senha');
+                } else {
+                    // Link antigo sem senha - acesso direto somente leitura
+                    ativarModoSomenteLeitura();
+                    document.getElementById('login-screen').style.display = 'none';
+                }
+                
+            } catch (e) {
+                console.error("Erro ao validar token", e);
+                if (!e.message.includes("Token expirado")) {
+                    mostrarErroAcesso('Link Inválido', 'O link de acesso não é válido ou está corrompido.');
+                }
+            }
+        } else {
+            // Sem token, exibe tela de login normal
+            document.getElementById('login-screen').style.display = 'flex';
+        }
+    })();
+
     function fazerLogin() {
         const senhaInput = document.getElementById('login-senha').value;
         
@@ -2276,8 +2338,13 @@
             document.getElementById('login-screen').style.display = 'none';
             showToast('✅ Bem-vindo ao FireGuardian Pro!');
             
-            // Verificar se é acesso via link compartilhado
-            verificarAcessoCompartilhado();
+            // Inicializar UI
+            atualizarUI();
+            inicializarDatasDefault();
+            inicializarGrafico();
+            configurarCampoCodigo();
+            verificarTipoMangueira();
+            atualizarInfoBackup();
         } else {
             showToast('❌ Senha incorreta!');
             document.getElementById('login-senha').value = '';
@@ -2352,7 +2419,7 @@
         const file = input.files[0];
         if (!file) return;
 
-        if (!confirm('⚠️ ATENÇÃO: Isso substituirá todos os dados atuais pelos do backup.\\n\\nDeseja continuar?')) {
+        if (!confirm('⚠️ ATENÇÃO: Isso substituirá todos os dados atuais pelos do backup.\n\nDeseja continuar?')) {
             input.value = '';
             return;
         }
@@ -2394,22 +2461,8 @@
     }
 
     // ==========================================
-    // INICIALIZAÇÃO
+    // INICIALIZAÇÃO (chamada após login)
     // ==========================================
-    document.addEventListener('DOMContentLoaded', () => {
-        atualizarUI();
-        inicializarDatasDefault();
-        inicializarGrafico();
-        configurarCampoCodigo();
-        verificarTipoMangueira();
-        atualizarInfoBackup();
-        
-        // Detectar modificações no formulário
-        document.getElementById('form-equipamento').addEventListener('input', () => {
-            formModificado = true;
-        });
-    });
-
     function inicializarDatasDefault() {
         const hoje = new Date().toISOString().split('T')[0];
         document.getElementById('cad-ultima').value = hoje;
@@ -2419,7 +2472,6 @@
         document.getElementById('cad-validade').value = anoQueVem.toISOString().split('T')[0];
     }
 
-    // Configura o campo código para sempre iniciar com "AK - "
     function configurarCampoCodigo() {
         const campo = document.getElementById('cad-codigo');
         const prefixo = 'AK - ';
@@ -2455,7 +2507,6 @@
         });
     }
 
-    // Mostra/esconde campos específicos para mangueira
     function verificarTipoMangueira() {
         const tipo = document.getElementById('cad-tipo').value.toLowerCase();
         const camposMangueira = document.getElementById('campos-mangueira');
@@ -2464,7 +2515,6 @@
             camposMangueira.style.display = 'block';
         } else {
             camposMangueira.style.display = 'none';
-            // Limpa os valores ao esconder
             document.getElementById('cad-chave-storz').value = '';
             document.getElementById('cad-adaptador-storz').value = '';
         }
@@ -2480,20 +2530,16 @@
             return;
         }
 
-        // Remover active de todas as abas
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
         
-        // Ativar aba selecionada
         targetTab.classList.add('active');
         
-        // Ativar botão correspondente
         const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b => 
             b.getAttribute('onclick')?.includes(tabId)
         );
         if(btn) btn.classList.add('active');
 
-        // Ações específicas por aba
         if(tabId === 'organizacao') renderizarOrganizacao();
         if(tabId === 'cadastro') atualizarListaRecentes();
         if(tabId === 'dashboard') atualizarGrafico();
@@ -2503,7 +2549,6 @@
         }
         if(tabId === 'backup') atualizarInfoBackup();
         
-        // Resetar título se não estiver editando
         if(tabId === 'cadastro' && !document.getElementById('edit-id').value) {
             document.getElementById('cadastro-titulo').textContent = 'Novo Cadastro';
         }
@@ -2557,7 +2602,7 @@
     }
 
     // ==========================================
-    // CRUD - CREATE, READ, UPDATE, DELETE
+    // CRUD
     // ==========================================
     function salvarEquipamento(e) {
         e.preventDefault();
@@ -2574,7 +2619,6 @@
         const btnSalvar = document.getElementById('btn-salvar');
         const editId = document.getElementById('edit-id').value;
         
-        // Loading state
         btnSalvar.disabled = true;
         btnSalvar.classList.add('loading');
         btnSalvar.innerHTML = '<i class="fas fa-spinner"></i> SALVANDO...';
@@ -2594,14 +2638,12 @@
             };
 
             if (editId) {
-                // Edição
                 const index = db.findIndex(item => item.id == editId);
                 if (index !== -1) {
                     db[index] = { ...db[index], ...itemData };
                     showToast('✅ Equipamento atualizado com sucesso!');
                 }
             } else {
-                // Novo cadastro
                 const novoItem = {
                     id: Date.now(),
                     ...itemData
@@ -2612,18 +2654,15 @@
 
             localStorage.setItem('fire_db', JSON.stringify(db));
             
-            // Resetar formulário
             e.target.reset();
             document.getElementById('edit-id').value = '';
             document.getElementById('cadastro-titulo').textContent = 'Novo Cadastro';
             document.getElementById('btn-cancelar-edicao').style.display = 'none';
             formModificado = false;
             
-            // Restaurar datas padrão
             inicializarDatasDefault();
             document.getElementById('cad-codigo').value = 'AK - ';
             
-            // Restaurar botão
             btnSalvar.disabled = false;
             btnSalvar.classList.remove('loading');
             btnSalvar.innerHTML = '<i class="fas fa-save"></i> SALVAR EQUIPAMENTO';
@@ -2654,7 +2693,6 @@
             document.getElementById('cad-validade').value = item.validade;
         }
 
-        // Carregar campos específicos de mangueira
         if (item.chaveStorz) {
             document.getElementById('cad-chave-storz').value = item.chaveStorz;
         } else {
@@ -2700,7 +2738,7 @@
         const item = db.find(i => i.id === id);
         if (!item) return;
         
-        if (confirm(`⚠️ Deseja realmente excluir o item:\\n\\n${item.codigo} - ${item.tipo}\\n${item.descricao}\\n\\nEsta ação não pode ser desfeita!`)) {
+        if (confirm(`⚠️ Deseja realmente excluir o item:\n\n${item.codigo} - ${item.tipo}\n${item.descricao}\n\nEsta ação não pode ser desfeita!`)) {
             db = db.filter(item => item.id !== id);
             localStorage.setItem('fire_db', JSON.stringify(db));
             atualizarUI();
@@ -2783,10 +2821,8 @@
             }
         });
 
-        // Ordenar itens com data por prioridade (vencidos primeiro)
         itensComData.sort((a, b) => a.status.priority - b.status.priority);
 
-        // Renderizar itens com data
         if (itensComData.length === 0) {
             listData.innerHTML = `
                 <div class="empty-state">
@@ -2799,7 +2835,6 @@
             });
         }
 
-        // Renderizar itens sem data
         if (itensSemData.length === 0) {
             listNoData.innerHTML = `
                 <div class="empty-state">
@@ -2813,7 +2848,6 @@
             });
         }
 
-        // Atualizar contador
         document.getElementById('contador-com-data').innerText = 
             `📊 ${itensComData.length} item(ns) com controle de validade`;
     }
@@ -2845,7 +2879,6 @@
                 <i class="fas fa-box"></i> Item sem validade
             </span>`;
 
-        // Indicadores para mangueira
         let mangueiraIndicators = '';
         if (item.tipo && item.tipo.toLowerCase() === 'mangueira') {
             const chaveIcon = item.chaveStorz ? 
@@ -2882,7 +2915,6 @@
             counts.total++;
             areasSet.add(item.area);
             
-            // Contar mangueiras
             if (item.tipo && item.tipo.toLowerCase() === 'mangueira') {
                 counts.mangueiras++;
             }
@@ -2897,7 +2929,6 @@
             }
         });
 
-        // Atualizar contadores
         document.getElementById('dash-total').innerText = counts.total;
         document.getElementById('dash-ok').innerText = counts.ok;
         document.getElementById('dash-warn').innerText = counts.warn;
@@ -2906,7 +2937,6 @@
         document.getElementById('dash-areas').innerText = areasSet.size;
         document.getElementById('dash-mangueiras').innerText = counts.mangueiras;
 
-        // Atualizar barras de progresso
         const totalComData = counts.ok + counts.warn + counts.expired;
         if (totalComData > 0) {
             const conformidadePercent = Math.round((counts.ok / totalComData) * 100);
@@ -2923,7 +2953,6 @@
             document.getElementById('vencido-bar').style.width = vencidoPercent + '%';
         }
 
-        // Atualizar gráfico
         atualizarGrafico();
     }
 
@@ -2971,7 +3000,6 @@
             return;
         }
 
-        // Mostrar últimos 10 itens
         const recentes = [...db].reverse().slice(0, 10);
         
         container.innerHTML = recentes.map(item => {
@@ -2983,7 +3011,6 @@
                 'nodata': '#78909c'
             }[st.class];
 
-            // Indicadores de mangueira
             let mangueiraInfo = '';
             if (item.tipo && item.tipo.toLowerCase() === 'mangueira') {
                 const chave = item.chaveStorz === 'sim' ? 'C' : (item.chaveStorz === 'nao' ? 'S/C' : '?');
@@ -3130,7 +3157,6 @@
             const itens = areas[nomeArea];
             const qtd = itens.length;
             
-            // Contar status
             let statusCounts = { ok: 0, warn: 0, expired: 0, nodata: 0 };
             itens.forEach(item => {
                 const st = getStatus(item.validade);
@@ -3153,7 +3179,6 @@
                     'nodata': '#78909c'
                 }[st.class];
                 
-                // Indicadores de mangueira
                 let mangueiraInfo = '';
                 if (item.tipo && item.tipo.toLowerCase() === 'mangueira') {
                     const chave = item.chaveStorz === 'sim' ? '<i class="fas fa-key" style="color: #f57c00;"></i>' : '';
@@ -3181,7 +3206,6 @@
                 `;
             });
 
-            // Adicionar badges de status
             const statusBadges = `
                 ${statusCounts.ok > 0 ? `<span class="badge" style="background: #43a047; margin-left: 5px;">${statusCounts.ok} OK</span>` : ''}
                 ${statusCounts.warn > 0 ? `<span class="badge" style="background: #fb8c00; margin-left: 5px;">${statusCounts.warn} Atenção</span>` : ''}
@@ -3236,7 +3260,7 @@
     
     function excluirArea(nomeArea) {
         if(isReadOnly) return;
-        if(confirm(`⚠️ ATENÇÃO: Isso excluirá TODOS os ${db.filter(i => i.area === nomeArea).length} equipamento(s) da área "${nomeArea}".\\n\\n❌ Esta ação NÃO pode ser desfeita!\\n\\n✅ Confirmar exclusão?`)) {
+        if(confirm(`⚠️ ATENÇÃO: Isso excluirá TODOS os ${db.filter(i => i.area === nomeArea).length} equipamento(s) da área "${nomeArea}".\n\n❌ Esta ação NÃO pode ser desfeita!\n\n✅ Confirmar exclusão?`)) {
             db = db.filter(item => item.area !== nomeArea);
             localStorage.setItem('fire_db', JSON.stringify(db));
             atualizarUI();
@@ -3249,7 +3273,6 @@
     // BUSCA AVANÇADA
     // ==========================================
     function aplicarFiltro(elemento, filtro) {
-        // Atualizar visual dos filtros
         document.querySelectorAll('.filter-chip').forEach(chip => {
             chip.classList.remove('active');
         });
@@ -3265,7 +3288,6 @@
         const statsDiv = document.getElementById('busca-stats');
         const countSpan = document.getElementById('busca-count');
         
-        // Se não houver termo, mostrar estado inicial
         if (termo.length === 0) {
             resultsDiv.innerHTML = `
                 <div class="empty-state">
@@ -3277,7 +3299,6 @@
             return;
         }
 
-        // Filtrar por termo
         let filtered = db.filter(item => 
             item.codigo.toLowerCase().includes(termo) ||
             item.tipo.toLowerCase().includes(termo) ||
@@ -3286,7 +3307,6 @@
             item.area.toLowerCase().includes(termo)
         );
 
-        // Aplicar filtro de status
         if (filtroAtivoBusca !== 'all') {
             filtered = filtered.filter(item => {
                 const st = getStatus(item.validade);
@@ -3294,7 +3314,6 @@
             });
         }
 
-        // Mostrar resultados
         if (filtered.length === 0) {
             resultsDiv.innerHTML = `
                 <div class="empty-state">
@@ -3337,7 +3356,6 @@
                         card.style.opacity = shouldHighlight ? '1' : '0.3';
                     });
                     
-                    // Resetar após 4 segundos
                     setTimeout(() => {
                         cards.forEach(card => card.style.opacity = '1');
                     }, 4000);
@@ -3363,7 +3381,6 @@
             'nodata': '#78909c'
         }[st.class];
         
-        // Informações específicas para mangueira
         let mangueiraInfo = '';
         if (item.tipo && item.tipo.toLowerCase() === 'mangueira') {
             const chaveStorz = item.chaveStorz ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') : 'Não informado';
@@ -3481,7 +3498,7 @@
     }
 
     // ==========================================
-    // EXPORTAÇÃO FILTRADA - CÓDIGO FONTE PDF
+    // EXPORTAÇÃO FILTRADA - CÓDIGO FONTE PYTHON (Pydroid 3)
     // ==========================================
     function verificarFiltrosMangueira() {
         const filtroMangueira = document.getElementById('filtro-tipo-mangueira').checked;
@@ -3616,9 +3633,91 @@
     }
 
     // ==========================================
-    // GERAÇÃO DE CÓDIGO FONTE PDF (NOVA FUNÇÃO)
+    // GERAÇÃO DE CÓDIGO FONTE PYTHON (Pydroid 3)
     // ==========================================
-    function gerarCodigoFontePDF() {
+    function gerarCodigoPythonPDF(itens, titulo) {
+        const dataGeracao = new Date().toLocaleString('pt-BR');
+        const totalItens = itens.length;
+        
+        let dadosLista = '';
+        itens.forEach(item => {
+            const st = getStatus(item.validade);
+            const validade = item.validade ? item.validade.split('-').reverse().join('/') : 'N/A';
+            const status = st.text;
+            const chaveStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.chaveStorz) 
+                ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') 
+                : 'N/A';
+            const adaptadorStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.adaptadorStorz) 
+                ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') 
+                : 'N/A';
+            
+            dadosLista += `    ["${item.codigo}", "${item.tipo}", "${item.descricao}", "${item.area}", "${item.local}", "${validade}", "${status}", "${chaveStorz}", "${adaptadorStorz}"],\n`;
+        });
+
+        const codigoPython = `# -*- coding: utf-8 -*-
+# Código gerado pelo FireGuardian Pro em ${dataGeracao}
+# Total de itens: ${totalItens}
+# Para usar no Pydroid 3, instale a biblioteca fpdf:
+#   pip install fpdf
+
+from fpdf import FPDF
+import datetime
+
+# Dados dos equipamentos
+dados = [
+${dadosLista}]
+
+class PDF(FPDF):
+    def header(self):
+        self.set_font('Arial', 'B', 16)
+        self.set_text_color(211, 47, 47)
+        self.cell(0, 10, 'FireGuardian Pro - ${titulo}', 0, 1, 'C')
+        self.set_font('Arial', '', 10)
+        self.set_text_color(0, 0, 0)
+        self.cell(0, 10, f'Gerado em: ${dataGeracao}', 0, 1, 'C')
+        self.cell(0, 10, f'Total de Itens: {len(dados)}', 0, 1, 'C')
+        self.ln(10)
+
+    def footer(self):
+        self.set_y(-15)
+        self.set_font('Arial', 'I', 8)
+        self.cell(0, 10, f'Página {self.page_no()}', 0, 0, 'C')
+
+# Cria o PDF
+pdf = PDF()
+pdf.add_page()
+pdf.set_font('Arial', '', 9)
+
+# Cabeçalho da tabela
+cabecalho = ['TAG', 'Tipo', 'Descrição', 'Área', 'Local', 'Validade', 'Status', 'Chave', 'Adapt.']
+larguras = [25, 30, 40, 30, 30, 20, 20, 15, 15]
+pdf.set_fill_color(211, 47, 47)
+pdf.set_text_color(255)
+pdf.set_font('Arial', 'B', 8)
+for i, col in enumerate(cabecalho):
+    pdf.cell(larguras[i], 8, col, 1, 0, 'C', 1)
+pdf.ln()
+
+# Linhas da tabela
+pdf.set_text_color(0)
+pdf.set_font('Arial', '', 8)
+fill = False
+for linha in dados:
+    for i, valor in enumerate(linha):
+        pdf.cell(larguras[i], 8, valor[:15] + ('...' if len(valor) > 15 else ''), 1, 0, 'L', fill)
+    pdf.ln()
+    fill = not fill
+
+# Salva o PDF
+nome_arquivo = f'FireGuardian_${titulo.replace(" ", "_")}_{datetime.date.today().isoformat()}.pdf'
+pdf.output(nome_arquivo)
+print(f'PDF gerado: {nome_arquivo}')
+`;
+
+        return codigoPython;
+    }
+
+    function gerarCodigoFontePythonPDF() {
         if (isReadOnly) {
             showToast('❌ Função não disponível no modo visualização');
             return;
@@ -3632,20 +3731,17 @@
             return;
         }
         
-        // Gerar código fonte do PDF
-        const codigoFonte = gerarCodigoPDF(itensFiltrados, 'Exportação Filtrada');
+        const codigoFonte = gerarCodigoPythonPDF(itensFiltrados, 'Exportação Filtrada');
         
-        // Mostrar código fonte
         document.getElementById('codigo-fonte-textarea').value = codigoFonte;
         document.getElementById('codigo-fonte-container').style.display = 'block';
         
-        showToast('✅ Código fonte gerado! Você pode copiá-lo abaixo.');
+        showToast('✅ Código fonte Python gerado! Copie e execute no Pydroid 3.');
         
-        // Scroll para o código fonte
         document.getElementById('codigo-fonte-container').scrollIntoView({ behavior: 'smooth' });
     }
 
-    function gerarCodigoFontePDFCompleto() {
+    function gerarCodigoFontePythonPDFCompleto() {
         if (isReadOnly) {
             showToast('❌ Função não disponível no modo visualização');
             return;
@@ -3656,141 +3752,14 @@
             return;
         }
         
-        // Gerar código fonte do PDF com todos os dados
-        const codigoFonte = gerarCodigoPDF(db, 'Relatório Completo');
+        const codigoFonte = gerarCodigoPythonPDF(db, 'Relatório Completo');
         
-        // Mostrar código fonte
         document.getElementById('codigo-fonte-completo-textarea').value = codigoFonte;
         document.getElementById('codigo-fonte-completo-container').style.display = 'block';
         
-        showToast('✅ Código fonte completo gerado! Você pode copiá-lo abaixo.');
+        showToast('✅ Código fonte Python completo gerado! Copie e execute no Pydroid 3.');
         
-        // Scroll para o código fonte
         document.getElementById('codigo-fonte-completo-container').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function gerarCodigoPDF(itens, titulo) {
-        const dataGeracao = new Date().toLocaleString('pt-BR');
-        const totalItens = itens.length;
-        
-        // Gerar dados da tabela
-        let dadosTabela = '';
-        itens.forEach((item, index) => {
-            const st = getStatus(item.validade);
-            const validade = item.validade ? item.validade.split('-').reverse().join('/') : 'N/A';
-            const status = st.text;
-            const chaveStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.chaveStorz) 
-                ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            const adaptadorStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.adaptadorStorz) 
-                ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            
-            dadosTabela += `            // Item ${index + 1}
-            [
-                "${item.codigo}", 
-                "${item.tipo}", 
-                "${item.descricao}", 
-                "${item.area}", 
-                "${item.local}", 
-                "${validade}",
-                "${status}",
-                "${chaveStorz}",
-                "${adaptadorStorz}"
-            ]${index < itens.length - 1 ? ',' : ''}
-`;
-        });
-
-        // Código fonte completo
-        const codigo = `// ============================================================
-// CÓDIGO FONTE DO PDF - FireGuardian Pro
-// Gerado em: ${dataGeracao}
-// Total de Itens: ${totalItens}
-// Tipo: ${titulo}
-// ============================================================
-
-// Incluir bibliotecas necessárias:
-// - jspdf (https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js)
-// - jspdf-autotable (https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js)
-
-// Função para gerar o PDF
-function gerarPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    
-    // Configurações do documento
-    doc.setFontSize(18);
-    doc.setTextColor(211, 47, 47);
-    doc.text("FireGuardian Pro - ${titulo}", 14, 20);
-    
-    doc.setFontSize(10);
-    doc.setTextColor(0, 0, 0);
-    doc.text("Gerado em: ${dataGeracao}", 14, 28);
-    doc.text("Total de Itens: ${totalItens}", 14, 34);
-    
-    // Definição das colunas
-    const tableColumn = [
-        "TAG", 
-        "Tipo", 
-        "Descrição", 
-        "Área", 
-        "Local", 
-        "Validade", 
-        "Status", 
-        "Chave Storz", 
-        "Adaptador Storz"
-    ];
-    
-    // Dados da tabela
-    const tableRows = [
-${dadosTabela}    ];
-    
-    // Configuração da tabela
-    doc.autoTable({
-        head: [tableColumn],
-        body: tableRows,
-        startY: 40,
-        styles: { 
-            fontSize: 8, 
-            cellPadding: 3 
-        },
-        headStyles: { 
-            fillColor: [211, 47, 47], 
-            fontStyle: 'bold',
-            textColor: 255
-        },
-        alternateRowStyles: { 
-            fillColor: [245, 245, 245] 
-        },
-        margin: { 
-            top: 40 
-        },
-        theme: 'grid'
-    });
-    
-    // Salvar o PDF
-    doc.save("FireGuardian_${titulo.replace(/\\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf");
-}
-
-// Executar geração
-gerarPDF();
-
-// ============================================================
-// FIM DO CÓDIGO FONTE
-// ============================================================
-
-/*
-INSTRUÇÕES DE USO:
-1. Copie todo este código
-2. Abra o console do navegador (F12)
-3. Cole o código e pressione Enter
-4. O PDF será gerado automaticamente
-
-Ou salve este código em um arquivo .js e inclua em uma página HTML
-com as bibliotecas jsPDF carregadas.
-*/`;
-        
-        return codigo;
     }
 
     function copiarCodigoFonte() {
@@ -3863,7 +3832,6 @@ com as bibliotecas jsPDF carregadas.
         document.getElementById('share-senha-display').textContent = senhaLink;
         document.getElementById('link-result').style.display = 'block';
         
-        // Registrar geração do link no log
         registrarLog('Link gerado', `Expira em ${minutos} minutos`);
         
         showToast('🔗 Link protegido gerado com sucesso!');
@@ -3873,12 +3841,11 @@ com as bibliotecas jsPDF carregadas.
         const copyText = document.getElementById("share-url");
         const senha = document.getElementById("share-senha-display").textContent;
         
-        const textoCompleto = `Link: ${copyText.value}\\nSenha: ${senha}`;
+        const textoCompleto = `Link: ${copyText.value}\nSenha: ${senha}`;
         
         navigator.clipboard.writeText(textoCompleto).then(() => {
             showToast("📋 Link e senha copiados!");
         }).catch(() => {
-            // Fallback
             copyText.select();
             copyText.setSelectionRange(0, 99999);
             document.execCommand("copy");
@@ -3891,11 +3858,10 @@ com as bibliotecas jsPDF carregadas.
             data: new Date().toLocaleString('pt-BR'),
             acao: acao,
             detalhes: detalhes,
-            ip: 'Local' // Em produção, poderia capturar IP
+            ip: 'Local'
         };
         
         accessLog.unshift(logEntry);
-        // Manter apenas últimos 50 registros
         if (accessLog.length > 50) accessLog.pop();
         
         localStorage.setItem('fire_access_log', JSON.stringify(accessLog));
@@ -3920,55 +3886,15 @@ com as bibliotecas jsPDF carregadas.
         `).join('');
     }
 
-    function verificarAcessoCompartilhado() {
-        const params = new URLSearchParams(window.location.search);
-        const token = params.get('token');
-
-        if (token) {
-            try {
-                const payload = JSON.parse(atob(token));
-                const agora = Date.now();
-
-                // Verificar expiração
-                if (agora > payload.exp) {
-                    mostrarErroAcesso('Acesso Expirado', 'Este link de compartilhamento não é mais válido.');
-                    throw new Error("Token expirado");
-                }
-
-                // Verificar se tem senha
-                if (payload.pwd) {
-                    // Mostrar modal de senha
-                    linkSenhaTemp = atob(payload.pwd);
-                    document.getElementById('modal-senha-link').style.display = 'flex';
-                    document.getElementById('acesso-senha-link').focus();
-                    
-                    // Registrar tentativa
-                    registrarLog('Tentativa de acesso via link', 'Aguardando senha');
-                } else {
-                    // Link antigo sem senha - acesso direto somente leitura
-                    ativarModoSomenteLeitura();
-                }
-                
-            } catch (e) {
-                console.error("Erro ao validar token", e);
-                if (!e.message.includes("Token expirado")) {
-                    mostrarErroAcesso('Link Inválido', 'O link de acesso não é válido ou está corrompido.');
-                }
-            }
-        }
-    }
-
     function verificarSenhaLink() {
         const senhaInput = document.getElementById('acesso-senha-link').value;
         const erroDiv = document.getElementById('senha-erro');
         
         if (senhaInput === linkSenhaTemp) {
-            // Senha correta
             document.getElementById('modal-senha-link').style.display = 'none';
             ativarModoSomenteLeitura();
             registrarLog('Acesso via link', 'Senha correta - Acesso permitido');
         } else {
-            // Senha incorreta
             erroDiv.style.display = 'block';
             document.getElementById('acesso-senha-link').value = '';
             document.getElementById('acesso-senha-link').focus();
@@ -3980,7 +3906,6 @@ com as bibliotecas jsPDF carregadas.
         isReadOnly = true;
         document.getElementById('readonly-banner').style.display = 'block';
         
-        // Esconder botões de edição
         const btnRelatorios = document.getElementById('btn-relatorios');
         if (btnRelatorios) btnRelatorios.style.display = 'none';
         
@@ -4049,7 +3974,6 @@ com as bibliotecas jsPDF carregadas.
         
         if (e.key === 'Escape') {
             fecharModal();
-            // Fechar modal de senha também
             if (document.getElementById('modal-senha-link').style.display === 'flex') {
                 document.getElementById('modal-senha-link').style.display = 'none';
             }
