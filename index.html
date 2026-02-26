@@ -2,535 +2,333 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>YouTube Downloader</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
+    <title>Downloader YouTube (sem anúncios)</title>
     <style>
-        :root {
-            --bg: #0f1220;
-            --card: #171a2e;
-            --primary: #4f7cff;
-            --primary-hover: #3b66e0;
-            --text: #ffffff;
-            --muted: #a0a3bd;
-            --danger: #ff5c5c;
-            --success: #28a745;
-        }
-
         * {
             box-sizing: border-box;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-
-        body {
             margin: 0;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background: #0b0e14;
             min-height: 100vh;
-            background: radial-gradient(circle at top, #1b1f3b, var(--bg));
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text);
-            padding: 20px;
+            padding: 16px;
+            color: #eef2fb;
         }
-
         .card {
+            max-width: 700px;
             width: 100%;
-            max-width: 600px;
-            background: var(--card);
-            border-radius: 16px;
-            padding: 28px;
-            box-shadow: 0 20px 40px rgba(0,0,0,.4);
+            background: #151e2f;
+            border-radius: 32px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
-
         h1 {
-            margin: 0 0 10px;
-            text-align: center;
-            font-size: 1.8rem;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
         }
-
-        .subtitle {
-            text-align: center;
-            color: var(--muted);
-            font-size: 0.95rem;
-            margin-bottom: 25px;
+        .sub {
+            color: #9aa8c7;
+            margin-bottom: 28px;
         }
-
-        label {
-            font-size: 0.9rem;
-            color: var(--muted);
-        }
-
         .input-group {
             display: flex;
-            gap: 8px;
-            margin-top: 6px;
+            gap: 12px;
+            background: #1f2a40;
+            border-radius: 60px;
+            padding: 4px;
+            border: 1px solid #2e3b55;
         }
-
         .input-group input {
             flex: 1;
-            padding: 14px;
-            border-radius: 10px;
+            background: transparent;
             border: none;
-            outline: none;
+            padding: 16px 20px;
             font-size: 1rem;
+            color: white;
+            outline: none;
         }
-
+        .input-group input::placeholder {
+            color: #6a7c9e;
+        }
         .input-group button {
-            padding: 0 20px;
-            border-radius: 10px;
+            background: #3b6eff;
             border: none;
-            background: var(--primary);
             color: white;
             font-weight: 600;
+            padding: 0 28px;
+            border-radius: 60px;
+            font-size: 1rem;
             cursor: pointer;
             transition: 0.2s;
             white-space: nowrap;
         }
-
         .input-group button:hover {
-            background: var(--primary-hover);
+            background: #2855d0;
         }
-
-        .info-section {
-            margin-top: 25px;
-            border-top: 1px solid #2c2f55;
-            padding-top: 20px;
+        .loading {
+            text-align: center;
+            margin: 30px 0;
         }
-
-        .video-info {
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #2e3b55;
+            border-top-color: #3b6eff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .info-video {
             display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 16px;
+            background: #1f2a40;
+            border-radius: 24px;
+            padding: 16px;
+            margin: 24px 0;
         }
-
-        .video-info img {
-            width: 120px;
-            height: 68px;
+        .info-video img {
+            width: 160px;
+            height: 90px;
             object-fit: cover;
-            border-radius: 8px;
+            border-radius: 16px;
+            background: #2e3b55;
         }
-
-        .video-info h3 {
-            margin: 0 0 5px;
-            font-size: 1rem;
-            color: var(--text);
+        .info-video h3 {
+            margin: 0 0 6px;
+            font-size: 1.2rem;
         }
-
-        .video-info p {
-            margin: 0;
-            font-size: 0.85rem;
-            color: var(--muted);
+        .info-video p {
+            color: #9aa8c7;
+            font-size: 0.9rem;
         }
-
         .qualities {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 16px;
+            margin: 24px 0;
         }
-
         .quality-group {
-            background: #1e2238;
-            border-radius: 12px;
-            padding: 12px;
+            background: #1a2336;
+            border-radius: 20px;
+            padding: 16px;
         }
-
         .quality-group h4 {
-            margin: 0 0 10px;
-            font-size: 0.95rem;
-            color: var(--muted);
+            margin: 0 0 12px;
+            font-size: 1rem;
+            color: #b7c3e0;
             display: flex;
             align-items: center;
             gap: 6px;
         }
-
-        .quality-buttons {
+        .buttons {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
         }
-
-        .quality-btn {
-            background: #2c2f55;
-            color: white;
+        .btn-quality {
+            background: #2a344d;
             border: none;
+            color: white;
             padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
             font-weight: 500;
             cursor: pointer;
             transition: 0.2s;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
         }
-
-        .quality-btn:hover {
-            background: var(--primary);
+        .btn-quality:hover {
+            background: #3b6eff;
         }
-
-        .quality-btn i {
-            font-size: 0.9rem;
-        }
-
-        /* MODAL */
-        .modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,.6);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--card);
-            width: 90%;
-            max-width: 360px;
-            max-height: 80vh;
+        .btn-quality i { font-size: 1rem; }
+        .error {
+            color: #ff6b6b;
+            background: #2a1f1f;
+            padding: 14px;
             border-radius: 16px;
-            padding: 24px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,.5);
-            animation: pop 0.25s ease;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .modal-content.expanded {
-            max-width: 600px;
-        }
-
-        .player-container {
             margin: 20px 0;
-            border-radius: 12px;
-            overflow: hidden;
-            background: #0f1220;
-            max-height: 50vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            text-align: center;
         }
-
-        .player-container audio,
-        .player-container video {
-            width: 100%;
-            max-height: 50vh;
-            display: block;
-            object-fit: contain;
+        .footer {
+            margin-top: 30px;
+            font-size: 0.8rem;
+            text-align: center;
+            color: #6a7c9e;
         }
-
-        @keyframes pop {
-            from { transform: scale(.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .loader {
-            width: 42px;
-            height: 42px;
-            border: 4px solid #2c2f55;
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            margin: 10px auto 20px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .modal-buttons {
-            display: grid;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .modal-buttons.inline {
-            grid-template-columns: 1fr 1fr;
-        }
-
-        .btn-secondary {
-            background: #2c2f55;
-            color: white;
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-
-        a {
+        .footer a {
+            color: #9aa8c7;
             text-decoration: none;
-        }
-
-        .error-message {
-            color: var(--danger);
-            font-size: 0.9rem;
-            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-
 <div class="card">
-    <h1>YouTube Downloader</h1>
-    <div class="subtitle">Cole o link e escolha a qualidade desejada</div>
+    <h1>📥 YouTube Downloader</h1>
+    <div class="sub">sem anúncios · código aberto · rápido</div>
 
-    <label>Link do vídeo do YouTube</label>
     <div class="input-group">
-        <input id="url" type="text" placeholder="https://youtu.be/...">
-        <button onclick="analisarVideo()" id="btnAnalisar">
-            <i class="bi bi-search"></i> Analisar
-        </button>
+        <input type="text" id="urlInput" placeholder="Cole o link do YouTube (ex: https://youtu.be/...)" value="">
+        <button id="analyzeBtn">Analisar</button>
     </div>
 
-    <!-- Área de informações do vídeo e qualidades -->
-    <div id="infoArea" class="info-section" style="display: none;">
-        <div id="videoInfo" class="video-info"></div>
-        <div id="qualitiesContainer" class="qualities"></div>
-    </div>
+    <!-- área de carregamento / erro / resultado -->
+    <div id="resultArea"></div>
 
-    <!-- Mensagem de erro ou carregamento -->
-    <div id="loadingOrError" style="text-align: center; margin-top: 20px;"></div>
-</div>
-
-<!-- MODAL (para download concluído) -->
-<div class="modal" id="modal">
-    <div class="modal-content" id="modal-content">
-        <!-- conteúdo dinâmico -->
+    <div class="footer">
+        🌐 usando a API pública do <a href="https://cobalt.tools" target="_blank">cobalt</a> • sem propagandas
     </div>
 </div>
 
 <script>
-    // ================= CONFIGURAÇÕES DA API =================
-    // Altere para a URL base da sua API (deve suportar os endpoints /info e /download)
-    const API_BASE = "https://speednetssh.com.br/youtube/"; 
+    const API_URL = 'https://api.cobalt.tools/';
+    const urlInput = document.getElementById('urlInput');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const resultArea = document.getElementById('resultArea');
 
-    // ================= ELEMENTOS DOM =================
-    const modal = document.getElementById("modal");
-    const modalContent = document.getElementById("modal-content");
-    const infoArea = document.getElementById("infoArea");
-    const videoInfoDiv = document.getElementById("videoInfo");
-    const qualitiesContainer = document.getElementById("qualitiesContainer");
-    const loadingOrError = document.getElementById("loadingOrError");
-    const urlInput = document.getElementById("url");
+    // estado para guardar o último JSON retornado (útil se a api retornar picker)
+    let lastVideoData = null;
 
-    // ================= FUNÇÕES AUXILIARES =================
-    function abrirModal(html) {
-        modalContent.innerHTML = html;
-        modal.classList.add("active");
-    }
+    analyzeBtn.addEventListener('click', analisarVideo);
+    urlInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') analisarVideo(); });
 
-    function fecharModal() {
-        modal.classList.remove("active");
-        // Parar qualquer reprodução de áudio/vídeo ao fechar
-        const audioEl = modalContent.querySelector("audio");
-        const videoEl = modalContent.querySelector("video");
-        if (audioEl) {
-            audioEl.pause();
-            audioEl.currentTime = 0;
-        }
-        if (videoEl) {
-            videoEl.pause();
-            videoEl.currentTime = 0;
-        }
-    }
-
-    modal.addEventListener("click", e => {
-        if (e.target === modal) fecharModal();
-    });
-
-    // Formata tamanho em bytes (opcional)
-    function formatBytes(bytes, decimals = 2) {
-        if (!bytes || bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const dm = decimals < 0 ? 0 : decimals;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-    }
-
-    // ================= FUNÇÃO PARA ANALISAR O VÍDEO =================
     async function analisarVideo() {
         const url = urlInput.value.trim();
         if (!url) {
-            alert("Cole o link do vídeo.");
+            alert('Por favor, cole uma URL do YouTube.');
             return;
         }
 
         // Mostra loading
-        infoArea.style.display = "none";
-        loadingOrError.innerHTML = `<div class="loader"></div><p>Obtendo informações do vídeo...</p>`;
+        resultArea.innerHTML = `
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Obtendo informações...</p>
+            </div>
+        `;
 
         try {
-            // Faz requisição para obter informações do vídeo e formatos disponíveis
-            const response = await fetch(`${API_BASE}/info`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ url })
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    url: url,
+                    // Parâmetros opcionais para já solicitar formato, mas vamos deixar a API decidir
+                })
             });
 
-            const data = await response.json();
-
-            if (!response.ok || data.status !== "sucesso") {
-                throw new Error(data.message || "Erro ao analisar vídeo");
+            if (!response.ok) {
+                throw new Error(`Erro HTTP ${response.status}`);
             }
 
-            // Preenche as informações do vídeo
-            exibirInfoVideo(data);
-            infoArea.style.display = "block";
-            loadingOrError.innerHTML = "";
+            const data = await response.json();
+            lastVideoData = data; // guarda para uso posterior
+
+            // Se a API retornar erro
+            if (data.status === 'error') {
+                throw new Error(data.text || 'Falha ao processar vídeo');
+            }
+
+            // Exibe o resultado de acordo com o que a API retornar
+            exibirResultado(data, url);
 
         } catch (error) {
-            console.error(error);
-            loadingOrError.innerHTML = `<p class="error-message"><i class="bi bi-exclamation-triangle-fill"></i> ${error.message}</p>`;
-            infoArea.style.display = "none";
+            resultArea.innerHTML = `<div class="error">❌ ${error.message}</div>`;
         }
     }
 
-    // Exibe as informações do vídeo e as qualidades disponíveis
-    function exibirInfoVideo(data) {
-        // data deve conter: titulo, thumbnail, e uma lista de formatos (formatos)
-        // Exemplo de formato: { itag: 18, type: "video", quality: "360p", container: "mp4", size: 1024000, url?: stream_url }
-        // Vamos assumir que a API retorna algo estruturado.
+    function exibirResultado(data, originalUrl) {
+        // Exemplo de estrutura da API cobalt:
+        // { "status": "picker", "picker": [ { "type": "video", "url": "...", "quality": "1080p", ... } ], "audio": "...", "url": "...", "title": "...", "thumbnail": "..." }
+        // { "status": "redirect", "url": "link direto", "filename": "...", ... }
 
-        const video = data.video || {};
-        const formatos = data.formatos || [];
-
-        // Separar formatos de vídeo e áudio
-        const videos = formatos.filter(f => f.type === "video" || f.container === "mp4");
-        const audios = formatos.filter(f => f.type === "audio" || f.container === "mp3" || f.audioBitrate);
-
-        // Montar HTML das informações do vídeo
-        let infoHtml = '';
-        if (video.thumbnail) {
-            infoHtml += `<img src="${video.thumbnail}" alt="thumbnail">`;
-        } else {
-            infoHtml += `<div style="width:120px; height:68px; background:#2c2f55; border-radius:8px; display:flex; align-items:center; justify-content:center;"><i class="bi bi-film" style="font-size:2rem; color:var(--muted);"></i></div>`;
-        }
-        infoHtml += `<div><h3>${video.titulo || 'Sem título'}</h3><p>${video.duracao || ''}</p></div>`;
-        videoInfoDiv.innerHTML = infoHtml;
-
-        // Montar botões de qualidade
-        let qualitiesHtml = '';
-
-        if (videos.length > 0) {
-            qualitiesHtml += `
-                <div class="quality-group">
-                    <h4><i class="bi bi-camera-video-fill"></i> Vídeo</h4>
-                    <div class="quality-buttons">
-                        ${videos.map(f => {
-                            const label = f.qualidade || f.quality || f.container || 'Desconhecido';
-                            const size = f.tamanho ? formatBytes(f.tamanho) : '';
-                            return `<button class="quality-btn" onclick="baixar('${f.itag}')" title="${size}"><i class="bi bi-download"></i> ${label} ${size ? '('+size+')' : ''}</button>`;
-                        }).join('')}
+        // Se já tiver um link direto (status "redirect") ou "success", podemos exibir direto
+        if (data.status === 'redirect' || data.status === 'success' || data.url) {
+            // link direto (provavelmente já escolheu a melhor qualidade)
+            resultArea.innerHTML = `
+                <div style="margin: 24px 0; text-align: center;">
+                    <div style="background: #1a6d3b; padding: 16px; border-radius: 60px;">
+                        <p style="margin-bottom: 12px;"><strong>✅ Download pronto</strong></p>
+                        <a href="${data.url}" target="_blank" style="background: white; color: #0b0e14; padding: 10px 24px; border-radius: 40px; font-weight: 600; text-decoration: none;">📥 Baixar agora</a>
                     </div>
                 </div>
             `;
-        }
-
-        if (audios.length > 0) {
-            qualitiesHtml += `
-                <div class="quality-group">
-                    <h4><i class="bi bi-music-note-beamed"></i> Áudio</h4>
-                    <div class="quality-buttons">
-                        ${audios.map(f => {
-                            const label = f.qualidade || (f.audioBitrate ? f.audioBitrate + ' kbps' : 'MP3');
-                            const size = f.tamanho ? formatBytes(f.tamanho) : '';
-                            return `<button class="quality-btn" onclick="baixar('${f.itag}')"><i class="bi bi-download"></i> ${label} ${size ? '('+size+')' : ''}</button>`;
-                        }).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        if (formatos.length === 0) {
-            qualitiesHtml = '<p style="color:var(--muted);">Nenhuma qualidade disponível.</p>';
-        }
-
-        qualitiesContainer.innerHTML = qualitiesHtml;
-    }
-
-    // ================= FUNÇÃO PARA BAIXAR COM ITAG SELECIONADA =================
-    async function baixar(itag) {
-        const url = urlInput.value.trim();
-        if (!url) {
-            alert("URL não encontrada.");
             return;
         }
 
-        // Abre modal de processamento
-        abrirModal(`
-            <div class="loader"></div>
-            <h3>Processando...</h3>
-            <p>Preparando o download</p>
-        `);
+        // Se for um "picker" (múltiplas opções)
+        if (data.status === 'picker' && data.picker) {
+            let html = '';
 
-        try {
-            // Faz requisição para o endpoint de download passando a itag
-            const response = await fetch(`${API_BASE}/download`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ url, itag }) // enviamos itag em vez de format
-            });
-
-            const data = await response.json();
-
-            if (!response.ok || data.status !== "sucesso") {
-                throw new Error(data.message || "Erro ao processar download");
+            // Informações do vídeo (se houver)
+            if (data.thumbnail || data.title) {
+                html += `<div class="info-video">`;
+                if (data.thumbnail) html += `<img src="${data.thumbnail}" alt="thumbnail">`;
+                html += `<div><h3>${data.title || 'Vídeo'}</h3>`;
+                if (data.duration) html += `<p>⏱️ ${data.duration}</p>`;
+                html += `</div></div>`;
             }
 
-            // Verifica se é vídeo ou áudio (pela extensão ou pelo itag)
-            const isVideo = data.container === 'mp4' || (data.filename && data.filename.endsWith('.mp4'));
-            const playerTag = isVideo 
-                ? `<video controls style="width: 100%;"><source src="${data.stream}" type="video/mp4"></video>`
-                : `<audio controls style="width: 100%; height: 50px;"><source src="${data.stream}" type="audio/mpeg"></audio>`;
+            // Separa vídeo e áudio
+            const videoOptions = data.picker.filter(opt => opt.type === 'video');
+            const audioOptions = data.picker.filter(opt => opt.type === 'audio');
 
-            // Exibe modal com player e botão de download
-            modalContent.classList.add("expanded");
-            abrirModal(`
-                <h3><i class="bi bi-check-circle-fill" style="color:var(--success);"></i> Download concluído</h3>
-                <div class="player-container">
-                    ${playerTag}
-                </div>
-                <div class="modal-buttons inline">
-                    <a href="${data.download}" download>
-                        <button class="btn-video" style="background:var(--success);"><i class="bi bi-download"></i> Salvar</button>
-                    </a>
-                    <button class="btn-danger" onclick="fecharModal()"><i class="bi bi-x-circle"></i> Fechar</button>
-                </div>
-            `);
+            // Container de qualidades
+            html += `<div class="qualities">`;
 
-        } catch (error) {
-            abrirModal(`
-                <h3><i class="bi bi-exclamation-triangle-fill"></i> Erro</h3>
-                <p>${error.message}</p>
-                <button class="btn-danger" onclick="fecharModal()"><i class="bi bi-x-circle"></i> OK</button>
-            `);
+            // Opções de vídeo
+            if (videoOptions.length) {
+                html += `<div class="quality-group"><h4>🎬 Vídeo</h4><div class="buttons">`;
+                videoOptions.forEach(opt => {
+                    const label = opt.quality || opt.text || 'Desconhecido';
+                    const size = opt.size ? ` (${opt.size})` : '';
+                    html += `<button class="btn-quality" onclick="baixarUrl('${opt.url}')"><i class="⬇️"></i> ${label}${size}</button>`;
+                });
+                html += `</div></div>`;
+            }
+
+            // Opções de áudio
+            if (audioOptions.length) {
+                html += `<div class="quality-group"><h4>🎵 Áudio</h4><div class="buttons">`;
+                audioOptions.forEach(opt => {
+                    const label = opt.quality || (opt.bitrate ? opt.bitrate + ' kbps' : 'MP3');
+                    const size = opt.size ? ` (${opt.size})` : '';
+                    html += `<button class="btn-quality" onclick="baixarUrl('${opt.url}')"><i class="⬇️"></i> ${label}${size}</button>`;
+                });
+                html += `</div></div>`;
+            }
+
+            html += `</div>`;
+
+            // Se houver áudio separado (as vezes vem em "audio")
+            if (data.audio) {
+                html += `<div style="margin-top: 16px;"><button class="btn-quality" onclick="baixarUrl('${data.audio}')">🎧 Baixar só áudio (melhor qualidade)</button></div>`;
+            }
+
+            resultArea.innerHTML = html;
+        } else {
+            // Fallback: se não reconhecer o formato, mostra o JSON
+            resultArea.innerHTML = `<pre style="background: #1f2a40; padding: 16px; border-radius: 16px; overflow: auto;">${JSON.stringify(data, null, 2)}</pre>`;
         }
     }
 
-    // Opção de pressionar Enter no campo de URL para analisar
-    urlInput.addEventListener("keypress", function(event) {
-        if (event.key === "Enter") {
-            analisarVideo();
+    // Função global para baixar a URL escolhida (abre em nova aba)
+    window.baixarUrl = function(downloadUrl) {
+        if (downloadUrl) {
+            window.open(downloadUrl, '_blank');
+        } else {
+            alert('Link indisponível');
         }
-    });
-
-    // ================= FUNÇÕES LEGADO (caso queira manter compatibilidade) =================
-    // As funções antigas foram removidas. O código agora utiliza analisarVideo e baixar(itag)
+    };
 </script>
-
-<!-- REMOVIDA A PROPAGANDA E REDIRECIONAMENTOS -->
-<!-- Nenhum script de monetização ou redirecionamento está presente -->
-
 </body>
 </html>
