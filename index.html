@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Teste Completo - Lista de Equipamentos</title>
+    <title>Teste CRUD - Equipamentos</title>
     <style>
         * {
             margin: 0;
@@ -12,7 +12,7 @@
         }
         body {
             font-family: Arial, sans-serif;
-            background: #f5f7fa;
+            background: #f0f2f5;
             padding: 20px;
             min-height: 100vh;
             display: flex;
@@ -20,196 +20,404 @@
             align-items: center;
         }
         .container {
-            max-width: 600px;
+            max-width: 700px;
             width: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
         h1 {
             font-size: 28px;
             color: #2c3e50;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             text-align: center;
         }
+        .btn-adicionar {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 30px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn-adicionar:hover {
+            background: #27ae60;
+        }
+        .lista-equipamentos {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
         .card {
-            background: white;
+            background: #f8fafc;
             border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 15px;
+            border-left: 6px solid #3498db;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .card-header h3 {
-            color: #3498db;
+            color: #2c3e50;
+            font-size: 20px;
         }
         .status {
-            font-size: 14px;
             padding: 5px 12px;
             border-radius: 20px;
-            color: white;
+            font-size: 13px;
             font-weight: bold;
+            color: white;
         }
-        .status.ok { background: #2ecc71; }
-        .status.warning { background: #f39c12; }
-        .status.expired { background: #e74c3c; }
-        .detalhes {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 2px solid #ecf0f1;
-            display: none; /* oculto por padrão */
+        .status.valido { background: #2ecc71; }
+        .status.atencao { background: #f39c12; }
+        .status.vencido { background: #e74c3c; }
+        .info-resumo {
+            display: flex;
+            gap: 15px;
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
         }
-        .detalhes.visivel {
-            display: block;
+        .botoes-card {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
-        .linha {
+        .btn {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: opacity 0.3s;
+        }
+        .btn.ver { background: #3498db; }
+        .btn.editar { background: #f39c12; }
+        .btn.excluir { background: #e74c3c; }
+        .btn:hover { opacity: 0.8; }
+
+        /* Painel de detalhes */
+        .painel-detalhes {
+            background: #eef2f7;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 25px;
+            border: 2px solid #3498db;
+        }
+        .painel-detalhes h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .detalhe-linha {
             display: flex;
             padding: 8px 0;
-            border-bottom: 1px dashed #ecf0f1;
+            border-bottom: 1px solid #d0d9e5;
         }
-        .linha .label {
+        .detalhe-linha .rotulo {
             font-weight: bold;
             width: 40%;
-            color: #7f8c8d;
+            color: #34495e;
         }
-        .linha .valor {
+        .detalhe-linha .valor {
             width: 60%;
             color: #2c3e50;
         }
-        .obs {
-            background: #fff9e6;
-            padding: 12px;
-            border-radius: 8px;
-            margin: 15px 0;
-        }
-        .botoes-acao {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
-        .btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            color: white;
-            text-align: center;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .btn.editar {
-            background: #3498db;
-        }
-        .btn.excluir {
-            background: #e74c3c;
-        }
-        .btn.ver {
+        .fechar-detalhes {
             background: #95a5a6;
             color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
             cursor: pointer;
-            display: inline-block;
-            font-size: 14px;
+            margin-top: 15px;
+            font-weight: bold;
         }
-        .btn.ver:hover {
-            background: #7f8c8d;
+
+        /* Formulário de adicionar/editar */
+        .formulario {
+            background: #fef9e7;
+            border: 2px solid #f1c40f;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
         }
+        .formulario h3 {
+            color: #7d5a2e;
+            margin-bottom: 15px;
+        }
+        .campo {
+            margin-bottom: 15px;
+        }
+        .campo label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        .campo input, .campo select, .campo textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .botoes-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn.salvar { background: #2ecc71; }
+        .btn.cancelar { background: #95a5a6; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📋 Equipamentos de Segurança</h1>
+        <h1>🔧 Gerenciar Equipamentos</h1>
 
-        <!-- Equipamento 1 -->
-        <div class="card" id="eq1">
-            <div class="card-header">
-                <h3>🧯 Mangueira de Incêndio</h3>
-                <span class="status warning">Próximo ao vencimento</span>
-            </div>
-            <p><strong>Código:</strong> EXT-001</p>
-            <p><strong>Local:</strong> Setor A - Corredor 1</p>
-            <button class="btn ver" onclick="toggleDetalhes('eq1')">Ver detalhes</button>
+        <!-- Botão Adicionar -->
+        <button class="btn-adicionar" onclick="mostrarFormularioAdicionar()">+ Adicionar Novo Equipamento</button>
 
-            <div class="detalhes" id="detalhes-eq1">
-                <div class="linha"><span class="label">Descrição:</span><span class="valor">Mangueira 15m - DN 40</span></div>
-                <div class="linha"><span class="label">Área:</span><span class="valor">Setor A</span></div>
-                <div class="linha"><span class="label">Local exato:</span><span class="valor">Corredor 1, parede lateral</span></div>
-                <div class="linha"><span class="label">Fabricação:</span><span class="valor">15/03/2023</span></div>
-                <div class="linha"><span class="label">Última inspeção:</span><span class="valor">10/01/2025</span></div>
-                <div class="linha"><span class="label">Próxima validade:</span><span class="valor">10/06/2025</span></div>
-                <div class="linha"><span class="label">Dias restantes:</span><span class="valor">30 dias</span></div>
-                <div class="linha"><span class="label">Chave Storz:</span><span class="valor">Sim</span></div>
-                <div class="linha"><span class="label">Adaptador Storz:</span><span class="valor">Não</span></div>
-                <div class="obs"><strong>Obs:</strong> Inspecionar conexões mensalmente. Pequeno desgaste na ponta.</div>
-                <div class="botoes-acao">
-                    <button class="btn editar" onclick="alert('Editar equipamento EXT-001')">✏️ Editar</button>
-                    <button class="btn excluir" onclick="alert('Excluir equipamento EXT-001')">🗑️ Excluir</button>
-                </div>
-            </div>
+        <!-- Lista de Equipamentos -->
+        <div id="listaEquipamentos" class="lista-equipamentos">
+            <!-- Os cards serão gerados via JavaScript -->
         </div>
 
-        <!-- Equipamento 2 -->
-        <div class="card" id="eq2">
-            <div class="card-header">
-                <h3>🧯 Extintor CO2</h3>
-                <span class="status ok">Válido</span>
-            </div>
-            <p><strong>Código:</strong> EXT-045</p>
-            <p><strong>Local:</strong> Setor B - Sala de máquinas</p>
-            <button class="btn ver" onclick="toggleDetalhes('eq2')">Ver detalhes</button>
-
-            <div class="detalhes" id="detalhes-eq2">
-                <div class="linha"><span class="label">Capacidade:</span><span class="valor">6kg</span></div>
-                <div class="linha"><span class="label">Área:</span><span class="valor">Setor B</span></div>
-                <div class="linha"><span class="label">Local:</span><span class="valor">Sala de máquinas, entrada</span></div>
-                <div class="linha"><span class="label">Fabricação:</span><span class="valor">10/02/2024</span></div>
-                <div class="linha"><span class="label">Última inspeção:</span><span class="valor">10/02/2025</span></div>
-                <div class="linha"><span class="label">Próxima validade:</span><span class="valor">10/02/2026</span></div>
-                <div class="linha"><span class="label">Dias restantes:</span><span class="valor">350 dias</span></div>
-                <div class="obs"><strong>Obs:</strong> Extintor novo, sem observações.</div>
-                <div class="botoes-acao">
-                    <button class="btn editar" onclick="alert('Editar equipamento EXT-045')">✏️ Editar</button>
-                    <button class="btn excluir" onclick="alert('Excluir equipamento EXT-045')">🗑️ Excluir</button>
-                </div>
-            </div>
+        <!-- Painel de Detalhes (inicialmente oculto) -->
+        <div id="painelDetalhes" class="painel-detalhes" style="display: none;">
+            <h2>📋 Detalhes Completos</h2>
+            <div id="conteudoDetalhes"></div>
+            <button class="fechar-detalhes" onclick="fecharDetalhes()">Fechar</button>
         </div>
 
-        <!-- Equipamento 3 -->
-        <div class="card" id="eq3">
-            <div class="card-header">
-                <h3>🧯 Extintor Pó Químico</h3>
-                <span class="status expired">Vencido</span>
+        <!-- Formulário de Adicionar/Editar (inicialmente oculto) -->
+        <div id="formularioEquipamento" class="formulario" style="display: none;">
+            <h3 id="tituloFormulario">Adicionar Equipamento</h3>
+            <input type="hidden" id="equipamentoId">
+            <div class="campo">
+                <label for="campoCodigo">Código *</label>
+                <input type="text" id="campoCodigo" placeholder="Ex: EXT-001">
             </div>
-            <p><strong>Código:</strong> EXT-078</p>
-            <p><strong>Local:</strong> Setor C - Depósito</p>
-            <button class="btn ver" onclick="toggleDetalhes('eq3')">Ver detalhes</button>
-
-            <div class="detalhes" id="detalhes-eq3">
-                <div class="linha"><span class="label">Capacidade:</span><span class="valor">12kg</span></div>
-                <div class="linha"><span class="label">Área:</span><span class="valor">Setor C</span></div>
-                <div class="linha"><span class="label">Local:</span><span class="valor">Depósito, canto esquerdo</span></div>
-                <div class="linha"><span class="label">Fabricação:</span><span class="valor">05/01/2020</span></div>
-                <div class="linha"><span class="label">Última inspeção:</span><span class="valor">05/01/2024</span></div>
-                <div class="linha"><span class="label">Próxima validade:</span><span class="valor">05/01/2025</span></div>
-                <div class="linha"><span class="label">Dias restantes:</span><span class="valor">-50 dias</span></div>
-                <div class="obs"><strong>Obs:</strong> Necessário recarga urgente.</div>
-                <div class="botoes-acao">
-                    <button class="btn editar" onclick="alert('Editar equipamento EXT-078')">✏️ Editar</button>
-                    <button class="btn excluir" onclick="alert('Excluir equipamento EXT-078')">🗑️ Excluir</button>
-                </div>
+            <div class="campo">
+                <label for="campoTipo">Tipo *</label>
+                <input type="text" id="campoTipo" placeholder="Ex: Mangueira, Extintor...">
+            </div>
+            <div class="campo">
+                <label for="campoDescricao">Descrição</label>
+                <textarea id="campoDescricao" rows="2" placeholder="Descrição breve"></textarea>
+            </div>
+            <div class="campo">
+                <label for="campoArea">Área</label>
+                <input type="text" id="campoArea" placeholder="Ex: Setor A">
+            </div>
+            <div class="campo">
+                <label for="campoLocal">Local</label>
+                <input type="text" id="campoLocal" placeholder="Ex: Corredor 1">
+            </div>
+            <div class="campo">
+                <label for="campoValidade">Validade</label>
+                <input type="date" id="campoValidade">
+            </div>
+            <div class="campo">
+                <label for="campoObs">Observações</label>
+                <textarea id="campoObs" rows="2"></textarea>
+            </div>
+            <div class="botoes-form">
+                <button class="btn salvar" onclick="salvarEquipamento()">Salvar</button>
+                <button class="btn cancelar" onclick="esconderFormulario()">Cancelar</button>
             </div>
         </div>
     </div>
 
     <script>
-        function toggleDetalhes(id) {
-            var detalhes = document.getElementById('detalhes-' + id);
-            detalhes.classList.toggle('visivel');
+        // Banco de dados em memória
+        let equipamentos = [
+            { id: 1, codigo: 'EXT-001', tipo: 'Mangueira', descricao: 'Mangueira 15m', area: 'Setor A', local: 'Corredor 1', validade: '2025-06-10', obs: 'Inspecionar conexões' },
+            { id: 2, codigo: 'EXT-045', tipo: 'Extintor CO2', descricao: '6kg', area: 'Setor B', local: 'Sala máquinas', validade: '2026-02-10', obs: 'Novo' },
+            { id: 3, codigo: 'EXT-078', tipo: 'Extintor Pó', descricao: '12kg', area: 'Setor C', local: 'Depósito', validade: '2025-01-05', obs: 'Vencido' }
+        ];
+        let proximoId = 4;
+
+        // Elementos da UI
+        const listaDiv = document.getElementById('listaEquipamentos');
+        const painelDetalhes = document.getElementById('painelDetalhes');
+        const conteudoDetalhes = document.getElementById('conteudoDetalhes');
+        const formulario = document.getElementById('formularioEquipamento');
+        const tituloForm = document.getElementById('tituloFormulario');
+        const equipamentoId = document.getElementById('equipamentoId');
+        const campoCodigo = document.getElementById('campoCodigo');
+        const campoTipo = document.getElementById('campoTipo');
+        const campoDescricao = document.getElementById('campoDescricao');
+        const campoArea = document.getElementById('campoArea');
+        const campoLocal = document.getElementById('campoLocal');
+        const campoValidade = document.getElementById('campoValidade');
+        const campoObs = document.getElementById('campoObs');
+
+        // Função para renderizar a lista
+        function renderizarLista() {
+            listaDiv.innerHTML = '';
+            equipamentos.forEach(eq => {
+                const statusClass = calcularStatus(eq.validade);
+                const statusText = statusClass === 'valido' ? 'Válido' : (statusClass === 'atencao' ? 'Atenção' : 'Vencido');
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3>${eq.tipo || 'Sem tipo'}</h3>
+                        <span class="status ${statusClass}">${statusText}</span>
+                    </div>
+                    <div class="info-resumo">
+                        <span><strong>Código:</strong> ${eq.codigo || 'N/A'}</span>
+                        <span><strong>Área:</strong> ${eq.area || 'N/A'}</span>
+                    </div>
+                    <div class="botoes-card">
+                        <button class="btn ver" onclick="verDetalhes(${eq.id})">Ver</button>
+                        <button class="btn editar" onclick="editarEquipamento(${eq.id})">Editar</button>
+                        <button class="btn excluir" onclick="excluirEquipamento(${eq.id})">Excluir</button>
+                    </div>
+                `;
+                listaDiv.appendChild(card);
+            });
         }
+
+        // Calcular status com base na validade
+        function calcularStatus(validade) {
+            if (!validade) return 'atencao'; // sem validade
+            const hoje = new Date();
+            const val = new Date(validade + 'T00:00:00');
+            const diff = Math.ceil((val - hoje) / (1000 * 60 * 60 * 24));
+            if (diff < 0) return 'vencido';
+            if (diff <= 30) return 'atencao';
+            return 'valido';
+        }
+
+        // Formatar data para exibição (YYYY-MM-DD para DD/MM/YYYY)
+        function formatarData(data) {
+            if (!data) return 'Não informada';
+            const partes = data.split('-');
+            if (partes.length === 3) return `${partes[2]}/${partes[1]}/${partes[0]}`;
+            return data;
+        }
+
+        // Mostrar detalhes de um equipamento
+        function verDetalhes(id) {
+            const eq = equipamentos.find(e => e.id === id);
+            if (!eq) return;
+            let html = `
+                <div class="detalhe-linha"><span class="rotulo">Código:</span><span class="valor">${eq.codigo || 'N/A'}</span></div>
+                <div class="detalhe-linha"><span class="rotulo">Tipo:</span><span class="valor">${eq.tipo || 'N/A'}</span></div>
+                <div class="detalhe-linha"><span class="rotulo">Descrição:</span><span class="valor">${eq.descricao || 'N/A'}</span></div>
+                <div class="detalhe-linha"><span class="rotulo">Área:</span><span class="valor">${eq.area || 'N/A'}</span></div>
+                <div class="detalhe-linha"><span class="rotulo">Local:</span><span class="valor">${eq.local || 'N/A'}</span></div>
+                <div class="detalhe-linha"><span class="rotulo">Validade:</span><span class="valor">${formatarData(eq.validade)}</span></div>
+                <div class="detalhe-linha"><span class="rotulo">Observações:</span><span class="valor">${eq.obs || 'N/A'}</span></div>
+            `;
+            // Se for mangueira, adiciona campos extras (exemplo)
+            if (eq.tipo && eq.tipo.toLowerCase().includes('mangueira')) {
+                html += `
+                    <div class="detalhe-linha"><span class="rotulo">Chave Storz:</span><span class="valor">Sim</span></div>
+                    <div class="detalhe-linha"><span class="rotulo">Adaptador Storz:</span><span class="valor">Não</span></div>
+                `;
+            }
+            conteudoDetalhes.innerHTML = html;
+            painelDetalhes.style.display = 'block';
+        }
+
+        function fecharDetalhes() {
+            painelDetalhes.style.display = 'none';
+        }
+
+        // Abrir formulário para adicionar
+        function mostrarFormularioAdicionar() {
+            tituloForm.innerText = 'Adicionar Equipamento';
+            equipamentoId.value = '';
+            campoCodigo.value = '';
+            campoTipo.value = '';
+            campoDescricao.value = '';
+            campoArea.value = '';
+            campoLocal.value = '';
+            campoValidade.value = '';
+            campoObs.value = '';
+            formulario.style.display = 'block';
+        }
+
+        // Editar equipamento: preencher formulário com dados existentes
+        function editarEquipamento(id) {
+            const eq = equipamentos.find(e => e.id === id);
+            if (!eq) return;
+            tituloForm.innerText = 'Editar Equipamento';
+            equipamentoId.value = eq.id;
+            campoCodigo.value = eq.codigo || '';
+            campoTipo.value = eq.tipo || '';
+            campoDescricao.value = eq.descricao || '';
+            campoArea.value = eq.area || '';
+            campoLocal.value = eq.local || '';
+            campoValidade.value = eq.validade || '';
+            campoObs.value = eq.obs || '';
+            formulario.style.display = 'block';
+        }
+
+        function esconderFormulario() {
+            formulario.style.display = 'none';
+        }
+
+        // Salvar (adicionar ou atualizar)
+        function salvarEquipamento() {
+            const id = equipamentoId.value ? parseInt(equipamentoId.value) : null;
+            const dados = {
+                codigo: campoCodigo.value.trim(),
+                tipo: campoTipo.value.trim(),
+                descricao: campoDescricao.value.trim(),
+                area: campoArea.value.trim(),
+                local: campoLocal.value.trim(),
+                validade: campoValidade.value,
+                obs: campoObs.value.trim()
+            };
+            if (!dados.codigo || !dados.tipo) {
+                alert('Código e Tipo são obrigatórios!');
+                return;
+            }
+            if (id) {
+                // Atualizar
+                const index = equipamentos.findIndex(e => e.id === id);
+                if (index !== -1) {
+                    equipamentos[index] = { ...equipamentos[index], ...dados };
+                }
+            } else {
+                // Adicionar novo
+                dados.id = proximoId++;
+                equipamentos.push(dados);
+            }
+            renderizarLista();
+            esconderFormulario();
+        }
+
+        // Excluir equipamento
+        function excluirEquipamento(id) {
+            if (confirm('Tem certeza que deseja excluir este equipamento?')) {
+                equipamentos = equipamentos.filter(e => e.id !== id);
+                renderizarLista();
+                // Se detalhes estiver aberto desse equipamento, fechar
+                fecharDetalhes();
+            }
+        }
+
+        // Inicializar
+        renderizarLista();
     </script>
 </body>
 </html>
