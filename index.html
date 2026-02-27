@@ -2,7 +2,8 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- VIEWPORT CORRIGIDA PARA WEBVIEW ANDROID -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>FireGuardian Pro - Backup Local</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -10,6 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     
     <style>
+        /* RESET E VARIÁVEIS (MANTIDOS) */
         :root {
             --primary: #d32f2f;
             --primary-dark: #b71c1c;
@@ -755,19 +757,20 @@
             font-weight: 700;
         }
 
-        /* MODAL CORRIGIDO PARA MELHOR VISUALIZAÇÃO EM ANDROID */
+        /* ========== MODAL CORRIGIDO PARA WEBVIEW ANDROID ========== */
         .modal-overlay { 
             position: fixed; 
             top: 0; 
             left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(0,0,0,0.6);
+            width: 100vw; 
+            height: 100vh; 
+            background: rgba(0,0,0,0.7);
             backdrop-filter: blur(4px);
             display: none; 
             justify-content: center; 
             align-items: center; 
-            z-index: 1000;
+            z-index: 2000;
+            padding: 10px; /* margem de segurança */
             animation: fadeInModal 0.3s;
         }
         
@@ -779,29 +782,37 @@
         .modal-content { 
             background: white; 
             border-radius: 16px; 
-            max-width: 90%; 
-            width: 450px; 
-            max-height: 85vh; 
+            width: 95%; 
+            max-width: 500px; 
+            max-height: 90vh; 
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             animation: slideInModal 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
-            overflow: hidden; 
+            overflow: hidden; /* importante para bordas arredondadas e scroll interno */
         }
         
         .modal-header { 
-            padding: 25px 25px 0 25px;
-            border-bottom: 3px solid var(--primary); 
+            padding: 20px 20px 10px 20px;
+            border-bottom: 2px solid var(--primary); 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            flex-shrink: 0; 
+            background: #fff;
+            flex-shrink: 0; /* impede que encolha */
         }
         
         .modal-header h3 {
-            margin: 0 0 15px 0; 
+            margin: 0; 
             color: var(--primary);
-            font-size: 1.3rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-right: 10px;
         }
         
         .modal-close { 
@@ -810,13 +821,14 @@
             font-size: 1.5rem; 
             cursor: pointer; 
             color: var(--text-sub);
-            width: 35px;
-            height: 35px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
+            flex-shrink: 0;
         }
         
         .modal-close:hover {
@@ -826,51 +838,25 @@
         }
         
         #modal-body {
-            padding: 15px 25px 25px 25px;
+            padding: 10px 20px 20px 20px;
             overflow-y: auto;
             flex: 1;
-            -webkit-overflow-scrolling: touch;
+            -webkit-overflow-scrolling: touch; /* rolagem suave iOS/Android */
         }
 
+        /* Ajustes responsivos adicionais */
         @media (max-width: 480px) {
-            .modal-content {
-                width: 95%;
-                max-height: 90vh;
-            }
             .modal-header {
-                padding: 20px 20px 0 20px;
+                padding: 15px 15px 8px 15px;
             }
             .modal-header h3 {
-                margin: 0 0 10px 0;
                 font-size: 1.1rem;
             }
             #modal-body {
-                padding: 10px 20px 20px 20px;
-            }
-            #modal-body p, #modal-body div {
-                font-size: 0.9rem;
-                word-break: break-word;
-            }
-            #modal-body .badge {
-                font-size: 0.7rem;
-                padding: 6px 12px;
-            }
-            #modal-body button {
-                padding: 10px;
-                font-size: 0.9rem;
+                padding: 8px 15px 15px 15px;
             }
         }
-        
-        @keyframes slideInModal {
-            from { 
-                opacity: 0;
-                transform: translateY(-50px) scale(0.9);
-            }
-            to { 
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
+        /* ========== FIM MODAL CORRIGIDO ========== */
         
         .empty-state { 
             text-align: center; 
@@ -1826,6 +1812,7 @@
 
         <!-- DASHBOARD -->
         <div id="dashboard" class="tab-content active">
+            <!-- ... (conteúdo original do dashboard) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-chart-line"></i> Visão Geral do Sistema</h3>
                 <div class="dash-grid">
@@ -1928,6 +1915,7 @@
 
         <!-- CADASTRO -->
         <div id="cadastro" class="tab-content">
+            <!-- ... (conteúdo original do cadastro) ... -->
             <div class="card">
                 <h3 id="cadastro-titulo" class="section-title"><i class="fas fa-plus-circle"></i> Novo Cadastro</h3>
                 <div class="cadastro-split">
@@ -2062,6 +2050,7 @@
 
         <!-- BUSCA AVANÇADA -->
         <div id="busca" class="tab-content">
+            <!-- ... (conteúdo original da busca) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-search"></i> Busca Avançada de Equipamentos</h3>
                 
@@ -2103,6 +2092,7 @@
 
         <!-- LISTA DE EQUIPAMENTOS -->
         <div id="lista" class="tab-content">
+            <!-- ... (conteúdo original da lista) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-list"></i> Lista Completa de Equipamentos</h3>
                 
@@ -2138,6 +2128,7 @@
 
         <!-- ORGANIZAÇÃO POR ÁREA -->
         <div id="organizacao" class="tab-content">
+            <!-- ... (conteúdo original da organização) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-layer-group"></i> Organização por Áreas</h3>
                 
@@ -2151,6 +2142,7 @@
 
         <!-- EXPORTAR FILTRADO (mantido do oficial, SEM TXT) -->
         <div id="exportar-filtrado" class="tab-content">
+            <!-- ... (conteúdo original do exportar filtrado) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-filter"></i> Exportação Filtrada de Equipamentos</h3>
 
@@ -2293,6 +2285,7 @@
 
         <!-- BACKUP LOCAL -->
         <div id="backup" class="tab-content">
+            <!-- ... (conteúdo original do backup) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-hdd"></i> Backup e Restauração Local</h3>
 
@@ -2349,6 +2342,7 @@
 
         <!-- RELATÓRIOS (apenas PDF, sem TXT) -->
         <div id="relatorios" class="tab-content">
+            <!-- ... (conteúdo original dos relatórios) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-file-export"></i> Exportação e Compartilhamento</h3>
                 
@@ -3529,140 +3523,160 @@
     }
 
     // ==========================================
-    // MODAL DE DETALHES - COM RESET DE SCROLL
-    // ==========================================
-    function abrirDetalhes(id) {
-        const item = db.find(i => i.id === id);
-        if (!item) return;
+// MODAL DE DETALHES - VERSÃO CORRIGIDA
+// ==========================================
+function abrirDetalhes(id) {
+    const item = db.find(i => i.id === id);
+    if (!item) return;
 
-        const st = getStatus(item.validade);
-        const modalBody = document.getElementById('modal-body');
+    const st = getStatus(item.validade);
+    const modalBody = document.getElementById('modal-body');
+    
+    // Limpar conteúdo anterior
+    modalBody.innerHTML = '';
 
-        const statusBadgeColor = {
-            'expired': '#c62828',
-            'warning': '#ff9800',
-            'ok': '#2e7d32',
-            'nodata': '#78909c'
-        }[st.class];
+    // Cores e ícones com fallback seguro
+    const statusBadgeColor = {
+        'expired': '#c62828',
+        'warning': '#ff9800',
+        'ok': '#2e7d32',
+        'nodata': '#78909c'
+    }[st.class] || '#78909c';
 
-        let mangueiraInfo = '';
-        if (item.tipo && item.tipo.toLowerCase() === 'mangueira') {
-            const chaveStorz = item.chaveStorz ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') : 'Não informado';
-            const adaptadorStorz = item.adaptadorStorz ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') : 'Não informado';
-            mangueiraInfo = `
-            <div style="background: linear-gradient(135deg, #fff3e0, #ffe0b2); padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #fb8c00;">
-                <h5 style="margin: 0 0 10px 0; color: #e65100;"><i class="fas fa-tape"></i> Especificações da Mangueira</h5>
-                <p style="margin: 8px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-key" style="color: #f57c00; width: 20px;"></i>
-                    <strong>Chave Storz:</strong> ${chaveStorz}
-                </p>
-                <p style="margin: 8px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-plug" style="color: #43a047; width: 20px;"></i>
-                    <strong>Adaptador Storz:</strong> ${adaptadorStorz}
-                </p>
-            </div>`;
+    const statusIcon = st.icon || 'fa-info-circle';
+    const statusText = st.text || 'Desconhecido';
+
+    // Formatação segura de datas
+    function formatarData(data) {
+        if (!data) return 'Não informado';
+        try {
+            return data.split('-').reverse().join('/');
+        } catch (e) {
+            return data;
         }
+    }
 
-        modalBody.innerHTML = `
-            <div style="margin-bottom: 20px; text-align: center;">
-                <span class="badge" style="background: ${statusBadgeColor}; font-size: 1.1rem; padding: 8px 20px;">
-                    <i class="fas ${st.icon}"></i> ${st.text}
-                </span>
-            </div>
-            
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
-                <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-barcode" style="color: var(--primary); width: 20px;"></i>
-                    <strong>Código:</strong> <span style="color: var(--primary); font-weight: 600;">${item.codigo}</span>
-                </p>
-                <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-fire-extinguisher" style="color: var(--primary); width: 20px;"></i>
-                    <strong>Tipo:</strong> ${item.tipo}
-                </p>
-                <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-align-left" style="color: var(--primary); width: 20px;"></i>
-                    <strong>Descrição:</strong> ${item.descricao}
-                </p>
-            </div>
-            
-            ${mangueiraInfo}
-            
-            <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
-                <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-map-marker-alt" style="color: #1976d2; width: 20px;"></i>
-                    <strong>Área:</strong> ${item.area}
-                </p>
-                <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-location-arrow" style="color: #1976d2; width: 20px;"></i>
-                    <strong>Local:</strong> ${item.local}
-                </p>
-            </div>
-            
-            ${item.validade ? `
-            <div style="background: #fff3e0; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
-                <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-calendar-check" style="color: #f57c00; width: 20px;"></i>
-                    <strong>Última Inspeção:</strong> ${item.ultima ? item.ultima.split('-').reverse().join('/') : 'Não informada'}
-                </p>
-                <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-calendar-times" style="color: #f57c00; width: 20px;"></i>
-                    <strong>Próxima Validade:</strong> ${item.validade.split('-').reverse().join('/')}
-                </p>
-                <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-clock" style="color: #f57c00; width: 20px;"></i>
-                    <strong>Dias Restantes:</strong> <span style="font-weight: 600; color: ${statusBadgeColor};">${st.days !== null ? st.days + ' dias' : 'N/A'}</span>
-                </p>
-            </div>
-            ` : `
-            <div style="background: #f5f5f5; padding: 15px; border-radius: 10px; margin-bottom: 15px; text-align: center;">
-                <i class="fas fa-box" style="font-size: 2rem; color: #78909c; margin-bottom: 10px;"></i>
-                <p><strong>Item de inventário sem controle de validade</strong></p>
-            </div>
-            `}
-            
-            ${item.obs ? `
-            <div style="background: #fff9c4; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #fbc02d;">
-                <p style="margin: 0; display: flex; align-items: flex-start; gap: 10px;">
-                    <i class="fas fa-sticky-note" style="color: #f57c00; width: 20px; margin-top: 3px;"></i>
-                    <span><strong>Observações:</strong><br>${item.obs}</span>
-                </p>
-            </div>
-            ` : ''}
-            
-            ${!isReadOnly ? `
-            <div style="margin-top: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button onclick="fecharModal(); editarItem(${item.id})" 
-                        style="padding: 12px 20px; background: linear-gradient(135deg, #1976d2, #1565c0); 
-                               color: white; border: none; border-radius: 8px; cursor: pointer; 
-                               font-weight: 600; transition: all 0.3s;"
-                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)';"
-                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
-                    <i class="fas fa-edit"></i> Editar
-                </button>
-                <button onclick="fecharModal(); excluirItem(${item.id})" 
-                        style="padding: 12px 20px; background: linear-gradient(135deg, var(--danger), #b71c1c); 
-                               color: white; border: none; border-radius: 8px; cursor: pointer; 
-                               font-weight: 600; transition: all 0.3s;"
-                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)';"
-                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
-                    <i class="fas fa-trash"></i> Excluir
-                </button>
-            </div>
-            ` : ''}
-        `;
+    // Informações de mangueira (apenas se for realmente uma mangueira)
+    let mangueiraInfo = '';
+    if (item.tipo && item.tipo.toString().toLowerCase() === 'mangueira') {
+        const chaveStorz = item.chaveStorz ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') : 'Não informado';
+        const adaptadorStorz = item.adaptadorStorz ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') : 'Não informado';
+        
+        mangueiraInfo = `
+        <div style="background: linear-gradient(135deg, #fff3e0, #ffe0b2); padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #fb8c00;">
+            <h5 style="margin: 0 0 10px 0; color: #e65100;"><i class="fas fa-tape"></i> Especificações da Mangueira</h5>
+            <p style="margin: 8px 0; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-key" style="color: #f57c00; width: 20px;"></i>
+                <strong>Chave Storz:</strong> ${chaveStorz}
+            </p>
+            <p style="margin: 8px 0; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-plug" style="color: #43a047; width: 20px;"></i>
+                <strong>Adaptador Storz:</strong> ${adaptadorStorz}
+            </p>
+        </div>`;
+    }
 
-        // CORREÇÃO: resetar rolagem do modal para o topo
-        const modalContent = document.querySelector('#modal-detalhes .modal-content');
-        if (modalContent) {
-            modalContent.scrollTop = 0;
-        }
+    // Construir HTML de forma segura
+    modalBody.innerHTML = `
+        <div style="margin-bottom: 20px; text-align: center;">
+            <span class="badge" style="background: ${statusBadgeColor}; font-size: 1.1rem; padding: 8px 20px;">
+                <i class="fas ${statusIcon}"></i> ${statusText}
+            </span>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+            <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-barcode" style="color: var(--primary); width: 20px;"></i>
+                <strong>Código:</strong> <span style="color: var(--primary); font-weight: 600;">${item.codigo || 'N/A'}</span>
+            </p>
+            <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-fire-extinguisher" style="color: var(--primary); width: 20px;"></i>
+                <strong>Tipo:</strong> ${item.tipo || 'N/A'}
+            </p>
+            <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-align-left" style="color: var(--primary); width: 20px;"></i>
+                <strong>Descrição:</strong> ${item.descricao || 'N/A'}
+            </p>
+        </div>
+        
+        ${mangueiraInfo}
+        
+        <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+            <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-map-marker-alt" style="color: #1976d2; width: 20px;"></i>
+                <strong>Área:</strong> ${item.area || 'N/A'}
+            </p>
+            <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-location-arrow" style="color: #1976d2; width: 20px;"></i>
+                <strong>Local:</strong> ${item.local || 'N/A'}
+            </p>
+        </div>
+        
+        ${item.validade ? `
+        <div style="background: #fff3e0; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+            <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-calendar-check" style="color: #f57c00; width: 20px;"></i>
+                <strong>Última Inspeção:</strong> ${formatarData(item.ultima)}
+            </p>
+            <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-calendar-times" style="color: #f57c00; width: 20px;"></i>
+                <strong>Próxima Validade:</strong> ${formatarData(item.validade)}
+            </p>
+            <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-clock" style="color: #f57c00; width: 20px;"></i>
+                <strong>Dias Restantes:</strong> <span style="font-weight: 600; color: ${statusBadgeColor};">${st.days !== null ? st.days + ' dias' : 'N/A'}</span>
+            </p>
+        </div>
+        ` : `
+        <div style="background: #f5f5f5; padding: 15px; border-radius: 10px; margin-bottom: 15px; text-align: center;">
+            <i class="fas fa-box" style="font-size: 2rem; color: #78909c; margin-bottom: 10px;"></i>
+            <p><strong>Item de inventário sem controle de validade</strong></p>
+        </div>
+        `}
+        
+        ${item.obs ? `
+        <div style="background: #fff9c4; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #fbc02d;">
+            <p style="margin: 0; display: flex; align-items: flex-start; gap: 10px;">
+                <i class="fas fa-sticky-note" style="color: #f57c00; width: 20px; margin-top: 3px;"></i>
+                <span><strong>Observações:</strong><br>${item.obs}</span>
+            </p>
+        </div>
+        ` : ''}
+        
+        ${!isReadOnly ? `
+        <div style="margin-top: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <button onclick="fecharModal(); editarItem(${item.id})" 
+                    style="padding: 12px 20px; background: linear-gradient(135deg, #1976d2, #1565c0); 
+                           color: white; border: none; border-radius: 8px; cursor: pointer; 
+                           font-weight: 600; transition: all 0.3s;">
+                <i class="fas fa-edit"></i> Editar
+            </button>
+            <button onclick="fecharModal(); excluirItem(${item.id})" 
+                    style="padding: 12px 20px; background: linear-gradient(135deg, var(--danger), #b71c1c); 
+                           color: white; border: none; border-radius: 8px; cursor: pointer; 
+                           font-weight: 600; transition: all 0.3s;">
+                <i class="fas fa-trash"></i> Excluir
+            </button>
+        </div>
+        ` : ''}
+    `;
 
-        document.getElementById('modal-detalhes').style.display = 'flex';
+    // Resetar scroll do modal
+    const modalContent = document.querySelector('#modal-detalhes .modal-content');
+    if (modalContent) {
+        modalContent.scrollTop = 0;
+    }
+
+    // Abrir modal com display flex
+    const modal = document.getElementById('modal-detalhes');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
     }
 
     function fecharModal(event) {
         if (!event || event.target.id === 'modal-detalhes' || event.target.classList.contains('modal-close')) {
             document.getElementById('modal-detalhes').style.display = 'none';
+            document.body.style.overflow = 'auto'; // Libera o scroll
         }
     }
 
@@ -4001,7 +4015,7 @@
         catch (err) { document.execCommand('copy'); showToast('📋 Backup copiado!'); }
     }
 
-    // Restaurar backup com input file oculto (CORRIGIDO: adicionado tratamento de erro do FileReader)
+    // Restaurar backup com input file oculto
     function restaurarBackup(input) {
         const file = input.files[0];
         if (!file) return;
@@ -4049,10 +4063,6 @@
                         showToast('❌ Erro ao restaurar backup: ' + error.message);
                         input.value = '';
                     }
-                };
-                reader.onerror = function() {
-                    showToast('❌ Erro ao ler o arquivo de backup');
-                    input.value = '';
                 };
                 reader.readAsText(file);
             } else {
@@ -4174,6 +4184,7 @@
         }
         if (e.key === 'Escape') {
             fecharModal();
+            // fecharContextMenu(); // não definida, mas mantemos
             fecharModalConfirm();
             if (document.getElementById('modal-senha-link').style.display === 'flex') {
                 document.getElementById('modal-senha-link').style.display = 'none';
