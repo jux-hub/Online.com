@@ -1,198 +1,98 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html>
 <head>
     <meta charset="UTF-8">
-    <!-- Meta viewport essencial para dimensionamento correto -->
+    <!-- Configuração de viewport essencial -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Teste WebView Android</title>
+    <title>Teste WebView - Rolagem</title>
     <style>
+        /* Reset básico */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-        body {
-            font-family: 'Roboto', sans-serif;
-            background: #f0f2f5;
-            padding: 20px;
-            text-align: center;
-        }
-        h1 {
-            font-size: 1.8rem;
-            color: #333;
-            margin-bottom: 20px;
-        }
-        .botao {
-            background: #2196F3;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            margin: 10px;
-            cursor: pointer;
-        }
-        /* Modal simples */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
+        html, body {
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-        }
-        .modal.ativo {
-            display: flex;
-        }
-        .modal-conteudo {
-            background: white;
-            width: 90%;
-            max-width: 400px;
-            max-height: 80vh;          /* Altura máxima de 80% da viewport */
-            border-radius: 16px;
-            overflow-y: auto;            /* Rolagem interna */
-            padding: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            -webkit-overflow-scrolling: touch; /* rolagem suave */
-            text-align: left;
-        }
-        .fechar {
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            color: #888;
-        }
-        .fechar:hover {
-            color: #000;
-        }
-        /* Simulação de conteúdo grande */
-        .detalhe {
             background: #e9ecef;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 8px;
+            font-family: Arial, sans-serif;
         }
-        hr {
-            margin: 20px 0;
-            border: 1px solid #ddd;
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* Ocupa toda a altura da tela */
+            padding: 16px;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* Altura total do container */
+        }
+        h2 {
+            margin-bottom: 16px;
+            color: #333;
+            font-size: 1.5rem;
+        }
+        .scroll-area {
+            flex: 1; /* Ocupa o espaço restante */
+            overflow-y: auto; /* Habilita rolagem vertical */
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px;
+            background: #f8f9fa;
+            -webkit-overflow-scrolling: touch; /* rolagem suave no iOS/Android */
+        }
+        .item {
+            padding: 12px;
+            border-bottom: 1px solid #ced4da;
+            font-size: 16px;
+        }
+        .item:last-child {
+            border-bottom: none;
+        }
+        .item strong {
+            color: #495057;
+        }
+        button {
+            margin-top: 16px;
+            padding: 12px;
+            background: #0d6efd;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-
-    <h1>📱 Teste WebView Android</h1>
-    <p>Clique no botão para abrir o modal com rolagem.</p>
-    <button class="botao" id="abrirModal">Abrir Modal de Teste</button>
-
-    <!-- Estrutura do Modal -->
-    <div class="modal" id="meuModal">
-        <div class="modal-conteudo" id="modalConteudo">
-            <span class="fechar" id="fecharModalBtn">&times;</span>
+    <div class="container">
+        <div class="card">
             <h2>📋 Detalhes do Equipamento</h2>
-            <p>Esta é uma versão extremamente simplificada para testar a renderização em WebView Android.</p>
-
-            <div class="detalhe">
-                <strong>Código:</strong> EXT-001
+            <!-- Área rolável -->
+            <div class="scroll-area" id="detalhes">
+                <div class="item"><strong>Código:</strong> EXT-001</div>
+                <div class="item"><strong>Tipo:</strong> Mangueira</div>
+                <div class="item"><strong>Descrição:</strong> Mangueira de incêndio 15m</div>
+                <div class="item"><strong>Área:</strong> Setor A</div>
+                <div class="item"><strong>Local:</strong> Corredor 1</div>
+                <div class="item"><strong>Última Inspeção:</strong> 10/01/2025</div>
+                <div class="item"><strong>Próxima Validade:</strong> 10/06/2025</div>
+                <div class="item"><strong>Dias Restantes:</strong> 30 dias</div>
+                <div class="item"><strong>Observações:</strong> Inspecionar mensalmente. Verificar conexões e possíveis desgastes.</div>
+                <!-- Itens extras para garantir rolagem -->
+                <div class="item"><strong>Item extra 1:</strong> Informação adicional</div>
+                <div class="item"><strong>Item extra 2:</strong> Outra informação importante</div>
+                <div class="item"><strong>Item extra 3:</strong> Mais uma linha</div>
+                <div class="item"><strong>Item extra 4:</strong> Último item da lista</div>
             </div>
-            <div class="detalhe">
-                <strong>Tipo:</strong> Mangueira
-            </div>
-            <div class="detalhe">
-                <strong>Descrição:</strong> Mangueira de incêndio 15m
-            </div>
-            <div class="detalhe">
-                <strong>Área:</strong> Setor A
-            </div>
-            <div class="detalhe">
-                <strong>Local:</strong> Corredor 1
-            </div>
-            <div class="detalhe">
-                <strong>Última Inspeção:</strong> 10/01/2025
-            </div>
-            <div class="detalhe">
-                <strong>Próxima Validade:</strong> 10/06/2025
-            </div>
-            <div class="detalhe">
-                <strong>Dias Restantes:</strong> 30 dias
-            </div>
-            <div class="detalhe">
-                <strong>Observações:</strong> Inspecionar mensalmente.
-            </div>
-            <!-- Mais conteúdo para forçar rolagem -->
-            <div style="background: #ffecb3; padding: 10px; margin-top: 10px;">
-                <p><strong>Informações extras:</strong> Esta seção adicional garante que o conteúdo seja maior que a tela, forçando a rolagem.</p>
-                <p>Linha 1</p><p>Linha 2</p><p>Linha 3</p><p>Linha 4</p><p>Linha 5</p>
-            </div>
-            <hr>
-            <button class="botao" id="fecharModalBtn2" style="width:100%;">Fechar</button>
+            <button onclick="alert('Botão funcionando!')">OK</button>
         </div>
     </div>
-
-    <script>
-        // JavaScript extremamente simples e compatível com navegadores antigos
-        (function() {
-            var modal = document.getElementById('meuModal');
-            var btnAbrir = document.getElementById('abrirModal');
-            var btnFechar = document.getElementById('fecharModalBtn');
-            var btnFechar2 = document.getElementById('fecharModalBtn2');
-
-            // Função para abrir o modal
-            function abrirModal() {
-                modal.classList.add('ativo');
-                document.body.style.overflow = 'hidden'; // trava rolagem do fundo
-            }
-
-            // Função para fechar o modal
-            function fecharModal() {
-                modal.classList.remove('ativo');
-                document.body.style.overflow = ''; // restaura rolagem
-            }
-
-            // Eventos
-            if (btnAbrir) {
-                btnAbrir.addEventListener('click', abrirModal);
-            }
-            if (btnFechar) {
-                btnFechar.addEventListener('click', fecharModal);
-            }
-            if (btnFechar2) {
-                btnFechar2.addEventListener('click', fecharModal);
-            }
-
-            // Fechar ao clicar fora do conteúdo (no fundo escuro)
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    fecharModal();
-                }
-            });
-
-            // Prevenir que o clique dentro do conteúdo feche o modal
-            var conteudo = document.querySelector('.modal-conteudo');
-            if (conteudo) {
-                conteudo.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                });
-            }
-        })();
-    </script>
-
-    <!-- Mensagem de diagnóstico caso o JavaScript não execute -->
-    <noscript>
-        <div style="color:red; margin-top:20px;">
-            ⚠️ Seu navegador não suporta JavaScript ou está desabilitado. O modal não funcionará.
-        </div>
-    </noscript>
-
-    <!-- Link alternativo caso queira testar sem JS (usando checkbox) - opcional -->
-    <p style="margin-top:30px; font-size:14px; color:#666;">
-        Se o botão não funcionar, verifique se o JavaScript está ativado no WebView.
-    </p>
-
 </body>
 </html>
