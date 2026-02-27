@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Teste WebView - Versão Super Simples</title>
+    <title>Detalhes do Equipamento - Teste WebView</title>
     <style>
+        /* Reset básico */
         * {
             margin: 0;
             padding: 0;
@@ -12,224 +13,363 @@
         }
         
         body {
-            font-family: Arial, sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
             background: #f5f5f5;
+            padding: 20px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
         
+        /* Container principal */
         .container {
-            flex: 1;
+            max-width: 500px;
+            margin: 0 auto;
             width: 100%;
-            max-width: 100%;
-            padding: 15px;
-            background: white;
         }
         
+        /* Título */
         h1 {
             font-size: 24px;
             color: #333;
             margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #2196F3;
+            text-align: center;
         }
         
-        .card {
-            background: #fff;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-left: 4px solid #2196F3;
-        }
-        
-        .card-title {
+        /* Botão de abrir */
+        .btn-abrir {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
             font-size: 18px;
-            font-weight: bold;
-            color: #2196F3;
-            margin-bottom: 10px;
+            width: 100%;
+            cursor: pointer;
+            margin-bottom: 20px;
         }
         
-        .info-row {
+        /* ===== MODAL COM CHECKBOX (SEM JS) ===== */
+        /* Esconder o checkbox */
+        #abrirModal {
+            display: none;
+        }
+        
+        /* Overlay do modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Quando checkbox está marcado, mostrar o modal */
+        #abrirModal:checked + .modal-overlay {
             display: flex;
-            align-items: flex-start;
-            margin-bottom: 12px;
-            padding: 8px;
-            background: #f8f9fa;
-            border-radius: 6px;
         }
         
-        .info-label {
-            width: 120px;
+        /* Conteúdo do modal */
+        .modal-conteudo {
+            background: white;
+            width: 95%;
+            max-width: 450px;
+            max-height: 90vh;
+            border-radius: 16px;
+            overflow-y: auto;  /* ROLAGEM INTERNA */
+            padding: 25px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Botão fechar (X) */
+        .fechar {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 30px;
             font-weight: bold;
-            color: #555;
+            color: #888;
+            text-decoration: none;
+            cursor: pointer;
+            z-index: 2;
         }
         
-        .info-value {
-            flex: 1;
+        .fechar:hover {
             color: #333;
         }
         
-        .status-badge {
-            display: inline-block;
-            padding: 8px 16px;
-            background: #4CAF50;
+        /* Botão fechar grande */
+        .btn-fechar {
+            background-color: #f44336;
             color: white;
-            border-radius: 20px;
-            font-weight: bold;
-            margin-bottom: 15px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 20px;
+            text-align: center;
+            display: inline-block;
+            text-decoration: none;
         }
         
-        .section {
-            margin-top: 20px;
+        /* Estilo dos detalhes */
+        .detalhe-card {
+            background: #f8f9fa;
+            border-left: 4px solid #2196F3;
             padding: 15px;
-            background: #e3f2fd;
+            margin-bottom: 15px;
             border-radius: 8px;
         }
         
-        .section-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #1976D2;
+        .detalhe-card h3 {
+            color: #2196F3;
             margin-bottom: 10px;
+            font-size: 18px;
         }
         
-        /* Garantir que nada fique cortado */
-        .scrollable-content {
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            max-height: none;
+        .info-linha {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            width: 40%;
+            color: #555;
+        }
+        
+        .info-valor {
+            width: 60%;
+            color: #333;
+        }
+        
+        /* Status badge */
+        .status-badge {
+            background: #ff9800;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        /* Observação */
+        .obs-box {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: #856404;
+        }
+        
+        /* Grid para botões */
+        .botoes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        .btn-editar {
+            background: #2196F3;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .btn-excluir {
+            background: #f44336;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+        
+        /* Cartão de aviso */
+        .aviso {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📋 Detalhes do Equipamento</h1>
+        <h1>📱 Teste WebView Android</h1>
         
-        <!-- Status -->
-        <div class="status-badge">
-            ✅ Válido - 30 dias restantes
-        </div>
-        
-        <!-- Informações principais -->
-        <div class="card">
-            <div class="card-title">Informações Básicas</div>
-            
-            <div class="info-row">
-                <span class="info-label">Código:</span>
-                <span class="info-value">EXT-001</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="info-label">Tipo:</span>
-                <span class="info-value">Mangueira</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="info-label">Descrição:</span>
-                <span class="info-value">Mangueira de incêndio 15m</span>
-            </div>
-        </div>
-        
-        <!-- Especificações da Mangueira -->
-        <div class="card" style="border-left-color: #FF9800;">
-            <div class="card-title" style="color: #FF9800;">🧯 Especificações da Mangueira</div>
-            
-            <div class="info-row">
-                <span class="info-label">Chave Storz:</span>
-                <span class="info-value">Sim</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="info-label">Adaptador Storz:</span>
-                <span class="info-value">Não</span>
-            </div>
-        </div>
-        
-        <!-- Localização -->
-        <div class="card" style="border-left-color: #9C27B0;">
-            <div class="card-title" style="color: #9C27B0;">📍 Localização</div>
-            
-            <div class="info-row">
-                <span class="info-label">Área:</span>
-                <span class="info-value">Setor A</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="info-label">Local:</span>
-                <span class="info-value">Corredor 1, Próximo à saída de emergência</span>
-            </div>
-        </div>
-        
-        <!-- Datas -->
-        <div class="card" style="border-left-color: #F44336;">
-            <div class="card-title" style="color: #F44336;">📅 Controle de Validade</div>
-            
-            <div class="info-row">
-                <span class="info-label">Última Inspeção:</span>
-                <span class="info-value">10/01/2025</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="info-label">Próxima Validade:</span>
-                <span class="info-value">10/06/2025</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="info-label">Dias Restantes:</span>
-                <span class="info-value" style="color: #4CAF50; font-weight: bold;">30 dias</span>
-            </div>
-        </div>
-        
-        <!-- Observações -->
-        <div class="card" style="border-left-color: #FFC107;">
-            <div class="card-title" style="color: #FFC107;">📝 Observações</div>
-            
-            <div class="info-row">
-                <span class="info-value">Inspecionar conexões mensalmente. Verificar se há desgaste na mangueira.</span>
-            </div>
-        </div>
-        
-        <!-- Seção de teste com conteúdo extra -->
-        <div class="section">
-            <div class="section-title">Informações Adicionais</div>
-            <p>Esta seção contém informações extras para testar a rolagem da página:</p>
-            <ul style="margin-left: 20px; margin-top: 10px;">
-                <li>Item 1: Teste de rolagem</li>
-                <li>Item 2: Verificar se o conteúdo não corta</li>
-                <li>Item 3: Compatibilidade com WebView</li>
-                <li>Item 4: Mais uma linha de teste</li>
-                <li>Item 5: Último item da lista</li>
-            </ul>
-        </div>
-        
-        <!-- Botões de ação -->
-        <div style="display: flex; gap: 10px; margin-top: 20px; margin-bottom: 30px;">
-            <button style="flex: 1; padding: 15px; background: #2196F3; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold;">
-                ✏️ Editar
-            </button>
-            <button style="flex: 1; padding: 15px; background: #F44336; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold;">
-                🗑️ Excluir
-            </button>
-        </div>
-        
-        <!-- Texto de ajuda -->
-        <p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">
-            Se esta página estiver aparecendo cortada, por favor tire um print da tela inteira.
+        <p style="margin-bottom: 20px; color: #666; text-align: center;">
+            Clique no botão abaixo para abrir os detalhes do equipamento
         </p>
-    </div>
-    
-    <script>
-        // Script simples para garantir que a página use toda a altura
-        window.onload = function() {
-            document.body.style.minHeight = window.innerHeight + 'px';
-            console.log('Altura da tela: ' + window.innerHeight + 'px');
-        };
         
-        window.onresize = function() {
-            document.body.style.minHeight = window.innerHeight + 'px';
-        };
-    </script>
+        <!-- Label que funciona como botão para abrir o modal -->
+        <label for="abrirModal" class="btn-abrir">
+            🔍 Ver Detalhes do Equipamento
+        </label>
+        
+        <!-- Modal controlado por checkbox -->
+        <input type="checkbox" id="abrirModal">
+        <div class="modal-overlay">
+            <div class="modal-conteudo">
+                <!-- Botão X para fechar -->
+                <label for="abrirModal" class="fechar">&times;</label>
+                
+                <!-- CONTEÚDO DO MODAL - DETALHES DO EQUIPAMENTO -->
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <span class="status-badge">⚠️ PRÓXIMO AO VENCIMENTO</span>
+                </div>
+                
+                <h2 style="margin-bottom: 20px; color: #333;">📋 Detalhes do Equipamento</h2>
+                
+                <!-- Card com informações principais -->
+                <div class="detalhe-card">
+                    <h3>Identificação</h3>
+                    <div class="info-linha">
+                        <span class="info-label">Código:</span>
+                        <span class="info-valor"><strong>EXT-2025-001</strong></span>
+                    </div>
+                    <div class="info-linha">
+                        <span class="info-label">Tipo:</span>
+                        <span class="info-valor">Mangueira de Incêndio</span>
+                    </div>
+                    <div class="info-linha">
+                        <span class="info-label">Descrição:</span>
+                        <span class="info-valor">Mangueira 15m - DN 40</span>
+                    </div>
+                </div>
+                
+                <!-- Card com localização -->
+                <div class="detalhe-card">
+                    <h3>Localização</h3>
+                    <div class="info-linha">
+                        <span class="info-label">Área:</span>
+                        <span class="info-valor">Setor A - Produção</span>
+                    </div>
+                    <div class="info-linha">
+                        <span class="info-label">Local:</span>
+                        <span class="info-valor">Corredor principal, nº 12</span>
+                    </div>
+                    <div class="info-linha">
+                        <span class="info-label">Ponto:</span>
+                        <span class="info-valor">Parede lateral esquerda</span>
+                    </div>
+                </div>
+                
+                <!-- Card com datas -->
+                <div class="detalhe-card" style="border-left-color: #ff9800;">
+                    <h3>Datas e Validade</h3>
+                    <div class="info-linha">
+                        <span class="info-label">Fabricação:</span>
+                        <span class="info-valor">15/03/2023</span>
+                    </div>
+                    <div class="info-linha">
+                        <span class="info-label">Última Inspeção:</span>
+                        <span class="info-valor">10/01/2025</span>
+                    </div>
+                    <div class="info-linha">
+                        <span class="info-label">Próxima Validade:</span>
+                        <span class="info-valor"><strong style="color: #ff9800;">10/06/2025</strong></span>
+                    </div>
+                    <div class="info-linha">
+                        <span class="info-label">Dias Restantes:</span>
+                        <span class="info-valor"><strong style="color: #ff9800;">30 dias</strong></span>
+                    </div>
+                </div>
+                
+                <!-- Especificações da Mangueira -->
+                <div class="detalhe-card" style="border-left-color: #4CAF50;">
+                    <h3>Especificações da Mangueira</h3>
+                    <div class="info-linha">
+                        <span class="info-label">Chave Storz:</span>
+                        <span class="info-valor">✅ Sim</span>
+                    </div>
+                    <div class="info-linha">
+                        <span class="info-label">Adaptador Storz:</span>
+                        <span class="info-valor">❌ Não</span>
+                    </div>
+                    <div class="info-linha">
+                        <span class="info-label">Comprimento:</span>
+                        <span class="info-valor">15 metros</span>
+                    </div>
+                    <div class="info-linha">
+                        <span class="info-label">Diâmetro:</span>
+                        <span class="info-valor">40 mm</span>
+                    </div>
+                </div>
+                
+                <!-- Observações -->
+                <div class="obs-box">
+                    <strong>📝 Observações:</strong><br>
+                    Inspecionar conexões mensalmente. Mangueira com pequeno desgaste na ponta. Recomendamos substituição em até 6 meses.
+                </div>
+                
+                <!-- Itens extras para testar rolagem -->
+                <div style="margin-top: 20px; padding: 10px; background: #f0f0f0; border-radius: 8px;">
+                    <p><strong>Histórico de Inspeções:</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>10/01/2025 - Aprovado</li>
+                        <li>10/10/2024 - Aprovado</li>
+                        <li>10/07/2024 - Manutenção</li>
+                        <li>10/04/2024 - Aprovado</li>
+                        <li>10/01/2024 - Aprovado</li>
+                    </ul>
+                </div>
+                
+                <!-- Botões de ação -->
+                <div class="botoes-grid">
+                    <label for="abrirModal" class="btn-editar" onclick="alert('Editar item')">
+                        ✏️ Editar
+                    </label>
+                    <label for="abrirModal" class="btn-excluir" onclick="alert('Excluir item')">
+                        🗑️ Excluir
+                    </label>
+                </div>
+                
+                <!-- Botão fechar grande -->
+                <label for="abrirModal" class="btn-fechar">
+                    Fechar
+                </label>
+            </div>
+        </div>
+        
+        <!-- Área de diagnóstico -->
+        <div class="aviso">
+            <p style="font-size: 18px; margin-bottom: 10px;"><strong>📌 Diagnóstico:</strong></p>
+            <p style="color: #333;">Se o modal abrir e você conseguir rolar para ver todos os detalhes, o problema era o JavaScript.</p>
+            <p style="color: #333;">Se ainda aparecer cortado, o problema é no CSS ou na configuração do WebView.</p>
+        </div>
+        
+        <!-- Link para testar rolagem fora do modal -->
+        <div style="margin-top: 30px; padding: 15px; background: #ddd; border-radius: 8px;">
+            <p><strong>Teste de rolagem normal:</strong></p>
+            <p>Esta é uma página longa para testar se a rolagem funciona fora do modal.</p>
+            <p>Linha 1</p><p>Linha 2</p><p>Linha 3</p><p>Linha 4</p><p>Linha 5</p>
+            <p>Linha 6</p><p>Linha 7</p><p>Linha 8</p><p>Linha 9</p><p>Linha 10</p>
+        </div>
+    </div>
 </body>
 </html>
