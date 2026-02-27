@@ -10,7 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     
     <style>
-        /* ... (mesmo CSS do original, mantido para não quebrar layout) ... */
         :root {
             --primary: #d32f2f;
             --primary-dark: #b71c1c;
@@ -756,7 +755,7 @@
             font-weight: 700;
         }
 
-        /* ========== MODAL CORRIGIDO ========== */
+        /* MODAL CORRIGIDO PARA MELHOR VISUALIZAÇÃO EM ANDROID */
         .modal-overlay { 
             position: fixed; 
             top: 0; 
@@ -787,8 +786,7 @@
             animation: slideInModal 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
-            padding: 0;
-            overflow: hidden;
+            overflow: hidden; 
         }
         
         .modal-header { 
@@ -797,7 +795,7 @@
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            flex-shrink: 0;
+            flex-shrink: 0; 
         }
         
         .modal-header h3 {
@@ -844,6 +842,7 @@
             }
             .modal-header h3 {
                 margin: 0 0 10px 0;
+                font-size: 1.1rem;
             }
             #modal-body {
                 padding: 10px 20px 20px 20px;
@@ -872,7 +871,6 @@
                 transform: translateY(0) scale(1);
             }
         }
-        /* ========== FIM MODAL CORRIGIDO ========== */
         
         .empty-state { 
             text-align: center; 
@@ -1725,6 +1723,7 @@
             font-size: 0.8rem;
         }
 
+        /* NOVO: Estilo para o modal de confirmação */
         #modal-confirm .modal-content {
             text-align: center;
         }
@@ -1735,30 +1734,6 @@
         #modal-confirm .btn-save {
             width: auto;
             margin: 0 5px;
-        }
-
-        .btn-excluir-tipo {
-            background: none;
-            border: none;
-            color: var(--danger);
-            cursor: pointer;
-            font-size: 0.9rem;
-            padding: 4px 8px;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-
-        .btn-excluir-tipo:hover {
-            background: #ffebee;
-            transform: scale(1.1);
-        }
-
-        #filtros-mangueira {
-            display: none;
-        }
-
-        .d-none {
-            display: none !important;
         }
     </style>
 </head>
@@ -2575,6 +2550,7 @@
     let senhaAtual = localStorage.getItem('fire_senha') || '1234';
     let accessLog = JSON.parse(localStorage.getItem('fire_access_log')) || [];
     let linkSenhaTemp = null;
+    // NOVO: variável para callback do modal de confirmação
     let confirmCallback = null;
 
     // ==========================================
@@ -2609,6 +2585,7 @@
         window.addEventListener('offline', atualizarConexao);
         atualizarConexao();
 
+        // Fechar dropdown ao clicar fora
         document.addEventListener('click', (e) => {
             const container = document.getElementById('tipos-container');
             const input = document.getElementById('cad-tipo');
@@ -2617,6 +2594,7 @@
             }
         });
 
+        // NOVO: Event listeners para o modal de confirmação
         document.getElementById('confirm-btn-sim').addEventListener('click', function() {
             if (confirmCallback) {
                 confirmCallback(true);
@@ -2644,7 +2622,7 @@
     }
 
     // ==========================================
-    // GERENCIAMENTO DE TIPOS
+    // GERENCIAMENTO DE TIPOS - CORRIGIDO (sem datalist)
     // ==========================================
     function atualizarListaTipos() {
         const container = document.getElementById('tipos-container');
@@ -2653,6 +2631,7 @@
         
         if (!container || !lista || !inputTipo) return;
         
+        // Renderizar lista de tipos (apenas se não estiver em modo leitura)
         if (!isReadOnly) {
             lista.innerHTML = '';
             
@@ -2666,6 +2645,7 @@
                     </button>
                 `;
                 
+                // Clique simples seleciona o tipo
                 div.addEventListener('click', (e) => {
                     if (e.target.closest('.btn-excluir-tipo')) return;
                     inputTipo.value = tipo;
@@ -2677,17 +2657,21 @@
             });
         }
         
+        // Configurar eventos do input (apenas uma vez)
         if (!inputTipo.dataset.eventsConfigured) {
             inputTipo.dataset.eventsConfigured = 'true';
             
+            // Mostrar lista ao focar
             inputTipo.addEventListener('focus', () => {
                 if (!isReadOnly) {
                     container.style.display = 'block';
+                    // Resetar filtros
                     const itens = lista.querySelectorAll('.tipo-item');
                     itens.forEach(item => item.style.display = 'flex');
                 }
             });
             
+            // Filtrar ao digitar
             inputTipo.addEventListener('input', (e) => {
                 const termo = e.target.value.toLowerCase();
                 const itens = lista.querySelectorAll('.tipo-item');
@@ -2700,6 +2684,7 @@
                     if (visivel) temVisivel = true;
                 });
                 
+                // Mostrar container se houver resultados e estiver digitando
                 if (termo.length > 0 && temVisivel) {
                     container.style.display = 'block';
                 }
@@ -2721,10 +2706,6 @@
         fecharContextMenu();
     }
 
-    function fecharContextMenu() {
-        document.getElementById('context-menu').style.display = 'none';
-    }
-
     // ==========================================
     // VERIFICAÇÃO DE TOKEN (ACESSO VIA LINK)
     // ==========================================
@@ -2738,6 +2719,7 @@
                 return;
             }
 
+            // Registrar acesso com informações do dispositivo
             const userAgent = navigator.userAgent;
             const platform = navigator.platform;
             registrarLog('Tentativa de acesso via link', `Token válido - Dispositivo: ${platform} - User Agent: ${userAgent.substring(0, 100)}`);
@@ -2789,9 +2771,11 @@
         }
     }
 
+    // NOVO: função para ativar modo leitura e garantir que a UI seja atualizada
     function ativarModoSomenteLeitura() {
         isReadOnly = true;
         document.getElementById('readonly-banner').style.display = 'block';
+        // Oculta botões de edição/backup/exportação que não são permitidos
         document.querySelectorAll('.nav-btn').forEach(btn => {
             const oc = btn.getAttribute('onclick') || '';
             if (oc.includes('cadastro') || oc.includes('backup') || oc.includes('relatorios')) {
@@ -2801,7 +2785,9 @@
         document.querySelectorAll('.btn-edit, .btn-del, #btn-cancelar-edicao, .btn-export-pdf, .btn-save[onclick*="criarBackup"], .btn-restaurar-paste, .file-input-label, .btn-limpar-logs').forEach(el => {
             if (el) el.style.display = 'none';
         });
+        // ATUALIZA A UI PARA MOSTRAR OS DADOS
         atualizarUI();
+        // Navega para o dashboard (já está ativo, mas garantimos)
         navegar('dashboard');
         showToast('👁️ Modo de visualização ativado');
     }
@@ -2982,6 +2968,7 @@
         setTimeout(() => {
             const tipo = document.getElementById('cad-tipo').value;
             
+            // NOVO: Adicionar tipo à lista se for novo
             if (tipo && !tiposEquipamentos.includes(tipo)) {
                 tiposEquipamentos.push(tipo);
                 localStorage.setItem('fire_tipos', JSON.stringify(tiposEquipamentos));
@@ -2989,7 +2976,6 @@
             }
 
             const itemData = {
-                id: editId ? parseInt(editId) : Date.now(),
                 tipo: tipo,
                 codigo: document.getElementById('cad-codigo').value,
                 descricao: document.getElementById('cad-descricao').value,
@@ -3003,13 +2989,13 @@
             };
 
             if (editId) {
-                const index = db.findIndex(i => i.id === parseInt(editId));
+                const index = db.findIndex(i => i.id == editId);
                 if (index !== -1) { 
-                    db[index] = itemData; 
+                    db[index] = { ...db[index], ...itemData }; 
                     showToast('✅ Equipamento atualizado!'); 
                 }
             } else {
-                db.push(itemData);
+                db.push({ id: Date.now(), ...itemData });
                 showToast('✅ Equipamento cadastrado!');
             }
 
@@ -3073,6 +3059,7 @@
         showToast('❌ Edição cancelada');
     }
 
+    // NOVO: função de exclusão usando modal de confirmação
     function excluirItem(id) {
         if (isReadOnly) return;
         const item = db.find(i => i.id === id);
@@ -3276,20 +3263,16 @@
         const sel = document.getElementById('modelo-select');
         if (!sel.value) return;
 
-        try {
-            const item = JSON.parse(sel.value);
-            document.getElementById('cad-tipo').value = item.tipo;
-            document.getElementById('cad-descricao').value = item.descricao;
-            document.getElementById('cad-area').value = item.area;
-            document.getElementById('cad-chave-storz').value = item.chaveStorz || '';
-            document.getElementById('cad-adaptador-storz').value = item.adaptadorStorz || '';
-            setCadastroMode(!!item.validade);
-            verificarTipoMangueira();
-            formModificado = true;
-            showToast('📋 Modelo aplicado!');
-        } catch (e) {
-            showToast('❌ Erro ao aplicar modelo');
-        }
+        const item = JSON.parse(sel.value);
+        document.getElementById('cad-tipo').value = item.tipo;
+        document.getElementById('cad-descricao').value = item.descricao;
+        document.getElementById('cad-area').value = item.area;
+        document.getElementById('cad-chave-storz').value = item.chaveStorz || '';
+        document.getElementById('cad-adaptador-storz').value = item.adaptadorStorz || '';
+        setCadastroMode(!!item.validade);
+        verificarTipoMangueira();
+        formModificado = true;
+        showToast('📋 Modelo aplicado!');
     }
 
     // ==========================================
@@ -3445,6 +3428,7 @@
         icon.style.transform = content.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0deg)';
     }
 
+    // NOVO: função auxiliar para confirmar exclusão de área
     function confirmarExcluirArea(nomeArea) {
         if(isReadOnly) return;
         const mensagem = `⚠️ ATENÇÃO: Isso excluirá TODOS os ${db.filter(i => i.area === nomeArea).length} equipamento(s) da área "${nomeArea}".\n\n❌ Esta ação NÃO pode ser desfeita!`;
@@ -3545,7 +3529,7 @@
     }
 
     // ==========================================
-    // MODAL DE DETALHES - CORRIGIDO
+    // MODAL DE DETALHES - COM RESET DE SCROLL
     // ==========================================
     function abrirDetalhes(id) {
         const item = db.find(i => i.id === id);
@@ -3667,6 +3651,7 @@
             ` : ''}
         `;
 
+        // CORREÇÃO: resetar rolagem do modal para o topo
         const modalContent = document.querySelector('#modal-detalhes .modal-content');
         if (modalContent) {
             modalContent.scrollTop = 0;
@@ -3686,10 +3671,10 @@
     }
 
     // ==========================================
-    // EXPORTAÇÃO FILTRADA
+    // EXPORTAÇÃO FILTRADA (apenas PDF)
     // ==========================================
     function verificarFiltrosMangueira() {
-        const temMangueiras = db.some(i => i.tipo && i.tipo.toLowerCase() === 'mangueira');
+        const temMangueiras = db.some(i => i.tipo === 'Mangueira');
         const filtroMangueira = document.getElementById('filtro-tipo-mangueira').checked;
         const filtrosDiv = document.getElementById('filtros-mangueira');
         if (filtroMangueira && temMangueiras) {
@@ -3805,9 +3790,11 @@
         document.getElementById('btn-export-pdf').disabled = itensFiltrados.length === 0;
     }
 
+    // Função para abrir download em nova aba (adaptada para usar o método de link com download)
     function abrirDownloadNovaAba(blob, filename) {
         const url = URL.createObjectURL(blob);
         
+        // Usar o método de link com atributo download (mais compatível)
         const link = document.createElement('a');
         link.href = url;
         link.download = filename;
@@ -3815,6 +3802,7 @@
         link.click();
         document.body.removeChild(link);
         
+        // Limpar URL após um tempo
         setTimeout(() => URL.revokeObjectURL(url), 5000);
     }
 
@@ -3890,11 +3878,15 @@
             margin: { top: 40 }
         });
 
+        // Abrir em nova aba
         const pdfBlob = doc.output('blob');
         abrirDownloadNovaAba(pdfBlob, `FireGuardian_Filtrado_${new Date().toISOString().split('T')[0]}.pdf`);
         showToast('📄 PDF filtrado gerado!');
     }
 
+    // ==========================================
+    // EXPORTAÇÃO DE TODOS OS DADOS (apenas PDF)
+    // ==========================================
     function gerarPDF() {
         if (isReadOnly) {
             showToast('❌ Função não disponível no modo visualização');
@@ -3949,15 +3941,17 @@
             margin: { top: 40 }
         });
 
+        // Abrir em nova aba
         const pdfBlob = doc.output('blob');
         abrirDownloadNovaAba(pdfBlob, `FireGuardian_Relatorio_${new Date().toISOString().split('T')[0]}.pdf`);
         showToast('📄 PDF gerado!');
     }
 
     // ==========================================
-    // BACKUP E RESTAURAÇÃO - CORRIGIDO
+    // BACKUP E RESTAURAÇÃO - USANDO BLOB
     // ==========================================
     
+    // Criar backup usando Blob para compatibilidade Android
     function criarBackup() {
         if (db.length === 0) {
             showToast('⚠️ Não há dados para fazer backup');
@@ -3966,12 +3960,13 @@
 
         const backupData = {
             data: db,
-            tipos: tiposEquipamentos,
+            tipos: tiposEquipamentos, // Incluir tipos personalizados
             timestamp: new Date().toISOString(),
             versao: '2.0',
             totalEquipamentos: db.length
         };
 
+        // Usar Blob para compatibilidade com Android WebView
         try {
             const dataStr = JSON.stringify(backupData, null, 2);
             const blob = new Blob([dataStr], { type: "application/json" });
@@ -3984,12 +3979,14 @@
             link.click();
             document.body.removeChild(link);
             
+            // Limpar URL após download
             setTimeout(() => window.URL.revokeObjectURL(url), 5000);
             
             localStorage.setItem('fire_last_backup', new Date().toLocaleString('pt-BR'));
             atualizarInfoBackup();
             showToast('💾 Backup gerado e download iniciado!');
         } catch (e) {
+            // Fallback: mostrar modal com texto
             console.warn('Download automático falhou, exibindo modal manual', e);
             document.getElementById('backup-manual-texto').value = JSON.stringify(backupData, null, 2);
             document.getElementById('modal-backup').style.display = 'flex';
@@ -4000,14 +3997,11 @@
     function copiarBackupManual() {
         const textarea = document.getElementById('backup-manual-texto');
         textarea.select();
-        try { 
-            navigator.clipboard.writeText(textarea.value).then(() => showToast('📋 Backup copiado!')); 
-        } catch (err) { 
-            document.execCommand('copy'); 
-            showToast('📋 Backup copiado!'); 
-        }
+        try { navigator.clipboard.writeText(textarea.value).then(() => showToast('📋 Backup copiado!')); }
+        catch (err) { document.execCommand('copy'); showToast('📋 Backup copiado!'); }
     }
 
+    // Restaurar backup com input file oculto (CORRIGIDO: adicionado tratamento de erro do FileReader)
     function restaurarBackup(input) {
         const file = input.files[0];
         if (!file) return;
@@ -4019,12 +4013,15 @@
                     try {
                         const conteudo = JSON.parse(e.target.result);
                         
+                        // Verificar se é o novo formato (objeto com propriedade 'data') ou array direto
                         let dadosRestaurados;
-                        let tiposRestaurados = tiposEquipamentos;
+                        let tiposRestaurados = tiposEquipamentos; // manter atuais se não houver no backup
 
                         if (Array.isArray(conteudo)) {
+                            // Formato antigo (apenas array de equipamentos)
                             dadosRestaurados = conteudo;
                         } else if (conteudo.data && Array.isArray(conteudo.data)) {
+                            // Formato novo com objeto contendo 'data' e opcionalmente 'tipos'
                             dadosRestaurados = conteudo.data;
                             if (conteudo.tipos && Array.isArray(conteudo.tipos)) {
                                 tiposRestaurados = conteudo.tipos;
@@ -4036,6 +4033,7 @@
                         db = dadosRestaurados;
                         localStorage.setItem('fire_db', JSON.stringify(db));
                         
+                        // Restaurar tipos se existirem no backup
                         localStorage.setItem('fire_tipos', JSON.stringify(tiposRestaurados));
                         tiposEquipamentos = tiposRestaurados;
                         atualizarListaTipos();
@@ -4052,6 +4050,10 @@
                         input.value = '';
                     }
                 };
+                reader.onerror = function() {
+                    showToast('❌ Erro ao ler o arquivo de backup');
+                    input.value = '';
+                };
                 reader.readAsText(file);
             } else {
                 input.value = '';
@@ -4066,7 +4068,7 @@
     }
 
     // ==========================================
-    // COMPARTILHAMENTO E LOG DE ACESSOS
+    // COMPARTILHAMENTO E LOG DE ACESSOS (BETA)
     // ==========================================
     function gerarLink() {
         const minutos = parseInt(document.getElementById('share-time').value);
@@ -4147,6 +4149,7 @@
         setTimeout(() => { t.style.display = 'none'; }, 3500);
     }
 
+    // NOVO: Funções para o modal de confirmação
     function confirmar(mensagem, callback) {
         document.getElementById('confirm-mensagem').innerText = mensagem;
         confirmCallback = callback;
@@ -4160,6 +4163,7 @@
         }
     }
 
+    // Teclas de atalho
     document.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 's') {
             e.preventDefault();
@@ -4170,7 +4174,6 @@
         }
         if (e.key === 'Escape') {
             fecharModal();
-            fecharContextMenu();
             fecharModalConfirm();
             if (document.getElementById('modal-senha-link').style.display === 'flex') {
                 document.getElementById('modal-senha-link').style.display = 'none';
