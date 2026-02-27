@@ -756,6 +756,7 @@
             font-weight: 700;
         }
 
+        /* ========== MODAL CORRIGIDO ========== */
         .modal-overlay { 
             position: fixed; 
             top: 0; 
@@ -778,38 +779,29 @@
         
         .modal-content { 
             background: white; 
-            padding: 25px; 
             border-radius: 16px; 
             max-width: 90%; 
             width: 450px; 
             max-height: 85vh; 
-            overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             animation: slideInModal 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        @keyframes slideInModal {
-            from { 
-                opacity: 0;
-                transform: translateY(-50px) scale(0.9);
-            }
-            to { 
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            display: flex;
+            flex-direction: column;
+            padding: 0; /* padding removido – será aplicado nos filhos */
+            overflow: hidden; /* evita vazamentos */
         }
         
         .modal-header { 
+            padding: 25px 25px 0 25px;
+            border-bottom: 3px solid var(--primary); 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            margin-bottom: 20px; 
-            border-bottom: 3px solid var(--primary); 
-            padding-bottom: 15px; 
+            flex-shrink: 0; /* impede que o cabeçalho encolha */
         }
         
         .modal-header h3 {
-            margin: 0;
+            margin: 0 0 15px 0; 
             color: var(--primary);
             font-size: 1.3rem;
         }
@@ -834,6 +826,54 @@
             color: white;
             transform: rotate(90deg);
         }
+        
+        #modal-body {
+            padding: 15px 25px 25px 25px;
+            overflow-y: auto;
+            flex: 1; /* ocupa todo o espaço restante */
+            -webkit-overflow-scrolling: touch; /* rolagem suave em iOS/Android */
+        }
+
+        /* Ajustes responsivos para o modal de detalhes em Android */
+        @media (max-width: 480px) {
+            .modal-content {
+                width: 95%;
+                max-height: 90vh;
+            }
+            .modal-header {
+                padding: 20px 20px 0 20px;
+            }
+            .modal-header h3 {
+                margin: 0 0 10px 0;
+            }
+            #modal-body {
+                padding: 10px 20px 20px 20px;
+            }
+            #modal-body p, #modal-body div {
+                font-size: 0.9rem;
+                word-break: break-word;
+            }
+            #modal-body .badge {
+                font-size: 0.7rem;
+                padding: 6px 12px;
+            }
+            #modal-body button {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @keyframes slideInModal {
+            from { 
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        /* ========== FIM MODAL CORRIGIDO ========== */
         
         .empty-state { 
             text-align: center; 
@@ -1117,17 +1157,6 @@
         .btn-export-pdf:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(229, 57, 53, 0.4);
-        }
-
-        .btn-export-txt {
-            background: linear-gradient(135deg, #2e7d32, #1b5e20);
-            color: white;
-            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
-        }
-
-        .btn-export-txt:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
         }
 
         .btn-export:disabled {
@@ -2128,7 +2157,7 @@
             </div>
         </div>
 
-        <!-- EXPORTAR FILTRADO (mantido do oficial) -->
+        <!-- EXPORTAR FILTRADO (mantido do oficial, SEM TXT) -->
         <div id="exportar-filtrado" class="tab-content">
             <!-- ... (conteúdo original do exportar filtrado) ... -->
             <div class="card">
@@ -2262,14 +2291,10 @@
                     </div>
                 </div>
 
-                <!-- Botões de Exportação -->
+                <!-- Botões de Exportação (apenas PDF) -->
                 <div class="export-actions">
                     <button class="btn-export btn-export-pdf" onclick="exportarFiltradoPDF()" id="btn-export-pdf" disabled>
                         <i class="fas fa-file-pdf"></i> Exportar em PDF (Nova Aba)
-                    </button>
-                    <!-- Botão TXT -->
-                    <button class="btn-export btn-export-txt" onclick="exportarFiltradoTXT()" id="btn-export-txt" disabled>
-                        <i class="fas fa-file-alt"></i> Exportar em TXT (Nova Aba)
                     </button>
                 </div>
             </div>
@@ -2332,7 +2357,7 @@
             </div>
         </div>
 
-        <!-- RELATÓRIOS (com compartilhamento aprimorado do beta) -->
+        <!-- RELATÓRIOS (apenas PDF, sem TXT) -->
         <div id="relatorios" class="tab-content">
             <!-- ... (conteúdo original dos relatórios) ... -->
             <div class="card">
@@ -2346,10 +2371,7 @@
                     <button class="btn-save" style="background: linear-gradient(135deg, #e53935, #c62828);" onclick="gerarPDF()">
                         <i class="fas fa-file-pdf"></i> Exportar PDF (Nova Aba)
                     </button>
-                    <!-- Botão TXT -->
-                    <button class="btn-save" style="background: linear-gradient(135deg, #2e7d32, #1b5e20);" onclick="gerarTXT()">
-                        <i class="fas fa-file-alt"></i> Exportar TXT (Nova Aba)
-                    </button>
+                    <!-- Botão TXT removido -->
                 </div>
 
                 <hr style="margin: 30px 0; border: 0; border-top: 2px solid #e0e0e0;">
@@ -2426,7 +2448,7 @@
 
     </div>
 
-    <!-- MODAL DE DETALHES -->
+    <!-- MODAL DE DETALHES (com ajustes responsivos) -->
     <div id="modal-detalhes" class="modal-overlay" onclick="fecharModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -3518,7 +3540,7 @@
     }
 
     // ==========================================
-    // MODAL DE DETALHES
+    // MODAL DE DETALHES - COM RESET DE SCROLL
     // ==========================================
     function abrirDetalhes(id) {
         const item = db.find(i => i.id === id);
@@ -3640,6 +3662,12 @@
             ` : ''}
         `;
 
+        // CORREÇÃO: resetar rolagem do modal para o topo
+        const modalContent = document.querySelector('#modal-detalhes .modal-content');
+        if (modalContent) {
+            modalContent.scrollTop = 0;
+        }
+
         document.getElementById('modal-detalhes').style.display = 'flex';
     }
 
@@ -3654,7 +3682,7 @@
     }
 
     // ==========================================
-    // EXPORTAÇÃO FILTRADA (mantida do oficial)
+    // EXPORTAÇÃO FILTRADA (apenas PDF)
     // ==========================================
     function verificarFiltrosMangueira() {
         const temMangueiras = db.some(i => i.tipo === 'Mangueira');
@@ -3771,7 +3799,6 @@
         }
 
         document.getElementById('btn-export-pdf').disabled = itensFiltrados.length === 0;
-        document.getElementById('btn-export-txt').disabled = itensFiltrados.length === 0;
     }
 
     // Função para abrir download em nova aba (adaptada para usar o método de link com download)
@@ -3868,81 +3895,8 @@
         showToast('📄 PDF filtrado gerado!');
     }
 
-    // Exportar Filtrado TXT
-    function exportarFiltradoTXT() {
-        if (isReadOnly) {
-            showToast('❌ Função não disponível no modo visualização');
-            return;
-        }
-        
-        const filtros = getFiltrosSelecionados();
-        const itensFiltrados = aplicarFiltrosExportacao(db, filtros);
-        
-        if (itensFiltrados.length === 0) {
-            showToast('⚠️ Nenhum equipamento para exportar');
-            return;
-        }
-        
-        let conteudo = 'FIREGUARDIAN PRO - EXPORTAÇÃO FILTRADA\n';
-        conteudo += '=' .repeat(80) + '\n';
-        conteudo += `Gerado em: ${new Date().toLocaleString('pt-BR')}\n`;
-        conteudo += `Total de Itens: ${itensFiltrados.length}\n`;
-        
-        let filtrosTexto = [];
-        if (filtros.status.length > 0) filtrosTexto.push(`Status: ${filtros.status.join(', ')}`);
-        if (filtros.tipos.length > 0) filtrosTexto.push(`Tipos: ${filtros.tipos.join(', ')}`);
-        if (filtros.data.length > 0) filtrosTexto.push(`Data: ${filtros.data.join(', ')}`);
-        
-        if (filtrosTexto.length > 0) {
-            conteudo += `Filtros: ${filtrosTexto.join(' | ')}\n`;
-        }
-        
-        conteudo += '=' .repeat(80) + '\n\n';
-        
-        // Cabeçalho
-        conteudo += 'TAG'.padEnd(12) + ' | ';
-        conteudo += 'TIPO'.padEnd(15) + ' | ';
-        conteudo += 'DESCRIÇÃO'.padEnd(30) + ' | ';
-        conteudo += 'ÁREA'.padEnd(20) + ' | ';
-        conteudo += 'LOCAL'.padEnd(20) + ' | ';
-        conteudo += 'VALIDADE'.padEnd(12) + ' | ';
-        conteudo += 'STATUS'.padEnd(12) + ' | ';
-        conteudo += 'CHAVE'.padEnd(8) + ' | ';
-        conteudo += 'ADAPTADOR'.padEnd(10) + '\n';
-        conteudo += '-'.repeat(180) + '\n';
-        
-        // Dados
-        itensFiltrados.forEach(item => {
-            const st = getStatus(item.validade);
-            const validade = item.validade ? item.validade.split('-').reverse().join('/') : 'N/A';
-            const chaveStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.chaveStorz) 
-                ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            const adaptadorStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.adaptadorStorz) 
-                ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            
-            conteudo += item.codigo.padEnd(12) + ' | ';
-            conteudo += item.tipo.substring(0, 15).padEnd(15) + ' | ';
-            conteudo += item.descricao.substring(0, 30).padEnd(30) + ' | ';
-            conteudo += item.area.substring(0, 20).padEnd(20) + ' | ';
-            conteudo += item.local.substring(0, 20).padEnd(20) + ' | ';
-            conteudo += validade.padEnd(12) + ' | ';
-            conteudo += st.text.padEnd(12) + ' | ';
-            conteudo += chaveStorz.padEnd(8) + ' | ';
-            conteudo += adaptadorStorz.padEnd(10) + '\n';
-        });
-        
-        conteudo += '\n' + '=' .repeat(80) + '\n';
-        conteudo += 'Fim do relatório\n';
-        
-        const blob = new Blob([conteudo], { type: 'text/plain;charset=utf-8' });
-        abrirDownloadNovaAba(blob, `FireGuardian_Filtrado_${new Date().toISOString().split('T')[0]}.txt`);
-        showToast('📄 TXT filtrado gerado!');
-    }
-
     // ==========================================
-    // EXPORTAÇÃO DE TODOS OS DADOS (PDF e TXT)
+    // EXPORTAÇÃO DE TODOS OS DADOS (apenas PDF)
     // ==========================================
     function gerarPDF() {
         if (isReadOnly) {
@@ -4002,61 +3956,6 @@
         const pdfBlob = doc.output('blob');
         abrirDownloadNovaAba(pdfBlob, `FireGuardian_Relatorio_${new Date().toISOString().split('T')[0]}.pdf`);
         showToast('📄 PDF gerado!');
-    }
-
-    // Gerar TXT
-    function gerarTXT() {
-        if (isReadOnly) {
-            showToast('❌ Função não disponível no modo visualização');
-            return;
-        }
-        
-        let conteudo = 'FIREGUARDIAN PRO - RELATÓRIO COMPLETO\n';
-        conteudo += '=' .repeat(80) + '\n';
-        conteudo += `Gerado em: ${new Date().toLocaleString('pt-BR')}\n`;
-        conteudo += `Total de Itens: ${db.length}\n`;
-        conteudo += '=' .repeat(80) + '\n\n';
-        
-        // Cabeçalho
-        conteudo += 'TAG'.padEnd(12) + ' | ';
-        conteudo += 'TIPO'.padEnd(15) + ' | ';
-        conteudo += 'DESCRIÇÃO'.padEnd(30) + ' | ';
-        conteudo += 'ÁREA'.padEnd(20) + ' | ';
-        conteudo += 'LOCAL'.padEnd(20) + ' | ';
-        conteudo += 'VALIDADE'.padEnd(12) + ' | ';
-        conteudo += 'STATUS'.padEnd(12) + ' | ';
-        conteudo += 'CHAVE'.padEnd(8) + ' | ';
-        conteudo += 'ADAPTADOR'.padEnd(10) + '\n';
-        conteudo += '-'.repeat(180) + '\n';
-        
-        // Dados
-        db.forEach(item => {
-            const st = getStatus(item.validade);
-            const validade = item.validade ? item.validade.split('-').reverse().join('/') : 'N/A';
-            const chaveStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.chaveStorz) 
-                ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            const adaptadorStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.adaptadorStorz) 
-                ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            
-            conteudo += item.codigo.padEnd(12) + ' | ';
-            conteudo += item.tipo.substring(0, 15).padEnd(15) + ' | ';
-            conteudo += item.descricao.substring(0, 30).padEnd(30) + ' | ';
-            conteudo += item.area.substring(0, 20).padEnd(20) + ' | ';
-            conteudo += item.local.substring(0, 20).padEnd(20) + ' | ';
-            conteudo += validade.padEnd(12) + ' | ';
-            conteudo += st.text.padEnd(12) + ' | ';
-            conteudo += chaveStorz.padEnd(8) + ' | ';
-            conteudo += adaptadorStorz.padEnd(10) + '\n';
-        });
-        
-        conteudo += '\n' + '=' .repeat(80) + '\n';
-        conteudo += 'Fim do relatório\n';
-        
-        const blob = new Blob([conteudo], { type: 'text/plain;charset=utf-8' });
-        abrirDownloadNovaAba(blob, `FireGuardian_Completo_${new Date().toISOString().split('T')[0]}.txt`);
-        showToast('📄 TXT gerado!');
     }
 
     // ==========================================
@@ -4282,7 +4181,7 @@
         }
         if (e.key === 'Escape') {
             fecharModal();
-            fecharContextMenu();
+            // fecharContextMenu(); // não definida, mas mantemos
             fecharModalConfirm();
             if (document.getElementById('modal-senha-link').style.display === 'flex') {
                 document.getElementById('modal-senha-link').style.display = 'none';
@@ -4295,3 +4194,15 @@
 </script>
 </body>
 </html>
+
+Solicito a correção do código HTML e o envio do código HTML completo. 
+
+O HTML está com erro quando eu clico.
+
+Clique nos cards para ver detalhes.
+
+A tela do aplicativo escurece, mas não abre os detalhes ao clicar nos cards para vê-los.
+
+Quando seleciono "restaurar backup", os arquivos são abertos para que eu selecione o backup gerado, mas a tela do aplicativo escurece e não importa o arquivo para o aplicativo.
+
+Mandar a correção do código completo para que eu faça a substituição.
