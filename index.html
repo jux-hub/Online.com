@@ -1,219 +1,580 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Teste Modal - Webview Android</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    :root {
-      --primary: #1976d2;
-      --danger: #d32f2f;
-    }
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background: #f0f2f5;
-    }
-    button {
-      padding: 12px 20px;
-      margin: 5px;
-      border: none;
-      border-radius: 8px;
-      background: var(--primary);
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    /* Modal corrigido */
-    #modal-detalhes {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.5);
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-    #modal-detalhes .modal-content {
-      background: white;
-      max-width: 90%;
-      max-height: 90vh;
-      width: 500px;
-      border-radius: 12px;
-      overflow-y: auto;
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      -webkit-overflow-scrolling: touch;
-    }
-    .close {
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .badge {
-      color: white;
-      border-radius: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Inventário APB - Teste WebView Android</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1976d2;
+            --danger: #d32f2f;
+            --success: #2e7d32;
+            --warning: #f57c00;
+            --light: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .equipment-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .equipment-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+            border-left: 5px solid transparent;
+        }
+
+        .equipment-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .equipment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .expired { background: #c62828; }
+        .warning { background: #ff9800; }
+        .ok { background: #2e7d32; }
+        .nodata { background: #78909c; }
+
+        .equipment-code {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .equipment-type {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .equipment-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .detail-icon {
+            width: 14px;
+            color: var(--primary);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 95vw;
+            max-height: 90vh;
+            width: 500px;
+            max-width: 500px;
+            overflow-y: auto;
+            animation: modalSlideIn 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes modalSlideIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 25px 25px 0;
+            position: sticky;
+            top: 0;
+            background: white;
+            border-radius: 20px 20px 0 0;
+            z-index: 10;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #999;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .modal-body {
+            padding: 25px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .info-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .mangueira-section {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            border-left: 4px solid #fb8c00;
+        }
+
+        .location-section {
+            background: #e3f2fd;
+        }
+
+        .validade-section {
+            background: #fff3e0;
+        }
+
+        .obs-section {
+            background: #fff9c4;
+            border-left: 4px solid #fbc02d;
+        }
+
+        .no-validade {
+            background: #f5f5f5;
+            text-align: center;
+            color: #78909c;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1976d2, #1565c0);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 480px) {
+            .equipment-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            opacity: 0.7;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-  <h2>Teste de Modal</h2>
-  <button onclick="abrirDetalhes(1)">Abrir Completo</button>
-  <button onclick="abrirDetalhesSimplificado(1)">Abrir Simplificado</button>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-fire-extinguisher"></i> Inventário APB</h1>
+            <p>Controle de Equipamentos - Teste WebView Android</p>
+        </div>
 
-  <!-- Modal -->
-  <div id="modal-detalhes">
-    <div class="modal-content">
-      <span class="close" onclick="fecharModal()">&times;</span>
-      <div id="modal-body"></div>
+        <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" placeholder="Pesquisar por código, tipo ou descrição...">
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalCount">24</div>
+                <div>Total</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number ok" id="okCount">18</div>
+                <div>OK</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number warning" id="warningCount">4</div>
+                <div>Atenção</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number expired" id="expiredCount">2</div>
+                <div>Vencido</div>
+            </div>
+        </div>
+
+        <div class="equipment-grid" id="equipmentGrid">
+            <!-- Cards gerados via JavaScript -->
+        </div>
     </div>
-  </div>
 
-  <script>
-    // Simulação do banco de dados
-    const db = [
-      {
-        id: 1,
-        codigo: 'EXT-001',
-        tipo: 'Mangueira',
-        descricao: 'Mangueira de incêndio 15m',
-        area: 'Setor A',
-        local: 'Corredor 1',
-        ultima: '2025-01-10',
-        validade: '2025-06-10',
-        chaveStorz: 'sim',
-        adaptadorStorz: 'não',
-        obs: 'Inspecionar conexões mensalmente.'
-      }
-    ];
-
-    function getStatus(validade) {
-      if (!validade) return { class: 'nodata', icon: 'fa-info-circle', text: 'Sem validade', days: null };
-      const hoje = new Date();
-      const val = new Date(validade.split('-').join('-'));
-      const diff = Math.ceil((val - hoje) / (1000 * 60 * 60 * 24));
-      if (diff < 0) return { class: 'expired', icon: 'fa-times-circle', text: 'Vencido', days: diff };
-      if (diff <= 30) return { class: 'warning', icon: 'fa-exclamation-triangle', text: 'Próximo ao vencimento', days: diff };
-      return { class: 'ok', icon: 'fa-check-circle', text: 'Válido', days: diff };
-    }
-
-    function fecharModal() {
-      document.getElementById('modal-detalhes').style.display = 'none';
-      document.body.style.overflow = 'auto';
-    }
-
-    // ===== VERSÃO COMPLETA (corrigida com overflow) =====
-    function abrirDetalhes(id) {
-      const item = db.find(i => i.id === id);
-      if (!item) return;
-
-      const st = getStatus(item.validade);
-      const modalBody = document.getElementById('modal-body');
-      modalBody.innerHTML = '';
-
-      const statusBadgeColor = {
-        'expired': '#c62828',
-        'warning': '#ff9800',
-        'ok': '#2e7d32',
-        'nodata': '#78909c'
-      }[st.class] || '#78909c';
-
-      const statusIcon = st.icon || 'fa-info-circle';
-      const statusText = st.text || 'Desconhecido';
-
-      function formatarData(data) {
-        if (!data) return 'Não informado';
-        return data.split('-').reverse().join('/');
-      }
-
-      let mangueiraInfo = '';
-      if (item.tipo && item.tipo.toString().toLowerCase() === 'mangueira') {
-        const chaveStorz = item.chaveStorz ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') : 'Não informado';
-        const adaptadorStorz = item.adaptadorStorz ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') : 'Não informado';
-        mangueiraInfo = `
-          <div style="background: linear-gradient(135deg, #fff3e0, #ffe0b2); padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #fb8c00;">
-            <h5 style="margin: 0 0 10px 0; color: #e65100;"><i class="fas fa-tape"></i> Especificações da Mangueira</h5>
-            <p style="margin: 8px 0; display: flex; align-items: center; gap: 10px;"><i class="fas fa-key" style="color: #f57c00; width: 20px;"></i><strong>Chave Storz:</strong> ${chaveStorz}</p>
-            <p style="margin: 8px 0; display: flex; align-items: center; gap: 10px;"><i class="fas fa-plug" style="color: #43a047; width: 20px;"></i><strong>Adaptador Storz:</strong> ${adaptadorStorz}</p>
-          </div>`;
-      }
-
-      modalBody.innerHTML = `
-        <div style="margin-bottom: 20px; text-align: center;">
-          <span class="badge" style="background: ${statusBadgeColor}; font-size: 1.1rem; padding: 8px 20px;">
-            <i class="fas ${statusIcon}"></i> ${statusText}
-          </span>
+    <!-- Modal de Detalhes -->
+    <div class="modal-overlay" id="modalDetalhes">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-close" onclick="fecharModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Conteúdo dinâmico -->
+            </div>
         </div>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
-          <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;"><i class="fas fa-barcode" style="color: var(--primary); width: 20px;"></i><strong>Código:</strong> <span style="color: var(--primary); font-weight: 600;">${item.codigo || 'N/A'}</span></p>
-          <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;"><i class="fas fa-fire-extinguisher" style="color: var(--primary); width: 20px;"></i><strong>Tipo:</strong> ${item.tipo || 'N/A'}</p>
-          <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;"><i class="fas fa-align-left" style="color: var(--primary); width: 20px;"></i><strong>Descrição:</strong> ${item.descricao || 'N/A'}</p>
-        </div>
-        ${mangueiraInfo}
-        <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
-          <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;"><i class="fas fa-map-marker-alt" style="color: #1976d2; width: 20px;"></i><strong>Área:</strong> ${item.area || 'N/A'}</p>
-          <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;"><i class="fas fa-location-arrow" style="color: #1976d2; width: 20px;"></i><strong>Local:</strong> ${item.local || 'N/A'}</p>
-        </div>
-        ${item.validade ? `
-        <div style="background: #fff3e0; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
-          <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;"><i class="fas fa-calendar-check" style="color: #f57c00; width: 20px;"></i><strong>Última Inspeção:</strong> ${formatarData(item.ultima)}</p>
-          <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;"><i class="fas fa-calendar-times" style="color: #f57c00; width: 20px;"></i><strong>Próxima Validade:</strong> ${formatarData(item.validade)}</p>
-          <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;"><i class="fas fa-clock" style="color: #f57c00; width: 20px;"></i><strong>Dias Restantes:</strong> <span style="font-weight: 600; color: ${statusBadgeColor};">${st.days !== null ? st.days + ' dias' : 'N/A'}</span></p>
-        </div>
-        ` : `
-        <div style="background: #f5f5f5; padding: 15px; border-radius: 10px; margin-bottom: 15px; text-align: center;">
-          <i class="fas fa-box" style="font-size: 2rem; color: #78909c; margin-bottom: 10px;"></i>
-          <p><strong>Item de inventário sem controle de validade</strong></p>
-        </div>
-        `}
-        ${item.obs ? `
-        <div style="background: #fff9c4; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #fbc02d;">
-          <p style="margin: 0; display: flex; align-items: flex-start; gap: 10px;"><i class="fas fa-sticky-note" style="color: #f57c00; width: 20px; margin-top: 3px;"></i><span><strong>Observações:</strong><br>${item.obs}</span></p>
-        </div>
-        ` : ''}
-        <div style="margin-top: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-          <button onclick="fecharModal(); alert('Editar item ${item.id}')" style="padding: 12px 20px; background: linear-gradient(135deg, #1976d2, #1565c0); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Editar</button>
-          <button onclick="fecharModal(); alert('Excluir item ${item.id}')" style="padding: 12px 20px; background: linear-gradient(135deg, var(--danger), #b71c1c); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Excluir</button>
-        </div>
-      `;
+    </div>
 
-      const modal = document.getElementById('modal-detalhes');
-      modal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    }
+    <script>
+        // Banco de dados simulado
+        const db = [
+            { id: 1, codigo: 'EQP-001', tipo: 'Extintor', descricao: 'Extintor Pó Químico ABC 4kg', area: 'Garagem', local: 'Vaga 01', ultima: '2025-12-01', validade: '2026-12-01', obs: 'Manutenção preventiva realizada', status: 'ok' },
+            { id: 2, codigo: 'EQP-002', tipo: 'Mangueira', descricao: 'Mangueira 1.5" x 20m', area: 'Corredor', local: 'Hid. Principal', ultima: '2025-11-15', validade: '2026-05-15', chaveStorz: 'sim', adaptadorStorz: 'sim', obs: 'Teste de pressão OK', status: 'warning' },
+            { id: 3, codigo: 'EQP-003', tipo: 'Extintor', descricao: 'Extintor CO2 2kg', area: 'Sala TI', local: 'Rack Servidores', ultima: '2025-10-20', validade: '2025-10-20', obs: 'VENCIDO - Substituir urgente', status: 'expired' },
+            { id: 4, codigo: 'EQP-004', tipo: 'Hidrante', descricao: 'Hidrante de Parede', area: 'Corredor', local: 'Próx. Escada A', ultima: null, validade: null, obs: null, status: 'nodata' },
+            // Mais 20 itens simulados...
+        ].concat(Array.from({length: 20}, (_, i) => ({
+            id: i + 5,
+            codigo: `EQP-${String(i+5).padStart(3, '0')}`,
+            tipo: ['Extintor', 'Mangueira', 'Hidrante', 'ESPA'][Math.floor(Math.random()*4)],
+            descricao: `Equipamento teste ${i+5}`,
+            area: 'Área Teste',
+            local: `Local ${i+5}`,
+            ultima: '2025-12-01',
+            validade: '2026-12-01',
+            status: ['ok', 'warning', 'expired', 'nodata'][Math.floor(Math.random()*4)]
+        })));
 
-    // ===== VERSÃO SIMPLIFICADA =====
-    function abrirDetalhesSimplificado(id) {
-      const item = db.find(i => i.id === id);
-      if (!item) return;
+        let filteredDb = [...db];
 
-      const modalBody = document.getElementById('modal-body');
-      modalBody.innerHTML = `
-        <div style="padding: 10px;">
-          <h3>${item.codigo || 'Item'}</h3>
-          <p><strong>Tipo:</strong> ${item.tipo || 'N/A'}</p>
-          <p><strong>Validade:</strong> ${item.validade || 'N/A'}</p>
-          <p><strong>Área:</strong> ${item.area || 'N/A'}</p>
-          <p><strong>Local:</strong> ${item.local || 'N/A'}</p>
-          ${item.obs ? `<p><strong>Obs:</strong> ${item.obs}</p>` : ''}
-        </div>
-      `;
+        // Funções de status
+        function getStatus(validade) {
+            if (!validade) return { class: 'nodata', icon: 'fa-info-circle', text: 'Sem validade', days: null };
+            
+            const hoje = new Date();
+            const vencimento = new Date(validade);
+            const diff = Math.ceil((vencimento - hoje) / (1000 * 60 * 60 * 24));
+            
+            if (diff < 0) return { class: 'expired', icon: 'fa-exclamation-triangle', text: 'Vencido', days: diff };
+            if (diff <= 30) return { class: 'warning', icon: 'fa-exclamation-circle', text: 'Atenção', days: diff };
+            return { class: 'ok', icon: 'fa-check-circle', text: 'OK', days: diff };
+        }
 
-      const modal = document.getElementById('modal-detalhes');
-      modal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    }
+        function formatarData(data) {
+            if (!data) return 'Não informado';
+            try {
+                return data.split('-').reverse().join('/');
+            } catch (e) {
+                return data;
+            }
+        }
 
-    // Fechar ao clicar fora do conteúdo
-    document.getElementById('modal-detalhes').addEventListener('click', function(e) {
-      if (e.target === this) fecharModal();
-    });
-  </script>
+        // Renderização
+        function renderEquipment() {
+            const grid = document.getElementById('equipmentGrid');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            
+            filteredDb = db.filter(item => 
+                item.codigo.toLowerCase().includes(search) ||
+                item.tipo.toLowerCase().includes(search) ||
+                (item.descricao || '').toLowerCase().includes(search)
+            );
+
+            grid.innerHTML = filteredDb.length ? 
+                filteredDb.map(item => {
+                    const st = getStatus(item.validade);
+                    return `
+                        <div class="equipment-card" onclick="abrirDetalhes(${item.id})">
+                            <div class="equipment-header">
+                                <div>
+                                    <div class="equipment-code">${item.codigo}</div>
+                                    <div class="equipment-type">${item.tipo}</div>
+                                </div>
+                                <span class="status-badge ${st.class}">
+                                    <i class="fas ${st.icon}"></i> ${st.text}
+                                </span>
+                            </div>
+                            <div class="equipment-details">
+                                <div class="detail-item">
+                                    <i class="fas fa-map-marker-alt detail-icon"></i>
+                                    ${item.area}
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-location-arrow detail-icon"></i>
+                                    ${item.local}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('') : 
+                `<div class="empty-state">
+                    <div class="empty-icon"><i class="fas fa-search"></i></div>
+                    <h3>Nenhum equipamento encontrado</h3>
+                    <p>Tente ajustar os termos da pesquisa</p>
+                </div>`;
+
+            updateStats();
+        }
+
+        function updateStats() {
+            const total = filteredDb.length;
+            const stats = filteredDb.reduce((acc, item) => {
+                const st = getStatus(item.validade);
+                acc[st.class]++;
+                return acc;
+            }, { ok: 0, warning: 0, expired: 0, nodata: 0 });
+
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('okCount').textContent = stats.ok;
+            document.getElementById('warningCount').textContent = stats.warning;
+            document.getElementById('expiredCount').textContent = stats.expired;
+        }
+
+        function abrirDetalhes(id) {
+            const item = db.find(i => i.id === id);
+            if (!item) return;
+
+            const st = getStatus(item.validade);
+            const modalBody = document.getElementById('modalBody');
+
+            // Mangueira info
+            let mangueiraInfo = '';
+            if (item.tipo && item.tipo.toLowerCase() === 'mangueira') {
+                const chaveStorz = item.chaveStorz ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') : 'Não informado';
+                const adaptadorStorz = item.adaptadorStorz ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') : 'Não informado';
+                
+                mangueiraInfo = `
+                    <div class="info-section mangueira-section">
+                        <h5><i class="fas fa-tape"></i> Especificações da Mangueira</h5>
+                        <div class="detail-item"><i class="fas fa-key"></i> <strong>Chave Storz:</strong> ${chaveStorz}</div>
+                        <div class="detail-item"><i class="fas fa-plug"></i> <strong>Adaptador Storz:</strong> ${adaptadorStorz}</div>
+                    </div>`;
+            }
+
+            modalBody.innerHTML = `
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <span class="status-badge ${st.class}" style="font-size: 1.1rem; padding: 10px 20px;">
+                        <i class="fas ${st.icon}"></i> ${st.text}
+                    </span>
+                </div>
+                
+                <div class="info-section">
+                    <div class="detail-item"><i class="fas fa-barcode"></i> <strong>Código:</strong> <strong>${item.codigo}</strong></div>
+                    <div class="detail-item"><i class="fas fa-fire-extinguisher"></i> <strong>Tipo:</strong> ${item.tipo}</div>
+                    <div class="detail-item"><i class="fas fa-align-left"></i> <strong>Descrição:</strong> ${item.descricao}</div>
+                </div>
+                
+                ${mangueiraInfo}
+                
+                <div class="info-section location-section">
+                    <div class="detail-item"><i class="fas fa-map-marker-alt"></i> <strong>Área:</strong> ${item.area}</div>
+                    <div class="detail-item"><i class="fas fa-location-arrow"></i> <strong>Local:</strong> ${item.local}</div>
+                </div>
+                
+                ${item.validade ? `
+                    <div class="info-section validade-section">
+                        <div class="detail-item"><i class="fas fa-calendar-check"></i> <strong>Última Inspeção:</strong> ${formatarData(item.ultima)}</div>
+                        <div class="detail-item"><i class="fas fa-calendar-times"></i> <strong>Próxima Validade:</strong> ${formatarData(item.validade)}</div>
+                        <div class="detail-item"><i class="fas fa-clock"></i> <strong>Dias Restantes:</strong> <strong style="color: ${st.class === 'expired' ? '#c62828' : st.class === 'warning' ? '#ff9800' : '#2e7d32'}">${st.days !== null ? st.days + ' dias' : 'N/A'}</strong></div>
+                    </div>
+                ` : `
+                    <div class="info-section no-validade">
+                        <i class="fas fa-box" style="font-size: 3rem; margin-bottom: 15px; display: block;"></i>
+                        <strong>Item sem controle de validade</strong>
+                    </div>
+                `}
+                
+                ${item.obs ? `
+                    <div class="info-section obs-section">
+                        <div style="display: flex; align-items: flex-start; gap: 10px;">
+                            <i class="fas fa-sticky-note" style="margin-top: 3px; width: 20px;"></i>
+                            <div><strong>Observações:</strong><br>${item.obs}</div>
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="editarItem(${item.id})">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button class="btn btn-danger" onclick="excluirItem(${item.id})">
+                        <i class="fas fa-trash"></i> Excluir
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('modalDetalhes').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function fecharModal() {
+            document.getElementById('modalDetalhes').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function editarItem(id) {
+            alert(`Editar item ${id} - Funcionalidade para implementação`);
+            fecharModal();
+        }
+
+        function excluirItem(id) {
+            if (confirm(`Excluir item ${id}?`)) {
+                alert(`Item ${id} excluído - Funcionalidade para implementação`);
+                fecharModal();
+            }
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', renderEquipment);
+        document.addEventListener('click', e => {
+            if (e.target.classList.contains('modal-overlay')) fecharModal();
+        });
+
+        // Inicialização
+        renderEquipment();
+    </script>
 </body>
 </html>
