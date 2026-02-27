@@ -2,119 +2,103 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <!-- Meta viewport essencial para dimensionamento correto -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Detalhes do Equipamento - Teste Direto</title>
+    <title>Teste Completo - Lista de Equipamentos</title>
     <style>
-        /* Reset completo */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        html, body {
-            width: 100%;
-            min-height: 100%;
-            height: auto;
-            background: #f0f2f5;
-            font-family: 'Roboto', Arial, sans-serif;
-        }
         body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
             padding: 20px;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         .container {
-            max-width: 500px;
+            max-width: 600px;
             width: 100%;
-            background: white;
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
         }
         h1 {
-            font-size: 26px;
+            font-size: 28px;
             color: #2c3e50;
-            margin-bottom: 20px;
-            text-align: center;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
-        }
-        .status {
-            background: #f39c12;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            text-align: center;
             margin-bottom: 25px;
-            font-size: 16px;
+            text-align: center;
         }
         .card {
-            background: #f8fafc;
-            border-left: 5px solid #3498db;
-            padding: 15px;
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
             margin-bottom: 20px;
-            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .card h3 {
-            color: #2c3e50;
-            margin-bottom: 12px;
-            font-size: 18px;
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .card-header h3 {
+            color: #3498db;
+        }
+        .status {
+            font-size: 14px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+        }
+        .status.ok { background: #2ecc71; }
+        .status.warning { background: #f39c12; }
+        .status.expired { background: #e74c3c; }
+        .detalhes {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #ecf0f1;
+            display: none; /* oculto por padrão */
+        }
+        .detalhes.visivel {
+            display: block;
         }
         .linha {
             display: flex;
             padding: 8px 0;
-            border-bottom: 1px solid #ecf0f1;
+            border-bottom: 1px dashed #ecf0f1;
         }
-        .linha:last-child {
-            border-bottom: none;
-        }
-        .label {
+        .linha .label {
             font-weight: bold;
             width: 40%;
             color: #7f8c8d;
         }
-        .valor {
+        .linha .valor {
             width: 60%;
             color: #2c3e50;
         }
         .obs {
             background: #fff9e6;
-            padding: 15px;
-            border-radius: 10px;
-            color: #7d5a2e;
-            margin: 20px 0;
-            border-left: 5px solid #f1c40f;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
         }
-        .historico {
-            list-style-type: none;
-            margin-top: 10px;
-        }
-        .historico li {
-            padding: 8px;
-            background: #ecf0f1;
-            margin-bottom: 5px;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-        .botoes {
+        .botoes-acao {
             display: flex;
-            gap: 10px;
-            margin-top: 25px;
+            gap: 12px;
+            margin-top: 20px;
         }
         .btn {
             flex: 1;
-            padding: 15px;
+            padding: 12px;
             border: none;
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 8px;
             font-weight: bold;
-            text-align: center;
             color: white;
-            cursor: default; /* apenas visual */
+            text-align: center;
+            cursor: pointer;
+            font-size: 16px;
         }
         .btn.editar {
             background: #3498db;
@@ -122,127 +106,110 @@
         .btn.excluir {
             background: #e74c3c;
         }
-        .espaco {
-            height: 30px;
+        .btn.ver {
+            background: #95a5a6;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 14px;
+        }
+        .btn.ver:hover {
+            background: #7f8c8d;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📋 Detalhes do Equipamento</h1>
-        
-        <div class="status">⚠️ PRÓXIMO AO VENCIMENTO (30 dias)</div>
+        <h1>📋 Equipamentos de Segurança</h1>
 
-        <!-- Identificação -->
-        <div class="card">
-            <h3>🔖 Identificação</h3>
-            <div class="linha">
-                <span class="label">Código:</span>
-                <span class="valor"><strong>EXT-2025-001</strong></span>
+        <!-- Equipamento 1 -->
+        <div class="card" id="eq1">
+            <div class="card-header">
+                <h3>🧯 Mangueira de Incêndio</h3>
+                <span class="status warning">Próximo ao vencimento</span>
             </div>
-            <div class="linha">
-                <span class="label">Tipo:</span>
-                <span class="valor">Mangueira de Incêndio</span>
-            </div>
-            <div class="linha">
-                <span class="label">Descrição:</span>
-                <span class="valor">Mangueira 15m - DN 40</span>
+            <p><strong>Código:</strong> EXT-001</p>
+            <p><strong>Local:</strong> Setor A - Corredor 1</p>
+            <button class="btn ver" onclick="toggleDetalhes('eq1')">Ver detalhes</button>
+
+            <div class="detalhes" id="detalhes-eq1">
+                <div class="linha"><span class="label">Descrição:</span><span class="valor">Mangueira 15m - DN 40</span></div>
+                <div class="linha"><span class="label">Área:</span><span class="valor">Setor A</span></div>
+                <div class="linha"><span class="label">Local exato:</span><span class="valor">Corredor 1, parede lateral</span></div>
+                <div class="linha"><span class="label">Fabricação:</span><span class="valor">15/03/2023</span></div>
+                <div class="linha"><span class="label">Última inspeção:</span><span class="valor">10/01/2025</span></div>
+                <div class="linha"><span class="label">Próxima validade:</span><span class="valor">10/06/2025</span></div>
+                <div class="linha"><span class="label">Dias restantes:</span><span class="valor">30 dias</span></div>
+                <div class="linha"><span class="label">Chave Storz:</span><span class="valor">Sim</span></div>
+                <div class="linha"><span class="label">Adaptador Storz:</span><span class="valor">Não</span></div>
+                <div class="obs"><strong>Obs:</strong> Inspecionar conexões mensalmente. Pequeno desgaste na ponta.</div>
+                <div class="botoes-acao">
+                    <button class="btn editar" onclick="alert('Editar equipamento EXT-001')">✏️ Editar</button>
+                    <button class="btn excluir" onclick="alert('Excluir equipamento EXT-001')">🗑️ Excluir</button>
+                </div>
             </div>
         </div>
 
-        <!-- Localização -->
-        <div class="card">
-            <h3>📍 Localização</h3>
-            <div class="linha">
-                <span class="label">Área:</span>
-                <span class="valor">Setor A - Produção</span>
+        <!-- Equipamento 2 -->
+        <div class="card" id="eq2">
+            <div class="card-header">
+                <h3>🧯 Extintor CO2</h3>
+                <span class="status ok">Válido</span>
             </div>
-            <div class="linha">
-                <span class="label">Local:</span>
-                <span class="valor">Corredor principal, nº 12</span>
-            </div>
-            <div class="linha">
-                <span class="label">Ponto:</span>
-                <span class="valor">Parede lateral esquerda</span>
+            <p><strong>Código:</strong> EXT-045</p>
+            <p><strong>Local:</strong> Setor B - Sala de máquinas</p>
+            <button class="btn ver" onclick="toggleDetalhes('eq2')">Ver detalhes</button>
+
+            <div class="detalhes" id="detalhes-eq2">
+                <div class="linha"><span class="label">Capacidade:</span><span class="valor">6kg</span></div>
+                <div class="linha"><span class="label">Área:</span><span class="valor">Setor B</span></div>
+                <div class="linha"><span class="label">Local:</span><span class="valor">Sala de máquinas, entrada</span></div>
+                <div class="linha"><span class="label">Fabricação:</span><span class="valor">10/02/2024</span></div>
+                <div class="linha"><span class="label">Última inspeção:</span><span class="valor">10/02/2025</span></div>
+                <div class="linha"><span class="label">Próxima validade:</span><span class="valor">10/02/2026</span></div>
+                <div class="linha"><span class="label">Dias restantes:</span><span class="valor">350 dias</span></div>
+                <div class="obs"><strong>Obs:</strong> Extintor novo, sem observações.</div>
+                <div class="botoes-acao">
+                    <button class="btn editar" onclick="alert('Editar equipamento EXT-045')">✏️ Editar</button>
+                    <button class="btn excluir" onclick="alert('Excluir equipamento EXT-045')">🗑️ Excluir</button>
+                </div>
             </div>
         </div>
 
-        <!-- Datas -->
-        <div class="card" style="border-left-color: #f39c12;">
-            <h3>📅 Datas e Validade</h3>
-            <div class="linha">
-                <span class="label">Fabricação:</span>
-                <span class="valor">15/03/2023</span>
+        <!-- Equipamento 3 -->
+        <div class="card" id="eq3">
+            <div class="card-header">
+                <h3>🧯 Extintor Pó Químico</h3>
+                <span class="status expired">Vencido</span>
             </div>
-            <div class="linha">
-                <span class="label">Última Inspeção:</span>
-                <span class="valor">10/01/2025</span>
-            </div>
-            <div class="linha">
-                <span class="label">Próxima Validade:</span>
-                <span class="valor"><strong style="color:#e67e22;">10/06/2025</strong></span>
-            </div>
-            <div class="linha">
-                <span class="label">Dias Restantes:</span>
-                <span class="valor"><strong style="color:#e67e22;">30 dias</strong></span>
+            <p><strong>Código:</strong> EXT-078</p>
+            <p><strong>Local:</strong> Setor C - Depósito</p>
+            <button class="btn ver" onclick="toggleDetalhes('eq3')">Ver detalhes</button>
+
+            <div class="detalhes" id="detalhes-eq3">
+                <div class="linha"><span class="label">Capacidade:</span><span class="valor">12kg</span></div>
+                <div class="linha"><span class="label">Área:</span><span class="valor">Setor C</span></div>
+                <div class="linha"><span class="label">Local:</span><span class="valor">Depósito, canto esquerdo</span></div>
+                <div class="linha"><span class="label">Fabricação:</span><span class="valor">05/01/2020</span></div>
+                <div class="linha"><span class="label">Última inspeção:</span><span class="valor">05/01/2024</span></div>
+                <div class="linha"><span class="label">Próxima validade:</span><span class="valor">05/01/2025</span></div>
+                <div class="linha"><span class="label">Dias restantes:</span><span class="valor">-50 dias</span></div>
+                <div class="obs"><strong>Obs:</strong> Necessário recarga urgente.</div>
+                <div class="botoes-acao">
+                    <button class="btn editar" onclick="alert('Editar equipamento EXT-078')">✏️ Editar</button>
+                    <button class="btn excluir" onclick="alert('Excluir equipamento EXT-078')">🗑️ Excluir</button>
+                </div>
             </div>
         </div>
-
-        <!-- Especificações da Mangueira -->
-        <div class="card" style="border-left-color: #27ae60;">
-            <h3>🧯 Especificações da Mangueira</h3>
-            <div class="linha">
-                <span class="label">Chave Storz:</span>
-                <span class="valor">✅ Sim</span>
-            </div>
-            <div class="linha">
-                <span class="label">Adaptador Storz:</span>
-                <span class="valor">❌ Não</span>
-            </div>
-            <div class="linha">
-                <span class="label">Comprimento:</span>
-                <span class="valor">15 metros</span>
-            </div>
-            <div class="linha">
-                <span class="label">Diâmetro:</span>
-                <span class="valor">40 mm</span>
-            </div>
-        </div>
-
-        <!-- Observações -->
-        <div class="obs">
-            <strong>📝 Observações:</strong><br>
-            Inspecionar conexões mensalmente. Mangueira com pequeno desgaste na ponta. Recomendamos substituição em até 6 meses.
-        </div>
-
-        <!-- Histórico de Inspeções -->
-        <div style="margin-top: 20px;">
-            <h3>📋 Histórico de Inspeções</h3>
-            <ul class="historico">
-                <li>10/01/2025 - Aprovado</li>
-                <li>10/10/2024 - Aprovado</li>
-                <li>10/07/2024 - Manutenção</li>
-                <li>10/04/2024 - Aprovado</li>
-                <li>10/01/2024 - Aprovado</li>
-                <li>10/10/2023 - Aprovado</li>
-                <li>10/07/2023 - Instalação</li>
-            </ul>
-        </div>
-
-        <!-- Botões visuais (não clicáveis) -->
-        <div class="botoes">
-            <div class="btn editar">✏️ Editar</div>
-            <div class="btn excluir">🗑️ Excluir</div>
-        </div>
-
-        <div class="espaco"></div>
     </div>
 
-    <!-- Rodapé explicativo -->
-    <div style="max-width:500px; width:100%; background:#e8f0fe; padding:15px; border-radius:12px; text-align:center; color:#2c3e50;">
-        <p><strong>🔍 Diagnóstico:</strong></p>
-        <p>Este HTML não tem modais nem JavaScript. Se todo o conteúdo aparecer e você conseguir rolar a página, o problema era o modal ou o JS.</p>
-        <p>Se o conteúdo <strong>ainda estiver cortado</strong>, o problema está na configuração do WebView (altura fixa, zoom, etc.) ou no próprio aplicativo.</p>
-    </div>
+    <script>
+        function toggleDetalhes(id) {
+            var detalhes = document.getElementById('detalhes-' + id);
+            detalhes.classList.toggle('visivel');
+        }
+    </script>
 </body>
 </html>
