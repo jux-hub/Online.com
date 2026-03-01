@@ -1,8 +1,14 @@
-<!DOCTYPE html>
+
+
+Compartilhar Acesso (Somente Leitura)
+Favor atualizar o link de compartilhamento com senha.
+
+É necessário aprimorar o layout da página de acesso e da <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- VIEWPORT CORRIGIDA PARA WEBVIEW ANDROID -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>FireGuardian Pro - Backup Local</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -10,7 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     
     <style>
-        /* ... (mesmo CSS do original, com ajustes para modal e mobile) ... */
+        /* RESET E VARIÁVEIS (MANTIDOS) */
         :root {
             --primary: #d32f2f;
             --primary-dark: #b71c1c;
@@ -756,122 +762,97 @@
             font-weight: 700;
         }
 
-        /* ========== MODAL CORRIGIDO COM ROLAGEM ========== */
-        .modal-overlay { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
-            display: none; 
-            justify-content: center; 
-            align-items: center; 
-            z-index: 2000; /* aumentado para garantir que fique acima de tudo */
-            animation: fadeInModal 0.3s;
+        /* ========== MODAL CORRIGIDO PARA ANDROID (VERSÃO TESTADA) ========== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none; /* Inicia oculto */
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
         }
-        
-        @keyframes fadeInModal {
-            from { opacity: 0; }
-            to { opacity: 1; }
+
+        .modal-overlay.active {
+            display: flex; /* Usado no teste via classList */
         }
-        
-        .modal-content { 
-            background: white; 
-            border-radius: 16px; 
-            max-width: 90%; 
-            width: 450px; 
-            max-height: 85vh; 
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: slideInModal 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+        .modal-content {
+            background: #ffffff;
+            width: 92%;
+            max-width: 450px;
+            margin: auto;
+            border-radius: 20px;
+            max-height: 85%; /* Usa % em vez de vh para melhor compatibilidade */
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            transform: none !important; /* Evita cortes em alguns dispositivos */
             display: flex;
             flex-direction: column;
-            padding: 0;
-            overflow: hidden; /* para que o conteúdo interno controle a rolagem */
         }
-        
-        .modal-header { 
-            padding: 25px 25px 0 25px;
-            border-bottom: 3px solid var(--primary); 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            flex-shrink: 0;
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 2px solid #eee;
+            background: #fff;
+            position: sticky; /* Cabeçalho fixo ao rolar */
+            top: 0;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        
+
         .modal-header h3 {
-            margin: 0 0 15px 0; 
-            color: var(--primary);
-            font-size: 1.3rem;
+            margin: 0;
+            color: #d32f2f;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        
-        .modal-close { 
+
+        .modal-close {
             background: #f5f5f5;
-            border: none; 
-            font-size: 1.5rem; 
-            cursor: pointer; 
-            color: var(--text-sub);
-            width: 35px;
-            height: 35px;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #607d8b;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
         }
-        
+
         .modal-close:hover {
-            background: var(--danger);
+            background: #d32f2f;
             color: white;
             transform: rotate(90deg);
         }
-        
+
         #modal-body {
-            padding: 15px 25px 25px 25px;
-            overflow-y: auto;  /* Garante rolagem interna */
-            flex: 1;
-            -webkit-overflow-scrolling: touch;
+            padding: 20px;
+            color: #333;
+            overflow-y: auto;
         }
 
-        /* Ajustes responsivos para o modal de detalhes em Android */
+        /* Ajuste para telas pequenas */
         @media (max-width: 480px) {
             .modal-content {
                 width: 95%;
-                max-height: 90vh;
             }
             .modal-header {
-                padding: 20px 20px 0 20px;
-            }
-            .modal-header h3 {
-                margin: 0 0 10px 0;
-                font-size: 1.2rem;
+                padding: 15px;
             }
             #modal-body {
-                padding: 10px 20px 20px 20px;
-            }
-            #modal-body p, #modal-body div {
-                font-size: 0.9rem;
-                word-break: break-word;
-            }
-            #modal-body .badge {
-                font-size: 0.7rem;
-                padding: 6px 12px;
-            }
-            #modal-body button {
-                padding: 10px;
-                font-size: 0.9rem;
-            }
-        }
-        
-        @keyframes slideInModal {
-            from { 
-                opacity: 0;
-                transform: translateY(-50px) scale(0.9);
-            }
-            to { 
-                opacity: 1;
-                transform: translateY(0) scale(1);
+                padding: 15px;
             }
         }
         /* ========== FIM MODAL CORRIGIDO ========== */
@@ -903,7 +884,7 @@
             padding: 14px 28px; 
             border-radius: 30px; 
             display: none; 
-            z-index: 3000; 
+            z-index: 1001; 
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             animation: slideUpToast 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 500;
@@ -1178,7 +1159,6 @@
             margin-left: 5px;
         }
 
-        /* Ajustes para mobile */
         @media (max-width: 768px) {
             .dash-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -1198,29 +1178,6 @@
 
             .export-filters {
                 grid-template-columns: 1fr;
-            }
-
-            .item-card {
-                padding: 12px; /* reduzido */
-            }
-
-            .item-info h4 {
-                font-size: 0.95rem;
-            }
-
-            .item-info p {
-                font-size: 0.8rem;
-            }
-
-            .badge {
-                font-size: 0.65rem;
-                padding: 3px 8px;
-            }
-
-            .btn-icon {
-                width: 32px;
-                height: 32px;
-                font-size: 0.8rem;
             }
         }
 
@@ -1854,6 +1811,7 @@
 
         <!-- DASHBOARD -->
         <div id="dashboard" class="tab-content active">
+            <!-- ... (conteúdo original do dashboard) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-chart-line"></i> Visão Geral do Sistema</h3>
                 <div class="dash-grid">
@@ -1956,6 +1914,7 @@
 
         <!-- CADASTRO -->
         <div id="cadastro" class="tab-content">
+            <!-- ... (conteúdo original do cadastro) ... -->
             <div class="card">
                 <h3 id="cadastro-titulo" class="section-title"><i class="fas fa-plus-circle"></i> Novo Cadastro</h3>
                 <div class="cadastro-split">
@@ -2090,6 +2049,7 @@
 
         <!-- BUSCA AVANÇADA -->
         <div id="busca" class="tab-content">
+            <!-- ... (conteúdo original da busca) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-search"></i> Busca Avançada de Equipamentos</h3>
                 
@@ -2131,6 +2091,7 @@
 
         <!-- LISTA DE EQUIPAMENTOS -->
         <div id="lista" class="tab-content">
+            <!-- ... (conteúdo original da lista) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-list"></i> Lista Completa de Equipamentos</h3>
                 
@@ -2166,6 +2127,7 @@
 
         <!-- ORGANIZAÇÃO POR ÁREA -->
         <div id="organizacao" class="tab-content">
+            <!-- ... (conteúdo original da organização) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-layer-group"></i> Organização por Áreas</h3>
                 
@@ -2177,8 +2139,9 @@
             </div>
         </div>
 
-        <!-- EXPORTAR FILTRADO -->
+        <!-- EXPORTAR FILTRADO (mantido do oficial, SEM TXT) -->
         <div id="exportar-filtrado" class="tab-content">
+            <!-- ... (conteúdo original do exportar filtrado) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-filter"></i> Exportação Filtrada de Equipamentos</h3>
 
@@ -2321,6 +2284,7 @@
 
         <!-- BACKUP LOCAL -->
         <div id="backup" class="tab-content">
+            <!-- ... (conteúdo original do backup) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-hdd"></i> Backup e Restauração Local</h3>
 
@@ -2377,6 +2341,7 @@
 
         <!-- RELATÓRIOS (apenas PDF, sem TXT) -->
         <div id="relatorios" class="tab-content">
+            <!-- ... (conteúdo original dos relatórios) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-file-export"></i> Exportação e Compartilhamento</h3>
                 
@@ -2465,7 +2430,7 @@
 
     </div>
 
-    <!-- MODAL DE DETALHES (com ajustes responsivos) -->
+    <!-- MODAL DE DETALHES (CORRIGIDO) -->
     <div id="modal-detalhes" class="modal-overlay" onclick="fecharModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -3557,7 +3522,7 @@
     }
 
     // ==========================================
-    // MODAL DE DETALHES - COM RESET DE SCROLL
+    // MODAL DE DETALHES - COM RESET DE SCROLL E DISPLAY FLEX
     // ==========================================
     function abrirDetalhes(id) {
         const item = db.find(i => i.id === id);
@@ -3679,18 +3644,22 @@
             ` : ''}
         `;
 
-        // CORREÇÃO: resetar rolagem do modal para o topo
+        // Resetar rolagem do modal para o topo
         const modalContent = document.querySelector('#modal-detalhes .modal-content');
         if (modalContent) {
             modalContent.scrollTop = 0;
         }
 
-        document.getElementById('modal-detalhes').style.display = 'flex';
+        // Abrir modal com display flex
+        const modal = document.getElementById('modal-detalhes');
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // Trava o scroll do fundo
     }
 
     function fecharModal(event) {
         if (!event || event.target.id === 'modal-detalhes' || event.target.classList.contains('modal-close')) {
             document.getElementById('modal-detalhes').style.display = 'none';
+            document.body.style.overflow = 'auto'; // Libera o scroll
         }
     }
 
@@ -4211,3 +4180,17 @@
 </script>
 </body>
 </html>
+
+
+Solicitamos que não sejam realizadas alterações no código referente ao backup e restauração, uma vez que sua funcionalidade está plenamente operacional. Da mesma forma, o módulo de PDF encontra-se em perfeito funcionamento e não requer intervenções.
+
+Ao adicionar um novo equipamento, o link de atualização não reflete os dados mais recentes. Se o link for enviado e, posteriormente, a lista de equipamentos for atualizada, o link não apresentará as informações revisadas.
+
+Solicito o envio do código HTML completo, incluindo as alterações solicitadas.
+
+Compartilhar Acesso (Somente Leitura)
+Favor atualizar o link de compartilhamento com senha.
+
+É necessário aprimorar o layout da página de acesso e da página de expiração de acesso. Quando o link de compartilhamento expirar, o acesso deverá ser encerrado automaticamente com a máxima brevidade.
+
+Na opção de compartilhamento de acesso, a funcionalidade de backup não estará disponível.
