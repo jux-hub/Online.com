@@ -3,129 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TESTE MODAL FIREGUARDIAN</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>DEBUG MODAL FIREGUARDIAN</title>
     <style>
-        /* RESET E BASE */
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: sans-serif; background: #f0f2f5; padding: 15px; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: sans-serif; background: #eee; padding: 20px; text-align: center; }
 
-        /* CARD DE TESTE */
-        .card {
-            background: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 15px;
-            border-left: 5px solid #d32f2f;
+        .btn-abrir {
+            padding: 20px; background: #d32f2f; color: white;
+            border: none; border-radius: 10px; font-weight: bold; width: 100%;
         }
 
-        .btn-teste {
-            width: 100%;
-            padding: 15px;
-            background: #d32f2f;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
-
-        /* MODAL ESTRUTURA CRÍTICA */
+        /* O SEGREDO ESTÁ AQUI: Overlay fixo e Content relativo */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8);
-            display: none; /* Alterado de opacity para display para teste de carga */
+            display: none; /* Começa escondido */
             align-items: center;
             justify-content: center;
-            z-index: 10000;
-        }
-
-        .modal-overlay.active {
-            display: flex;
+            z-index: 99999;
         }
 
         .modal-content {
-            background: white;
-            width: 90%;
+            background: #ffffff;
+            width: 85%;
             max-width: 400px;
+            padding: 25px;
             border-radius: 15px;
-            padding: 20px;
-            position: relative;
-            transform: translateY(0);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            /* Força a visibilidade no Android */
+            visibility: visible !important;
+            opacity: 1 !important;
         }
 
-        .close-btn {
-            float: right;
-            font-size: 24px;
-            font-weight: bold;
-            color: #666;
-            padding: 5px;
+        .modal-overlay.active {
+            display: flex; /* Mostra o modal */
         }
 
-        .info {
-            margin: 15px 0;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-
-        /* Estilo para travar o scroll do body no Android */
-        .no-scroll { overflow: hidden; height: 100vh; }
+        h2 { color: #d32f2f; margin-top: 0; }
+        p { color: #333; line-height: 1.5; }
+        .close-btn { margin-top: 20px; padding: 10px; width: 100%; background: #ccc; border: none; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-    <h2 style="text-align: center; margin: 20px 0;">FireGuardian Debug</h2>
+    <h1>FireGuardian App</h1>
+    <p>Clique no botão para testar se o modal aparece sobre o fundo escuro.</p>
 
-    <button class="btn-teste" onclick="abrirModal()">
-        <i class="fas fa-play"></i> TESTAR MODAL AGORA
-    </button>
+    <button class="btn-abrir" onclick="abrirModal()">ABRIR DETALHES</button>
 
-    <div class="card" onclick="abrirModal()">
-        <h3>Extintor PQS</h3>
-        <p>Clique aqui para detalhes</p>
-    </div>
-
-    <div id="meuModal" class="modal-overlay" onclick="fecharNoFundo(event)">
+    <div id="meuModal" class="modal-overlay" onclick="fecharModal(event)">
         <div class="modal-content">
-            <span class="close-btn" onclick="fecharModal()">&times;</span>
-            <h2 style="color: #d32f2f">Detalhes</h2>
-            <div class="info">
-                <p><strong>Item:</strong> Extintor Pó Químico</p>
-                <p><strong>Status:</strong> <span style="color: green">OK</span></p>
+            <h2><i class="fas fa-info-circle"></i> Funcionou!</h2>
+            <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; text-align: left;">
+                <p><strong>Item:</strong> Extintor PQS 4kg</p>
+                <p><strong>Local:</strong> Corredor Central</p>
+                <p><strong>Status:</strong> Ativo</p>
             </div>
-            <button class="btn-teste" style="margin: 0" onclick="alert('Ação executada!')">EDITAR</button>
+            <button class="close-btn" onclick="document.getElementById('meuModal').classList.remove('active')">FECHAR</button>
         </div>
     </div>
 
     <script>
-        const modal = document.getElementById('meuModal');
-
         function abrirModal() {
+            const modal = document.getElementById('meuModal');
             modal.classList.add('active');
-            document.body.classList.add('no-scroll');
-            console.log("Modal Aberto");
+            // Log para você ver no Logcat do Android Studio
+            console.log("Modal acionado via JS");
         }
 
-        function fecharModal() {
-            modal.classList.remove('active');
-            document.body.classList.remove('no-scroll');
-        }
-
-        function fecharNoFundo(e) {
-            if (e.target === modal) {
-                fecharModal();
+        function fecharModal(e) {
+            if(e.target.id === 'meuModal') {
+                document.getElementById('meuModal').classList.remove('active');
             }
         }
-
-        // Teste de Log para capturar no Logcat do Android Studio
-        window.onerror = function(msg, url, line) {
-            console.log("Erro no WebView: " + msg + " em " + line);
-            return false;
-        };
     </script>
 </body>
 </html>
