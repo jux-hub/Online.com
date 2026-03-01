@@ -72,58 +72,59 @@
             font-weight: 600;
         }
         
-        /* ========== MODAL CORRIGIDO ========== */
+        /* ========== MODAL CORRIGIDO PARA ANDROID ========== */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none; /* Inicia como none */
+            align-items: center; /* Centraliza verticalmente */
+            justify-content: center; /* Centraliza horizontalmente */
+            z-index: 10000;
         }
-        
+
         .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
+            display: flex; /* Android renderiza melhor com flex do que com opacity */
         }
-        
+
         .modal-content {
-            background: white;
-            border-radius: 24px;
-            width: 90%;
-            max-width: 400px;
-            max-height: 85vh;
+            background: #ffffff;
+            width: 92%;
+            max-width: 450px;
+            margin: auto;
+            border-radius: 20px;
+            max-height: 85%; /* Use % em vez de VH */
             overflow-y: auto;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
-            transform: scale(0.9) translateY(20px);
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            padding: 0;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            /* Remove transformações pesadas que cortam o conteúdo */
+            transform: none !important; 
+            display: flex;
+            flex-direction: column;
         }
-        
-        .modal-overlay.active .modal-content {
-            transform: scale(1) translateY(0);
-        }
-        
+
         .modal-header {
-            padding: 20px 24px 0 24px;
-            border-bottom: 3px solid #d32f2f;
+            padding: 20px;
+            border-bottom: 2px solid #eee;
+            background: #fff;
+            position: sticky; /* Mantém o topo visível ao rolar */
+            top: 0;
+            z-index: 10;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .modal-header h3 {
-            margin: 0 0 15px 0;
+            margin: 0;
             color: #d32f2f;
             font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .modal-close {
@@ -146,9 +147,11 @@
             color: white;
             transform: rotate(90deg);
         }
-        
+
         #modal-body {
-            padding: 20px 24px 24px 24px;
+            padding: 20px;
+            color: #333;
+            overflow-y: auto;
         }
         
         .info-block {
@@ -243,7 +246,7 @@
                 width: 95%;
             }
             .modal-header {
-                padding: 15px 15px 0 15px;
+                padding: 15px;
             }
             #modal-body {
                 padding: 15px;
