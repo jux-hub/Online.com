@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FireGuardian Pro - Backup Local</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -10,7 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     
     <style>
-        /* RESET E VARIÁVEIS (MANTIDOS) */
         :root {
             --primary: #d32f2f;
             --primary-dark: #b71c1c;
@@ -132,30 +131,21 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
-        .connection-indicator {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(46, 125, 50, 0.9);
+        .connection-banner {
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
             color: white;
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            backdrop-filter: blur(4px);
-            z-index: 999;
+            text-align: center;
+            padding: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            position: sticky;
+            top: 0;
+            z-index: 99;
             transition: all 0.3s;
-            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
-        .connection-indicator.offline {
-            background: rgba(198, 40, 40, 0.9);
-        }
-        .connection-indicator i {
-            font-size: 1rem;
+        .connection-banner.offline {
+            background: linear-gradient(135deg, #c62828, #8e0000);
         }
 
         .main-nav { 
@@ -536,11 +526,13 @@
             padding: 16px; 
             display: flex; 
             justify-content: space-between; 
-            align-items: center; 
+            align-items: flex-start; 
             cursor: pointer; 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            flex-wrap: wrap;
+            word-break: break-word;
         }
         
         .item-card::before {
@@ -569,10 +561,16 @@
         .item-card.ok::before { background: linear-gradient(135deg, var(--ok), #388e3c); }
         .item-card.nodata::before { background: linear-gradient(135deg, var(--secondary), #546e7a); }
 
+        .item-info { 
+            flex: 1; 
+            min-width: 200px;
+        }
+
         .item-info h4 { 
             margin: 0 0 8px 0; 
             color: var(--text-main);
             font-size: 1.05rem;
+            word-break: break-word;
         }
         
         .item-info p { 
@@ -582,6 +580,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            flex-wrap: wrap;
         }
         
         .badge { 
@@ -594,11 +593,14 @@
             gap: 5px;
             margin-top: 8px;
             font-weight: 600;
+            white-space: nowrap;
         }
         
         .actions { 
             display: flex; 
             gap: 8px; 
+            margin-left: 10px;
+            flex-shrink: 0;
         }
         
         .btn-icon { 
@@ -756,100 +758,84 @@
             font-weight: 700;
         }
 
-        /* ========== MODAL CORRIGIDO PARA ANDROID ========== */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: none; /* Inicia oculto */
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
+        .modal-overlay { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            display: none; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 1000;
+            animation: fadeInModal 0.3s;
         }
-
-        .modal-overlay.active {
-            display: flex; /* Usado no teste via classList */
+        
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-
-        .modal-content {
-            background: #ffffff;
-            width: 92%;
-            max-width: 450px;
-            margin: auto;
-            border-radius: 20px;
-            max-height: 85%; /* Usa % em vez de vh para melhor compatibilidade */
+        
+        .modal-content { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 16px; 
+            max-width: 90%; 
+            width: 450px; 
+            max-height: 85vh; 
             overflow-y: auto;
-            position: relative;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            transform: none !important; /* Evita cortes em alguns dispositivos */
-            display: flex;
-            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideInModal 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .modal-header {
-            padding: 20px;
-            border-bottom: 2px solid #eee;
-            background: #fff;
-            position: sticky; /* Cabeçalho fixo ao rolar */
-            top: 0;
-            z-index: 10;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        
+        @keyframes slideInModal {
+            from { 
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
-
+        
+        .modal-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+            border-bottom: 3px solid var(--primary); 
+            padding-bottom: 15px; 
+        }
+        
         .modal-header h3 {
             margin: 0;
-            color: #d32f2f;
-            font-size: 1.4rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            color: var(--primary);
+            font-size: 1.3rem;
         }
-
-        .modal-close {
+        
+        .modal-close { 
             background: #f5f5f5;
-            border: none;
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: #607d8b;
-            width: 40px;
-            height: 40px;
+            border: none; 
+            font-size: 1.5rem; 
+            cursor: pointer; 
+            color: var(--text-sub);
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
         }
-
+        
         .modal-close:hover {
-            background: #d32f2f;
+            background: var(--danger);
             color: white;
             transform: rotate(90deg);
         }
-
-        #modal-body {
-            padding: 20px;
-            color: #333;
-            overflow-y: auto;
-        }
-
-        /* Ajuste para telas pequenas */
-        @media (max-width: 480px) {
-            .modal-content {
-                width: 95%;
-            }
-            .modal-header {
-                padding: 15px;
-            }
-            #modal-body {
-                padding: 15px;
-            }
-        }
-        /* ========== FIM MODAL CORRIGIDO ========== */
         
         .empty-state { 
             text-align: center; 
@@ -907,10 +893,6 @@
             }
         }
 
-        .cadastro-split > * {
-            min-width: 0;
-        }
-
         .equipamentos-recentes {
             background: #f8f9fa;
             border-radius: 12px;
@@ -937,6 +919,7 @@
             cursor: pointer;
             transition: all 0.2s;
             font-size: 0.85rem;
+            word-break: break-word;
         }
 
         .mini-item-card:hover {
@@ -1173,6 +1156,16 @@
             .export-filters {
                 grid-template-columns: 1fr;
             }
+            
+            .item-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .actions {
+                margin-top: 10px;
+                align-self: flex-end;
+            }
         }
 
         .d-none { display: none !important; }
@@ -1231,6 +1224,7 @@
             margin-right: 8px;
         }
 
+        /* LOGIN SCREEN - IGUAL AO SECUNDÁRIO */
         .login-screen {
             position: fixed;
             top: 0;
@@ -1508,9 +1502,10 @@
             40%, 80% { transform: translateX(8px); }
         }
 
+        /* BACKUP CARDS */
         .backup-options {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
             margin-bottom: 25px;
         }
@@ -1522,7 +1517,6 @@
             padding: 25px;
             text-align: center;
             transition: all 0.3s;
-            cursor: pointer;
         }
 
         .backup-card:hover {
@@ -1543,7 +1537,7 @@
         }
 
         .backup-card p {
-            margin: 0;
+            margin: 0 0 15px 0;
             color: var(--text-sub);
             font-size: 0.9rem;
         }
@@ -1569,11 +1563,146 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
+            text-align: center;
         }
 
         .file-input-label:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(211, 47, 47, 0.3);
+        }
+
+        .backup-paste-area {
+            margin-top: 15px;
+        }
+
+        .backup-paste-area textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            resize: vertical;
+            color: #333;
+            background: white;
+        }
+
+        .backup-paste-area textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-restaurar-paste {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #43a047, #2e7d32);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-top: 10px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-restaurar-paste:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(67, 160, 71, 0.4);
+        }
+
+        .codigo-fonte-container {
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .codigo-fonte-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .codigo-fonte-header h4 {
+            margin: 0;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .codigo-fonte-textarea {
+            width: 100%;
+            min-height: 400px;
+            background: #2d2d2d;
+            color: #4caf50;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            resize: vertical;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .btn-copiar-codigo {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-copiar-codigo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+        }
+
+        .pydroid-badge {
+            display: inline-flex; 
+            align-items: center; 
+            gap: 6px;
+            background: linear-gradient(135deg, #1565c0, #0d47a1);
+            color: white; 
+            padding: 4px 12px; 
+            border-radius: 12px;
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            margin-left: 8px;
+        }
+
+        .backup-modal-content { 
+            background: #1e1e1e; 
+            border-radius: 12px; 
+            padding: 20px; 
+        }
+
+        .backup-modal-textarea { 
+            width: 100%; 
+            min-height: 300px; 
+            background: #2d2d2d; 
+            color: #4caf50; 
+            font-family: 'Courier New', monospace; 
+            font-size: 0.75rem; 
+            border: 1px solid #444; 
+            border-radius: 8px; 
+            padding: 12px; 
+            resize: vertical; 
         }
 
         .access-log {
@@ -1600,6 +1729,7 @@
             margin-bottom: 8px;
             font-size: 0.85rem;
             border-left: 4px solid var(--info);
+            word-break: break-word;
         }
 
         .log-item.success {
@@ -1640,134 +1770,16 @@
             margin-top: 20px;
         }
 
-        /* Tela de expiração melhorada */
-        .expired-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 70%, #b71c1c 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 3000;
-            padding: 20px;
-            overflow: hidden;
-        }
-        
-        .expired-box {
-            background: rgba(255,255,255,0.07);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.15);
-            padding: 40px 30px;
-            border-radius: 24px;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 25px 80px rgba(0,0,0,0.5);
-            animation: slideInLogin 0.6s ease;
-        }
-        
-        .expired-box i {
-            font-size: 4rem;
-            color: var(--danger);
-            margin-bottom: 20px;
-        }
-        
-        .expired-box h2 {
-            color: white;
-            margin-bottom: 15px;
-            font-size: 1.8rem;
-        }
-        
-        .expired-box p {
-            color: rgba(255,255,255,0.7);
-            margin-bottom: 25px;
-            font-size: 1rem;
-            line-height: 1.5;
-        }
-        
-        .expired-box .btn-save {
-            width: auto;
-            padding: 12px 30px;
-            margin: 0 auto;
-        }
-
-        .context-menu {
-            position: absolute;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            padding: 8px 0;
-            z-index: 1000;
-            display: none;
-            min-width: 150px;
-            animation: fadeIn 0.2s;
-        }
-
-        .context-menu-item {
-            padding: 10px 15px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-            font-size: 0.9rem;
-        }
-
-        .context-menu-item:hover {
-            background: #f5f5f5;
-        }
-
-        .context-menu-item.danger {
-            color: var(--danger);
-        }
-
-        .context-menu-item.danger:hover {
-            background: #ffebee;
-        }
-
-        .tipo-item {
-            padding: 8px 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .tipo-item:hover {
-            background: #f5f5f5;
-        }
-
-        .tipo-item:active {
-            background: #e0e0e0;
-        }
-
-        .tipo-item i {
-            color: var(--text-sub);
-            font-size: 0.8rem;
-        }
-
-        #modal-confirm .modal-content {
-            text-align: center;
-        }
-        #modal-confirm .modal-header {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-        #modal-confirm .btn-save {
-            width: auto;
-            margin: 0 5px;
+        /* Modal de expiração de link */
+        .modal-expired {
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
         }
     </style>
 </head>
 <body>
 
-    <!-- TELA DE LOGIN (VERSÃO 1.7) -->
+    <!-- TELA DE LOGIN MELHORADA (igual ao secundário) -->
     <div id="login-screen" class="login-screen">
         <div class="login-bg-particles">
             <span></span><span></span><span></span><span></span><span></span>
@@ -1779,7 +1791,7 @@
                 </div>
                 <h1>FireGuardian Pro</h1>
                 <p>Gestão de Segurança Contra Incêndio</p>
-                <span class="login-version">v1.7 — Acesso Restrito</span>
+                <span class="login-version">v2.0 — Acesso Restrito</span>
             </div>
             <div class="login-body">
                 <div class="field-group">
@@ -1808,25 +1820,13 @@
         </div>
     </div>
 
-    <!-- TELA DE EXPIRAÇÃO MELHORADA -->
-    <div id="expired-screen" class="expired-screen" style="display: none;">
-        <div class="expired-box">
-            <i class="fas fa-hourglass-end"></i>
-            <h2>Link Expirado</h2>
-            <p>O link de compartilhamento que você utilizou não é mais válido.<br>Por favor, solicite um novo link ao administrador do sistema.</p>
-            <button class="btn-save" onclick="window.location.href=window.location.pathname" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark));">
-                <i class="fas fa-home"></i> PÁGINA INICIAL
-            </button>
-        </div>
-    </div>
-
     <!-- BANNER MODO LEITURA -->
     <div id="readonly-banner" class="readonly-banner">
         <i class="fas fa-eye"></i> MODO VISUALIZAÇÃO (Somente Leitura) — Edição Bloqueada
     </div>
 
-    <!-- INDICADOR DE CONEXÃO DISCRETO -->
-    <div id="connection-indicator" class="connection-indicator">
+    <!-- BANNER CONEXÃO -->
+    <div id="connection-banner" class="connection-banner">
         <i class="fas fa-wifi"></i> <span id="connection-text">Online</span>
     </div>
 
@@ -1993,13 +1993,16 @@
                         <div class="field-group">
                             <label><i class="fas fa-tools"></i> Tipo de Equipamento *</label>
                             <input type="text" id="cad-tipo" list="lista-tipos" required placeholder="Ex: Extintor, Mangueira, Hidrante..." oninput="verificarTipoMangueira()">
-                            <datalist id="lista-tipos"></datalist>
-                            <div id="tipos-container" style="margin-top: 10px; max-height: 200px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 8px; display: none;">
-                                <div id="tipos-lista" style="padding: 5px;"></div>
-                            </div>
-                            <small style="color: var(--text-sub); display: block; margin-top: 5px;">
-                                <i class="fas fa-info-circle"></i> Toque e segure em um tipo para excluí-lo
-                            </small>
+                            <datalist id="lista-tipos">
+                                <option value="Extintor">
+                                <option value="Mangueira">
+                                <option value="Hidrante">
+                                <option value="Suporte">
+                                <option value="Sinalização">
+                                <option value="Detector de Fumaça">
+                                <option value="Sprinkler">
+                                <option value="Porta Corta-Fogo">
+                            </datalist>
                         </div>
 
                         <div class="field-group">
@@ -2189,15 +2192,14 @@
             </div>
         </div>
 
-        <!-- EXPORTAR FILTRADO (apenas PDF) -->
+        <!-- EXPORTAR FILTRADO (layout mantido inalterado) -->
         <div id="exportar-filtrado" class="tab-content">
             <div class="card">
-                <h3 class="section-title"><i class="fas fa-filter"></i> Exportação Filtrada de Equipamentos</h3>
+                <h3 class="section-title"><i class="fas fa-filter"></i> Exportação Filtrada de Equipamentos (Código Fonte)</h3>
 
                 <div class="info-box">
                     <i class="fas fa-info-circle"></i>
-                    Selecione os filtros desejados abaixo e visualize em tempo real quantos equipamentos serão exportados. 
-                    Você pode combinar múltiplos filtros para refinar sua exportação.
+                    Selecione os filtros desejados abaixo e visualize em tempo real quantos equipamentos serão exportados. O sistema gerará o código-fonte completo do PDF.
                 </div>
 
                 <!-- Filtros de Exportação -->
@@ -2322,33 +2324,43 @@
                     </div>
                 </div>
 
-                <!-- Botões de Exportação (apenas PDF) -->
+                <!-- Botões de Exportação (Código Fonte) -->
                 <div class="export-actions">
-                    <button class="btn-export btn-export-pdf" onclick="exportarFiltradoPDF()" id="btn-export-pdf" disabled>
-                        <i class="fas fa-file-pdf"></i> Exportar em PDF
+                    <button class="btn-export btn-export-pdf" onclick="gerarCodigoFontePDF()" id="btn-export-pdf" disabled>
+                        <i class="fas fa-code"></i> Gerar Código Fonte PDF
                     </button>
+                </div>
+
+                <!-- Área do Código Fonte -->
+                <div id="codigo-fonte-container" class="codigo-fonte-container" style="display: none;">
+                    <div class="codigo-fonte-header">
+                        <h4><i class="fas fa-file-code"></i> Código Fonte Completo do PDF</h4>
+                        <button class="btn-copiar-codigo" onclick="copiarCodigoFonte()">
+                            <i class="fas fa-copy"></i> Copiar Código
+                        </button>
+                    </div>
+                    <textarea id="codigo-fonte-textarea" class="codigo-fonte-textarea" readonly></textarea>
                 </div>
             </div>
         </div>
 
-        <!-- BACKUP LOCAL -->
+        <!-- BACKUP LOCAL (CORRIGIDO) -->
         <div id="backup" class="tab-content">
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-hdd"></i> Backup e Restauração Local</h3>
 
                 <div class="info-box">
                     <i class="fas fa-info-circle"></i>
-                    Use esta funcionalidade para fazer backup dos seus dados em um arquivo JSON antes de atualizar o aplicativo ou desinstalá-lo. 
-                    Você pode restaurar os dados posteriormente selecionando o arquivo de backup.
+                    Use esta funcionalidade para fazer backup dos seus dados em um arquivo JSON. Caso o download automático não funcione, o sistema exibirá os dados para cópia manual. Você pode restaurar os dados posteriormente selecionando o arquivo ou colando o conteúdo.
                 </div>
 
                 <div class="backup-options">
                     <!-- Criar Backup -->
-                    <div class="backup-card" onclick="criarBackup()">
+                    <div class="backup-card">
                         <i class="fas fa-download"></i>
                         <h4>Criar Backup</h4>
-                        <p>Baixe um arquivo JSON com todos os seus dados para guardar em segurança</p>
-                        <button class="btn-save" style="margin-top: 15px;">
+                        <p>Baixe um arquivo JSON com todos os dados para guardar em segurança</p>
+                        <button class="btn-save" onclick="criarBackup()" style="margin-top: 15px;">
                             <i class="fas fa-download"></i> GERAR ARQUIVO DE BACKUP
                         </button>
                     </div>
@@ -2358,11 +2370,19 @@
                         <i class="fas fa-upload"></i>
                         <h4>Restaurar Backup</h4>
                         <p>Selecione um arquivo de backup anterior para restaurar seus dados</p>
-                        <!-- Input file oculto -->
-                        <input type="file" id="input-backup" accept=".json" style="display:none" onchange="restaurarBackup(this)">
-                        <button class="btn-save" style="margin-top: 15px; background: linear-gradient(135deg, #1976d2, #1565c0);" onclick="document.getElementById('input-backup').click()">
-                            <i class="fas fa-folder-open"></i> SELECIONAR ARQUIVO DE BACKUP
-                        </button>
+                        <div class="file-input-wrapper" style="margin-top: 15px;">
+                            <input type="file" id="arquivo-backup" accept=".json" onchange="restaurarBackupArquivo(this)">
+                            <label for="arquivo-backup" class="file-input-label">
+                                <i class="fas fa-folder-open"></i> SELECIONAR ARQUIVO
+                            </label>
+                        </div>
+                        <div class="backup-paste-area">
+                            <p style="margin: 10px 0; font-size: 0.9rem; color: var(--text-sub);">Ou cole o conteúdo do backup aqui:</p>
+                            <textarea id="backup-paste" placeholder="Cole o conteúdo JSON aqui..."></textarea>
+                            <button class="btn-restaurar-paste" onclick="restaurarBackupTexto()">
+                                <i class="fas fa-undo"></i> RESTAURAR DO TEXTO COLADO
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -2387,77 +2407,91 @@
             </div>
         </div>
 
-        <!-- RELATÓRIOS (apenas PDF, compartilhamento visível apenas para admin) -->
+        <!-- RELATÓRIOS (com Script Python e compartilhamento aprimorado) -->
         <div id="relatorios" class="tab-content">
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-file-export"></i> Exportação e Compartilhamento</h3>
                 
-                <h4 style="margin: 0 0 15px 0; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-download"></i> Exportar Todos os Dados
-                </h4>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 30px;">
-                    <button class="btn-save" style="background: linear-gradient(135deg, #e53935, #c62828);" onclick="gerarPDF()">
-                        <i class="fas fa-file-pdf"></i> Exportar PDF
-                    </button>
+                <!-- Script Python Completo (Pydroid 3) -->
+                <div class="info-box" style="background: linear-gradient(135deg, #fff3e0, #ffe0b2); border-left-color: #fb8c00;">
+                    <i class="fas fa-code"></i>
+                    <strong>Script Python Completo</strong> <span class="pydroid-badge"><i class="fab fa-python"></i> Pydroid 3</span>
+                    <p style="margin: 10px 0 0 0; font-size: 0.9rem;">
+                        Gera um script Python com todos os dados cadastrados. Execute no Pydroid 3 (Android) para criar o PDF usando FPDF.
+                    </p>
+                </div>
+
+                <button class="btn-save" onclick="gerarScriptPythonCompleto()" style="margin-bottom: 20px;">
+                    <i class="fab fa-python"></i> GERAR SCRIPT PYTHON COMPLETO
+                </button>
+
+                <div id="codigo-completo-container" class="codigo-fonte-container" style="display: none;">
+                    <div class="codigo-fonte-header">
+                        <h4><i class="fas fa-code"></i> Script Python Completo</h4>
+                        <button class="btn-copiar-codigo" onclick="copiarCodigoCompleto()">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+                    <textarea id="codigo-completo" class="codigo-fonte-textarea" readonly></textarea>
+                    <div class="info-box" style="margin-top: 15px; margin-bottom: 0;">
+                        <i class="fas fa-terminal"></i> Pydroid 3: <code>pip install fpdf2</code>
+                    </div>
                 </div>
 
                 <hr style="margin: 30px 0; border: 0; border-top: 2px solid #e0e0e0;">
 
-                <!-- Compartilhamento de Acesso (Somente Leitura) - exibido apenas para admin -->
-                <div id="compartilhamento-admin-section">
-                    <h4 style="margin: 0 0 10px 0; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-share-alt"></i> Compartilhar Acesso (Somente Leitura)
-                    </h4>
+                <!-- Compartilhamento de Acesso (Somente Leitura) -->
+                <h4 style="margin: 0 0 10px 0; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-share-alt"></i> Compartilhar Acesso (Somente Leitura)
+                </h4>
+                
+                <p style="font-size: 0.95rem; color: var(--text-sub); margin-bottom: 20px; line-height: 1.6;">
+                    Gere um link temporário para visualização <strong>somente leitura</strong> protegido por senha. 
+                    O destinatário NÃO precisará da senha de administrador — apenas da senha definida para o link.
+                </p>
+
+                <div class="share-box">
+                    <div class="field-group" style="margin-bottom: 15px;">
+                        <label style="color: var(--text-main);"><i class="fas fa-clock"></i> Validade do link</label>
+                        <select id="share-time" style="margin-top: 5px;">
+                            <option value="15">15 Minutos</option>
+                            <option value="60" selected>1 Hora</option>
+                            <option value="1440">24 Horas</option>
+                            <option value="10080">7 Dias</option>
+                        </select>
+                    </div>
+
+                    <!-- Senha para o link -->
+                    <div class="senha-link-box">
+                        <div class="field-group" style="margin-bottom: 10px;">
+                            <label style="color: #e65100;"><i class="fas fa-lock"></i> Senha de Acesso do Link *</label>
+                            <div class="senha-box" style="position: relative;">
+                                <input type="password" id="share-senha" placeholder="Mínimo 4 dígitos" style="margin-top: 5px; padding-right: 40px;">
+                                <i class="fas fa-eye toggle-senha" onclick="toggleSenhaShare()" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-sub);"></i>
+                            </div>
+                            <small style="color: var(--text-sub); display: block; margin-top: 5px;">
+                                O destinatário precisará apenas desta senha para acessar o link
+                            </small>
+                        </div>
+                    </div>
                     
-                    <p style="font-size: 0.95rem; color: var(--text-sub); margin-bottom: 20px; line-height: 1.6;">
-                        Gere um link temporário para visualização <strong>somente leitura</strong> protegido por senha. 
-                        O destinatário NÃO precisará da senha de administrador — apenas da senha definida para o link.
-                    </p>
+                    <button class="btn-save" style="background: linear-gradient(135deg, #1976d2, #1565c0); margin-top: 15px;" onclick="gerarLink()">
+                        <i class="fas fa-link"></i> GERAR LINK PROTEGIDO
+                    </button>
 
-                    <div class="share-box">
-                        <div class="field-group" style="margin-bottom: 15px;">
-                            <label style="color: var(--text-main);"><i class="fas fa-clock"></i> Validade do link</label>
-                            <select id="share-time" style="margin-top: 5px;">
-                                <option value="15">15 Minutos</option>
-                                <option value="60" selected>1 Hora</option>
-                                <option value="1440">24 Horas</option>
-                                <option value="10080">7 Dias</option>
-                            </select>
+                    <div id="link-result" style="margin-top: 20px; display: none; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <label style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-main); font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-check-circle" style="color: var(--ok);"></i> Link gerado com sucesso:
+                        </label>
+                        <input type="text" id="share-url" readonly style="font-size: 0.9rem; background: #f5f5f5; margin-bottom: 10px;">
+                        <div style="background: #fff3e0; padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #ff9800;">
+                            <small style="color: #e65100; font-weight: 600;">
+                                <i class="fas fa-key"></i> Senha de acesso: <span id="share-senha-display"></span>
+                            </small>
                         </div>
-
-                        <!-- Senha para o link -->
-                        <div class="senha-link-box">
-                            <div class="field-group" style="margin-bottom: 10px;">
-                                <label style="color: #e65100;"><i class="fas fa-lock"></i> Senha de Acesso do Link *</label>
-                                <div class="senha-box" style="position: relative;">
-                                    <input type="password" id="share-senha" placeholder="Mínimo 4 dígitos" style="margin-top: 5px; padding-right: 40px;">
-                                    <i class="fas fa-eye toggle-senha" onclick="toggleSenhaShare()" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-sub);"></i>
-                                </div>
-                                <small style="color: var(--text-sub); display: block; margin-top: 5px;">
-                                    O destinatário precisará apenas desta senha para acessar o link
-                                </small>
-                            </div>
-                        </div>
-                        
-                        <button class="btn-save" style="background: linear-gradient(135deg, #1976d2, #1565c0); margin-top: 15px;" onclick="gerarLink()">
-                            <i class="fas fa-link"></i> GERAR LINK PROTEGIDO
+                        <button onclick="copiarLink()" style="padding: 10px 20px; background: linear-gradient(135deg, var(--ok), #1b5e20); color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; transition: all 0.3s;">
+                            <i class="fas fa-copy"></i> COPIAR LINK E SENHA
                         </button>
-
-                        <div id="link-result" style="margin-top: 20px; display: none; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                            <label style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-main); font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                                <i class="fas fa-check-circle" style="color: var(--ok);"></i> Link gerado com sucesso:
-                            </label>
-                            <input type="text" id="share-url" readonly style="font-size: 0.9rem; background: #f5f5f5; margin-bottom: 10px;">
-                            <div style="background: #fff3e0; padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #ff9800;">
-                                <small style="color: #e65100; font-weight: 600;">
-                                    <i class="fas fa-key"></i> Senha de acesso: <span id="share-senha-display"></span>
-                                </small>
-                            </div>
-                            <button onclick="copiarLink()" style="padding: 10px 20px; background: linear-gradient(135deg, var(--ok), #1b5e20); color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; transition: all 0.3s;">
-                                <i class="fas fa-copy"></i> COPIAR LINK E SENHA
-                            </button>
-                        </div>
                     </div>
                 </div>
 
@@ -2465,7 +2499,7 @@
                 <div class="access-log" id="access-log-container">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <h4 style="margin: 0;"><i class="fas fa-history"></i> Histórico de Acessos</h4>
-                        <button class="btn-limpar-logs" onclick="confirmar('Deseja realmente limpar todo o histórico de acessos?', (ok) => { if(ok) limparLogs(); })" title="Limpar todo o histórico">
+                        <button class="btn-limpar-logs" onclick="limparLogs()" title="Limpar todo o histórico">
                             <i class="fas fa-trash-alt"></i> Limpar Logs
                         </button>
                     </div>
@@ -2478,7 +2512,7 @@
 
     </div>
 
-    <!-- MODAL DE DETALHES (CORRIGIDO) -->
+    <!-- MODAL DE DETALHES -->
     <div id="modal-detalhes" class="modal-overlay" onclick="fecharModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -2489,7 +2523,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE SENHA DO LINK (BETA) -->
+    <!-- MODAL DE SENHA DO LINK -->
     <div id="modal-senha-link" class="modal-overlay" style="z-index: 3000; display: none;">
         <div class="modal-content" style="max-width: 400px;">
             <div class="modal-header">
@@ -2514,7 +2548,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE BACKUP MANUAL (fallback) -->
+    <!-- MODAL DE BACKUP MANUAL (para fallback) -->
     <div id="modal-backup" class="modal-overlay" style="display: none;" onclick="if(event.target===this)fecharModalBackup()">
         <div class="modal-content backup-modal-content" style="max-width: 600px; width: 95%;">
             <div class="modal-header" style="border-bottom-color: #444;">
@@ -2531,30 +2565,15 @@
         </div>
     </div>
 
-    <!-- Context Menu para exclusão de tipos -->
-    <div id="context-menu" class="context-menu">
-        <div class="context-menu-item danger" onclick="excluirTipoSelecionado()">
-            <i class="fas fa-trash"></i> Excluir Tipo
-        </div>
-        <div class="context-menu-item" onclick="fecharContextMenu()">
-            <i class="fas fa-times"></i> Cancelar
-        </div>
-    </div>
-
-    <!-- MODAL DE CONFIRMAÇÃO CUSTOMIZADO -->
-    <div id="modal-confirm" class="modal-overlay" style="display: none;" onclick="fecharModalConfirm(event)">
-        <div class="modal-content" style="max-width: 400px;" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3><i class="fas fa-question-circle"></i> Confirmação</h3>
-                <button class="modal-close" onclick="fecharModalConfirm()">&times;</button>
-            </div>
-            <div style="padding: 20px; text-align: center;">
-                <p id="confirm-mensagem" style="font-size: 1.1rem; margin-bottom: 25px;"></p>
-                <div style="display: flex; gap: 10px; justify-content: center;">
-                    <button id="confirm-btn-sim" class="btn-save" style="width: auto; padding: 10px 25px;">Sim</button>
-                    <button id="confirm-btn-nao" class="btn-save" style="width: auto; padding: 10px 25px; background: linear-gradient(135deg, #607d8b, #455a64);">Não</button>
-                </div>
-            </div>
+    <!-- MODAL DE EXPIRAÇÃO DE LINK -->
+    <div id="modal-expired" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="text-align: center;">
+            <i class="fas fa-hourglass-end" style="font-size: 4rem; color: var(--danger); margin-bottom: 20px;"></i>
+            <h3 style="color: var(--danger); margin-bottom: 15px;">Link Expirado</h3>
+            <p style="margin-bottom: 25px; color: var(--text-sub);">Este link de compartilhamento não é mais válido. Solicite um novo link ao administrador.</p>
+            <button class="btn-save" onclick="window.location.href=window.location.pathname" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark));">
+                <i class="fas fa-home"></i> Página Inicial
+            </button>
         </div>
     </div>
 
@@ -2566,20 +2585,15 @@
     // ESTADO DA APLICAÇÃO
     // ==========================================
     let db = JSON.parse(localStorage.getItem('fire_db')) || [];
-    let tiposEquipamentos = JSON.parse(localStorage.getItem('fire_tipos')) || [
-        'Extintor', 'Mangueira', 'Hidrante', 'Suporte', 
-        'Sinalização', 'Detector de Fumaça', 'Sprinkler', 'Porta Corta-Fogo'
-    ];
     let isComDataMode = true;
     let isReadOnly = false;
     let subAbaAtiva = 'com-data';
     let formModificado = false;
     let filtroAtivoBusca = 'all';
     let statusChart = null;
-    let senhaAtual = localStorage.getItem('fire_senha') || '1234';
+    let senhaAtual = localStorage.getItem('fire_senha') || 'Dev3545@36';
     let accessLog = JSON.parse(localStorage.getItem('fire_access_log')) || [];
     let linkSenhaTemp = null;
-    let confirmCallback = null;
 
     // ==========================================
     // INICIALIZAÇÃO
@@ -2605,149 +2619,30 @@
         verificarTipoMangueira();
         atualizarInfoBackup();
         atualizarLogAcessos();
-        atualizarListaTipos();
 
         document.getElementById('form-equipamento').addEventListener('input', () => { formModificado = true; });
-
-        window.addEventListener('online', atualizarConexao);
-        window.addEventListener('offline', atualizarConexao);
-        atualizarConexao();
-
-        document.addEventListener('click', (e) => {
-            const container = document.getElementById('tipos-container');
-            const input = document.getElementById('cad-tipo');
-            if (container && !container.contains(e.target) && !input.contains(e.target)) {
-                container.style.display = 'none';
-            }
-        });
-
-        document.getElementById('confirm-btn-sim').addEventListener('click', function() {
-            if (confirmCallback) {
-                confirmCallback(true);
-            }
-            fecharModalConfirm();
-        });
-        document.getElementById('confirm-btn-nao').addEventListener('click', function() {
-            if (confirmCallback) {
-                confirmCallback(false);
-            }
-            fecharModalConfirm();
-        });
     });
-
-    function atualizarConexao() {
-        const indicator = document.getElementById('connection-indicator');
-        const text = document.getElementById('connection-text');
-        if (navigator.onLine) {
-            indicator.classList.remove('offline');
-            text.textContent = 'Online';
-        } else {
-            indicator.classList.add('offline');
-            text.textContent = 'Offline';
-        }
-    }
-
-    // ==========================================
-    // GERENCIAMENTO DE TIPOS
-    // ==========================================
-    function atualizarListaTipos() {
-        const container = document.getElementById('tipos-container');
-        const lista = document.getElementById('tipos-lista');
-        const inputTipo = document.getElementById('cad-tipo');
-        
-        if (!container || !lista || !inputTipo) return;
-        
-        if (!isReadOnly) {
-            lista.innerHTML = '';
-            
-            tiposEquipamentos.forEach((tipo) => {
-                const div = document.createElement('div');
-                div.className = 'tipo-item';
-                div.innerHTML = `
-                    <span class="tipo-nome">${tipo}</span>
-                    <button type="button" class="btn-excluir-tipo" onclick="event.stopPropagation(); confirmarExclusaoTipo('${tipo}')" title="Excluir tipo">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                `;
-                
-                div.addEventListener('click', (e) => {
-                    if (e.target.closest('.btn-excluir-tipo')) return;
-                    inputTipo.value = tipo;
-                    verificarTipoMangueira();
-                    container.style.display = 'none';
-                });
-                
-                lista.appendChild(div);
-            });
-        }
-        
-        if (!inputTipo.dataset.eventsConfigured) {
-            inputTipo.dataset.eventsConfigured = 'true';
-            
-            inputTipo.addEventListener('focus', () => {
-                if (!isReadOnly) {
-                    container.style.display = 'block';
-                    const itens = lista.querySelectorAll('.tipo-item');
-                    itens.forEach(item => item.style.display = 'flex');
-                }
-            });
-            
-            inputTipo.addEventListener('input', (e) => {
-                const termo = e.target.value.toLowerCase();
-                const itens = lista.querySelectorAll('.tipo-item');
-                let temVisivel = false;
-                
-                itens.forEach(item => {
-                    const texto = item.querySelector('.tipo-nome').textContent.toLowerCase();
-                    const visivel = texto.includes(termo);
-                    item.style.display = visivel ? 'flex' : 'none';
-                    if (visivel) temVisivel = true;
-                });
-                
-                if (termo.length > 0 && temVisivel) {
-                    container.style.display = 'block';
-                }
-            });
-        }
-    }
-
-    function confirmarExclusaoTipo(tipo) {
-        if (isReadOnly) return;
-        
-        confirmar(`Deseja realmente excluir o tipo "${tipo}"?\n\nEquipamentos já cadastrados com este tipo não serão afetados.`, (ok) => {
-            if (ok) {
-                tiposEquipamentos = tiposEquipamentos.filter(t => t !== tipo);
-                localStorage.setItem('fire_tipos', JSON.stringify(tiposEquipamentos));
-                atualizarListaTipos();
-                showToast(`🗑️ Tipo "${tipo}" excluído`);
-            }
-        });
-        fecharContextMenu();
-    }
 
     // ==========================================
     // VERIFICAÇÃO DE TOKEN (ACESSO VIA LINK)
     // ==========================================
     function verificarTokenCompartilhado(token) {
         try {
-            // Token agora é composto por exp:senha em base64url (sem padding)
-            const decoded = atob(token.replace(/-/g, '+').replace(/_/g, '='));
-            const [exp, pwdB64] = decoded.split(':');
-            const expNum = parseInt(exp, 10);
+            const payload = JSON.parse(atob(token));
             const agora = Date.now();
 
-            if (agora > expNum) {
-                document.getElementById('expired-screen').style.display = 'flex';
-                document.body.style.overflow = 'hidden';
+            if (agora > payload.exp) {
+                document.getElementById('modal-expired').style.display = 'flex';
                 return;
             }
 
+            // Registrar acesso com informações do dispositivo
             const userAgent = navigator.userAgent;
             const platform = navigator.platform;
             registrarLog('Tentativa de acesso via link', `Token válido - Dispositivo: ${platform} - User Agent: ${userAgent.substring(0, 100)}`);
 
-            if (pwdB64) {
-                linkSenhaTemp = atob(pwdB64);
+            if (payload.pwd) {
+                linkSenhaTemp = atob(payload.pwd);
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('modal-senha-link').style.display = 'flex';
                 setTimeout(() => {
@@ -2760,8 +2655,7 @@
                 registrarLog('Acesso via link', 'Acesso somente leitura permitido (sem senha)');
             }
         } catch (e) {
-            document.getElementById('expired-screen').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+            document.getElementById('modal-expired').style.display = 'flex';
         }
     }
 
@@ -2804,12 +2698,9 @@
                 btn.style.display = 'none';
             }
         });
-        document.querySelectorAll('.btn-edit, .btn-del, #btn-cancelar-edicao, .btn-export-pdf, .btn-save[onclick*="criarBackup"], .btn-restaurar-paste, .file-input-label, .btn-limpar-logs, #compartilhamento-admin-section').forEach(el => {
+        document.querySelectorAll('.btn-edit, .btn-del, #btn-cancelar-edicao, .btn-export-pdf, .btn-save[onclick*="criarBackup"], .btn-restaurar-paste, .file-input-label, .btn-limpar-logs').forEach(el => {
             if (el) el.style.display = 'none';
         });
-        // Força a atualização da UI e navega para a lista para garantir que os dados apareçam
-        atualizarUI();
-        navegar('lista');
         showToast('👁️ Modo de visualização ativado');
     }
 
@@ -2987,16 +2878,8 @@
         btnSalvar.innerHTML = '<i class="fas fa-spinner"></i> SALVANDO...';
 
         setTimeout(() => {
-            const tipo = document.getElementById('cad-tipo').value;
-            
-            if (tipo && !tiposEquipamentos.includes(tipo)) {
-                tiposEquipamentos.push(tipo);
-                localStorage.setItem('fire_tipos', JSON.stringify(tiposEquipamentos));
-                atualizarListaTipos();
-            }
-
             const itemData = {
-                tipo: tipo,
+                tipo: document.getElementById('cad-tipo').value,
                 codigo: document.getElementById('cad-codigo').value,
                 descricao: document.getElementById('cad-descricao').value,
                 area: document.getElementById('cad-area').value,
@@ -3084,17 +2967,14 @@
         const item = db.find(i => i.id === id);
         if (!item) return;
 
-        const mensagem = `Deseja realmente excluir o item:\n\n${item.codigo} - ${item.tipo}\n${item.descricao}\n\nEsta ação não pode ser desfeita!`;
-        confirmar(mensagem, (confirmado) => {
-            if (confirmado) {
-                db = db.filter(i => i.id !== id);
-                localStorage.setItem('fire_db', JSON.stringify(db));
-                atualizarUI(); 
-                atualizarListaRecentes(); 
-                fecharModal();
-                showToast('🗑️ Item excluído com sucesso');
-            }
-        });
+        if (confirm('⚠️ Deseja realmente excluir o item:\n\n' + item.codigo + ' - ' + item.tipo + '\n' + item.descricao + '\n\nEsta ação não pode ser desfeita!')) {
+            db = db.filter(i => i.id !== id);
+            localStorage.setItem('fire_db', JSON.stringify(db));
+            atualizarUI(); 
+            atualizarListaRecentes(); 
+            fecharModal();
+            showToast('🗑️ Item excluído com sucesso');
+        }
     }
 
     // ==========================================
@@ -3223,7 +3103,7 @@
 
     function atualizarModelos() {
         const sel = document.getElementById('modelo-select');
-        sel.innerHTML = '<option value="">-- Selecione para preencher automaticamente --</option>';
+        sel.innerHTML = '<option value="">-- Usar modelo existente --</option>';
         const unicos = new Set();
 
         db.forEach(item => {
@@ -3424,7 +3304,7 @@
                     ${itensHtml}
                     ${!isReadOnly ? `
                     <div style="text-align:right; padding:15px; background:#fafafa; border-top: 2px solid #e0e0e0;">
-                        <button onclick="event.stopPropagation(); confirmarExcluirArea('${nomeArea}')" 
+                        <button onclick="event.stopPropagation(); excluirArea('${nomeArea}')" 
                                 style="padding: 8px 15px; background: linear-gradient(135deg, #ffebee, #ffcdd2); 
                                        color: var(--danger); border: none; border-radius: 8px; cursor: pointer; 
                                        font-weight: 600; transition: all 0.3s;"
@@ -3447,18 +3327,15 @@
         icon.style.transform = content.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0deg)';
     }
 
-    function confirmarExcluirArea(nomeArea) {
+    function excluirArea(nomeArea) {
         if(isReadOnly) return;
-        const mensagem = `⚠️ ATENÇÃO: Isso excluirá TODOS os ${db.filter(i => i.area === nomeArea).length} equipamento(s) da área "${nomeArea}".\n\n❌ Esta ação NÃO pode ser desfeita!`;
-        confirmar(mensagem, (confirmado) => {
-            if (confirmado) {
-                db = db.filter(item => item.area !== nomeArea);
-                localStorage.setItem('fire_db', JSON.stringify(db));
-                atualizarUI();
-                renderizarOrganizacao();
-                showToast(`🗑️ Área "${nomeArea}" excluída com sucesso`);
-            }
-        });
+        if(confirm(`⚠️ ATENÇÃO: Isso excluirá TODOS os ${db.filter(i => i.area === nomeArea).length} equipamento(s) da área "${nomeArea}".\n\n❌ Esta ação NÃO pode ser desfeita!\n\n✅ Confirmar exclusão?`)) {
+            db = db.filter(item => item.area !== nomeArea);
+            localStorage.setItem('fire_db', JSON.stringify(db));
+            atualizarUI();
+            renderizarOrganizacao();
+            showToast(`🗑️ Área "${nomeArea}" excluída com sucesso`);
+        }
     }
 
     // ==========================================
@@ -3669,20 +3546,12 @@
             ` : ''}
         `;
 
-        const modalContent = document.querySelector('#modal-detalhes .modal-content');
-        if (modalContent) {
-            modalContent.scrollTop = 0;
-        }
-
-        const modal = document.getElementById('modal-detalhes');
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
+        document.getElementById('modal-detalhes').style.display = 'flex';
     }
 
     function fecharModal(event) {
         if (!event || event.target.id === 'modal-detalhes' || event.target.classList.contains('modal-close')) {
             document.getElementById('modal-detalhes').style.display = 'none';
-            document.body.style.overflow = 'auto';
         }
     }
 
@@ -3691,7 +3560,7 @@
     }
 
     // ==========================================
-    // EXPORTAÇÃO FILTRADA (apenas PDF)
+    // EXPORTAÇÃO FILTRADA (CÓDIGO FONTE PDF)
     // ==========================================
     function verificarFiltrosMangueira() {
         const temMangueiras = db.some(i => i.tipo === 'Mangueira');
@@ -3810,146 +3679,242 @@
         document.getElementById('btn-export-pdf').disabled = itensFiltrados.length === 0;
     }
 
-    function exportarFiltradoPDF() {
-        if (isReadOnly) {
-            showToast('❌ Função não disponível no modo visualização');
-            return;
-        }
-        
+    function gerarCodigoFontePDF() {
+        if (isReadOnly) { showToast('❌ Função não disponível no modo visualização'); return; }
+
         const filtros = getFiltrosSelecionados();
         const itensFiltrados = aplicarFiltrosExportacao(db, filtros);
-        
-        if (itensFiltrados.length === 0) {
-            showToast('⚠️ Nenhum equipamento para exportar');
-            return;
-        }
-        
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        doc.setFontSize(18);
-        doc.setTextColor(211, 47, 47);
-        doc.text("FireGuardian Pro - Exportação Filtrada", 14, 20);
-        
-        doc.setFontSize(10);
-        doc.setTextColor(0, 0, 0);
-        doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 28);
-        doc.text(`Total de Itens: ${itensFiltrados.length}`, 14, 34);
-        
-        let filtrosTexto = [];
-        if (filtros.status.length > 0) filtrosTexto.push(`Status: ${filtros.status.join(', ')}`);
-        if (filtros.tipos.length > 0) filtrosTexto.push(`Tipos: ${filtros.tipos.join(', ')}`);
-        if (filtros.data.length > 0) filtrosTexto.push(`Data: ${filtros.data.join(', ')}`);
-        
-        if (filtrosTexto.length > 0) {
-            doc.text(`Filtros: ${filtrosTexto.join(' | ')}`, 14, 40);
-        }
-        
-        const tableColumn = ["TAG", "Tipo", "Descrição", "Área", "Local", "Validade", "Status", "Chave Storz", "Adaptador Storz"];
-        const tableRows = [];
 
-        itensFiltrados.forEach(item => {
+        if (itensFiltrados.length === 0) { showToast('⚠️ Nenhum equipamento para exportar'); return; }
+
+        const codigoFonte = gerarCodigoPDF(itensFiltrados, 'Exportação Filtrada');
+
+        document.getElementById('codigo-fonte-textarea').value = codigoFonte;
+        document.getElementById('codigo-fonte-container').style.display = 'block';
+        showToast('✅ Código fonte gerado! Você pode copiá-lo abaixo.');
+        document.getElementById('codigo-fonte-container').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function gerarCodigoPDF(itens, titulo) {
+        const dataGeracao = new Date().toLocaleString('pt-BR');
+        const totalItens = itens.length;
+
+        let dadosTabela = '';
+        itens.forEach((item, index) => {
             const st = getStatus(item.validade);
             const validade = item.validade ? item.validade.split('-').reverse().join('/') : 'N/A';
             const status = st.text;
-            const chaveStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.chaveStorz) 
-                ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            const adaptadorStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.adaptadorStorz) 
-                ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            
-            tableRows.push([
-                item.codigo, 
-                item.tipo, 
-                item.descricao, 
-                item.area, 
-                item.local, 
-                validade,
-                status,
-                chaveStorz,
-                adaptadorStorz
-            ]);
+            const chaveStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.chaveStorz) ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') : 'N/A';
+            const adaptadorStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.adaptadorStorz) ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') : 'N/A';
+
+            dadosTabela += `            // Item ${index + 1}
+            [
+                "${item.codigo}", 
+                "${item.tipo}", 
+                "${item.descricao.replace(/"/g, '\\"')}", 
+                "${item.area.replace(/"/g, '\\"')}", 
+                "${item.local.replace(/"/g, '\\"')}", 
+                "${validade}",
+                "${status}",
+                "${chaveStorz}",
+                "${adaptadorStorz}"
+            ]${index < itens.length - 1 ? ',' : ''}
+`;
         });
 
-        doc.autoTable({
-            head: [tableColumn],
-            body: tableRows,
-            startY: filtrosTexto.length > 0 ? 45 : 40,
-            styles: { fontSize: 8, cellPadding: 3 },
-            headStyles: { fillColor: [211, 47, 47], fontStyle: 'bold' },
-            alternateRowStyles: { fillColor: [245, 245, 245] },
-            margin: { top: 40 }
-        });
+        return `// ============================================================
+// CÓDIGO FONTE DO PDF - FireGuardian Pro
+// Gerado em: ${dataGeracao}
+// Total de Itens: ${totalItens}
+// Tipo: ${titulo}
+// ============================================================
 
-        // Usar save() que é mais compatível com WebView Android
-        doc.save(`FireGuardian_Filtrado_${new Date().toISOString().split('T')[0]}.pdf`);
-        showToast('📄 PDF filtrado gerado!');
+// Incluir bibliotecas necessárias:
+// - jspdf (https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js)
+// - jspdf-autotable (https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js)
+
+// Função para gerar o PDF
+function gerarPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Configurações do documento
+    doc.setFontSize(18);
+    doc.setTextColor(211, 47, 47);
+    doc.text("FireGuardian Pro - ${titulo}", 14, 20);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.text("Gerado em: ${dataGeracao}", 14, 28);
+    doc.text("Total de Itens: ${totalItens}", 14, 34);
+    
+    // Definição das colunas
+    const tableColumn = [
+        "TAG", 
+        "Tipo", 
+        "Descrição", 
+        "Área", 
+        "Local", 
+        "Validade", 
+        "Status", 
+        "Chave Storz", 
+        "Adaptador Storz"
+    ];
+    
+    // Dados da tabela
+    const tableRows = [
+${dadosTabela}    ];
+    
+    // Configuração da tabela
+    doc.autoTable({
+        head: [tableColumn],
+        body: tableRows,
+        startY: 40,
+        styles: { 
+            fontSize: 8, 
+            cellPadding: 3 
+        },
+        headStyles: { 
+            fillColor: [211, 47, 47], 
+            fontStyle: 'bold',
+            textColor: 255
+        },
+        alternateRowStyles: { 
+            fillColor: [245, 245, 245] 
+        },
+        margin: { 
+            top: 40 
+        },
+        theme: 'grid'
+    });
+    
+    // Salvar o PDF
+    doc.save("FireGuardian_${titulo.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf");
+}
+
+// Executar geração
+gerarPDF();
+
+// ============================================================
+// FIM DO CÓDIGO FONTE
+// ============================================================
+
+/*
+INSTRUÇÕES DE USO:
+1. Copie todo este código
+2. Abra o console do navegador (F12)
+3. Cole o código e pressione Enter
+4. O PDF será gerado automaticamente
+
+Ou salve este código em um arquivo .js e inclua em uma página HTML
+com as bibliotecas jsPDF carregadas.
+*/`;
+    }
+
+    function copiarCodigoFonte() {
+        const textarea = document.getElementById('codigo-fonte-textarea');
+        textarea.select();
+        textarea.setSelectionRange(0, 99999);
+        try { navigator.clipboard.writeText(textarea.value).then(() => showToast('📋 Código fonte copiado!')); }
+        catch (err) { document.execCommand('copy'); showToast('📋 Código fonte copiado!'); }
     }
 
     // ==========================================
-    // EXPORTAÇÃO DE TODOS OS DADOS (apenas PDF)
+    // SCRIPT PYTHON COMPLETO (Pydroid 3) - usando FPDF2
     // ==========================================
-    function gerarPDF() {
-        if (isReadOnly) {
-            showToast('❌ Função não disponível no modo visualização');
-            return;
-        }
-        
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        doc.setFontSize(18);
-        doc.setTextColor(211, 47, 47);
-        doc.text("FireGuardian Pro - Relatório Completo", 14, 20);
-        
-        doc.setFontSize(10);
-        doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 28);
-        doc.text(`Total de Itens: ${db.length}`, 14, 34);
-        
-        const tableColumn = ["TAG", "Tipo", "Descrição", "Área", "Local", "Validade", "Status", "Chave Storz", "Adaptador Storz"];
-        const tableRows = [];
+    function gerarScriptPythonCompleto() {
+        if (isReadOnly) { showToast('❌ Função não disponível no modo visualização'); return; }
+        if (db.length === 0) { showToast('⚠️ Nenhum dado para exportar!'); return; }
 
-        db.forEach(item => {
-            const st = getStatus(item.validade);
+        const data = {
+            generatedAt: new Date().toISOString(),
+            total: db.length,
+            items: db
+        };
+
+        // Gerar linhas da tabela para o script
+        let tabelaLinhas = '';
+        data.items.forEach((item, i) => {
+            const status = getStatus(item.validade).text;
             const validade = item.validade ? item.validade.split('-').reverse().join('/') : 'N/A';
-            const status = st.text;
-            const chaveStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.chaveStorz) 
-                ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            const adaptadorStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.adaptadorStorz) 
-                ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            
-            tableRows.push([
-                item.codigo, 
-                item.tipo, 
-                item.descricao, 
-                item.area, 
-                item.local, 
-                validade,
-                status,
-                chaveStorz,
-                adaptadorStorz
-            ]);
+            const chave = (item.tipo === 'Mangueira' && item.chaveStorz) ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') : 'N/A';
+            const adapt = (item.tipo === 'Mangueira' && item.adaptadorStorz) ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') : 'N/A';
+            tabelaLinhas += `        ["${item.codigo}", "${item.tipo}", "${item.descricao.replace(/"/g, '\\"')}", "${item.area.replace(/"/g, '\\"')}", "${item.local.replace(/"/g, '\\"')}", "${validade}", "${status}", "${chave}", "${adapt}"]${i < data.items.length-1 ? ',' : ''}\n`;
         });
 
-        doc.autoTable({
-            head: [tableColumn],
-            body: tableRows,
-            startY: 40,
-            styles: { fontSize: 8, cellPadding: 3 },
-            headStyles: { fillColor: [211, 47, 47], fontStyle: 'bold' },
-            alternateRowStyles: { fillColor: [245, 245, 245] },
-            margin: { top: 40 }
-        });
+        const script = `#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+FireGuardian Pro - Script Python para Pydroid 3
+Gere PDFs completos usando FPDF2
+Execute: pip install fpdf2
+"""
 
-        doc.save(`FireGuardian_Relatorio_${new Date().toISOString().split('T')[0]}.pdf`);
-        showToast('📄 PDF gerado!');
+from fpdf import FPDF
+from datetime import datetime
+import json
+
+# Dados dos equipamentos
+dados = [
+${tabelaLinhas}]
+
+class PDF(FPDF):
+    def header(self):
+        self.set_font("helvetica", "B", 14)
+        self.set_text_color(211, 47, 47)
+        self.cell(0, 10, "FireGuardian Pro - Relatório Completo", ln=True, align="C")
+        self.set_font("helvetica", "", 10)
+        self.set_text_color(0, 0, 0)
+        self.cell(0, 8, f"Gerado em: {data['generatedAt'][:10]}", ln=True, align="C")
+        self.cell(0, 8, f"Total de Equipamentos: {data['total']}", ln=True, align="C")
+        self.ln(10)
+
+    def footer(self):
+        self.set_y(-15)
+        self.set_font("helvetica", "I", 8)
+        self.set_text_color(128, 128, 128)
+        self.cell(0, 10, f"Página {self.page_no()}", align="C")
+
+# Criação do PDF
+pdf = PDF(orientation="L", unit="mm", format="A4")
+pdf.add_page()
+pdf.set_font("helvetica", size=9)
+
+# Cabeçalho da tabela
+colunas = ["Código", "Tipo", "Descrição", "Área", "Local", "Validade", "Status", "Chave", "Adaptador"]
+larguras = [25, 25, 45, 30, 30, 25, 25, 20, 20]
+
+for i, coluna in enumerate(colunas):
+    pdf.cell(larguras[i], 10, coluna, border=1, align="C")
+pdf.ln()
+
+# Linhas de dados
+for linha in dados:
+    for i, valor in enumerate(linha):
+        pdf.cell(larguras[i], 8, str(valor), border=1)
+    pdf.ln()
+
+# Salvar PDF
+nome_arquivo = f"FireGuardian_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+pdf.output(nome_arquivo)
+print(f"✅ PDF gerado com sucesso: {nome_arquivo}")
+`;
+
+        document.getElementById('codigo-completo').value = script;
+        document.getElementById('codigo-completo-container').style.display = 'block';
+        showToast('✅ Script Python completo gerado!');
+        document.getElementById('codigo-completo-container').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function copiarCodigoCompleto() {
+        const textarea = document.getElementById('codigo-completo');
+        textarea.select();
+        try { navigator.clipboard.writeText(textarea.value).then(() => showToast('📋 Script Python copiado!')); }
+        catch (err) { document.execCommand('copy'); showToast('📋 Script Python copiado!'); }
     }
 
     // ==========================================
-    // BACKUP E RESTAURAÇÃO
+    // BACKUP E RESTAURAÇÃO (CORRIGIDO)
     // ==========================================
     function criarBackup() {
         if (db.length === 0) {
@@ -3959,33 +3924,84 @@
 
         const backupData = {
             data: db,
-            tipos: tiposEquipamentos,
             timestamp: new Date().toISOString(),
-            versao: '1.7',
+            versao: '2.0',
             totalEquipamentos: db.length
         };
 
+        const jsonStr = JSON.stringify(backupData, null, 2);
+        
+        // Tentar download automático
         try {
-            const dataStr = JSON.stringify(backupData, null, 2);
-            const blob = new Blob([dataStr], { type: "application/json" });
-            const url = window.URL.createObjectURL(blob);
-            
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = "FireGuardian_Backup_" + new Date().toISOString().split('T')[0] + ".json";
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            setTimeout(() => window.URL.revokeObjectURL(url), 5000);
-            
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `FireGuardian_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
             localStorage.setItem('fire_last_backup', new Date().toLocaleString('pt-BR'));
             atualizarInfoBackup();
             showToast('💾 Backup gerado e download iniciado!');
         } catch (e) {
-            document.getElementById('backup-manual-texto').value = JSON.stringify(backupData, null, 2);
+            // Fallback: mostrar modal com texto
+            console.warn('Download automático falhou, exibindo modal manual', e);
+            document.getElementById('backup-manual-texto').value = jsonStr;
             document.getElementById('modal-backup').style.display = 'flex';
             showToast('⚠️ Use o modo manual de cópia');
+        }
+    }
+
+    function restaurarBackupArquivo(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        if (!confirm('⚠️ ATENÇÃO: Isso substituirá todos os dados atuais pelos do backup.\n\nDeseja continuar?')) {
+            input.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const backup = JSON.parse(e.target.result);
+                if (!backup.data || !Array.isArray(backup.data)) throw new Error('Formato inválido: propriedade "data" deve ser um array');
+
+                db = backup.data;
+                localStorage.setItem('fire_db', JSON.stringify(db));
+                atualizarUI();
+                atualizarInfoBackup();
+                showToast(`✅ Backup restaurado! ${db.length} equipamentos carregados.`);
+                input.value = '';
+            } catch (err) {
+                showToast('❌ Erro ao restaurar backup: ' + err.message);
+                input.value = '';
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    function restaurarBackupTexto() {
+        const texto = document.getElementById('backup-paste').value.trim();
+        if (!texto) { showToast('⚠️ Cole o conteúdo do backup primeiro!'); return; }
+
+        try {
+            const backup = JSON.parse(texto);
+            if (!backup.data || !Array.isArray(backup.data)) throw new Error('Formato inválido: propriedade "data" deve ser um array');
+
+            if (confirm(`Restaurar backup com ${backup.data.length} itens?\n\nIsso substituirá todos os dados atuais.`)) {
+                db = backup.data;
+                localStorage.setItem('fire_db', JSON.stringify(db));
+                document.getElementById('backup-paste').value = '';
+                atualizarUI();
+                atualizarInfoBackup();
+                showToast('✅ Backup restaurado do texto!');
+            }
+        } catch (err) {
+            showToast('❌ Erro ao restaurar: ' + err.message);
         }
     }
 
@@ -3996,57 +4012,6 @@
         catch (err) { document.execCommand('copy'); showToast('📋 Backup copiado!'); }
     }
 
-    function restaurarBackup(input) {
-        const file = input.files[0];
-        if (!file) return;
-
-        confirmar('⚠️ ATENÇÃO: Isso substituirá todos os dados atuais pelos do backup.\n\nDeseja continuar?', (ok) => {
-            if (ok) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const conteudo = JSON.parse(e.target.result);
-                        
-                        let dadosRestaurados;
-                        let tiposRestaurados = tiposEquipamentos;
-
-                        if (Array.isArray(conteudo)) {
-                            dadosRestaurados = conteudo;
-                        } else if (conteudo.data && Array.isArray(conteudo.data)) {
-                            dadosRestaurados = conteudo.data;
-                            if (conteudo.tipos && Array.isArray(conteudo.tipos)) {
-                                tiposRestaurados = conteudo.tipos;
-                            }
-                        } else {
-                            throw new Error('Formato de arquivo inválido');
-                        }
-
-                        db = dadosRestaurados;
-                        localStorage.setItem('fire_db', JSON.stringify(db));
-                        
-                        localStorage.setItem('fire_tipos', JSON.stringify(tiposRestaurados));
-                        tiposEquipamentos = tiposRestaurados;
-                        atualizarListaTipos();
-                        
-                        atualizarUI();
-                        atualizarInfoBackup();
-                        
-                        showToast(`✅ Backup restaurado! ${db.length} equipamentos carregados.`);
-                        
-                        input.value = '';
-                        
-                    } catch (error) {
-                        showToast('❌ Erro ao restaurar backup: ' + error.message);
-                        input.value = '';
-                    }
-                };
-                reader.readAsText(file);
-            } else {
-                input.value = '';
-            }
-        });
-    }
-
     function atualizarInfoBackup() {
         document.getElementById('backup-total').textContent = db.length;
         const ultimo = localStorage.getItem('fire_last_backup');
@@ -4054,7 +4019,7 @@
     }
 
     // ==========================================
-    // COMPARTILHAMENTO E LOG DE ACESSOS
+    // LINK COMPARTILHADO E LOG DE ACESSOS
     // ==========================================
     function gerarLink() {
         const minutos = parseInt(document.getElementById('share-time').value);
@@ -4067,10 +4032,8 @@
         }
 
         const expiracao = Date.now() + (minutos * 60 * 1000);
-        // Token compacto: exp:senha_em_base64
-        const tokenPayload = expiracao + ':' + btoa(senhaLink);
-        // Base64url sem padding
-        const token = btoa(tokenPayload).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+        const tokenPayload = JSON.stringify({ exp: expiracao, pwd: btoa(senhaLink) });
+        const token = btoa(tokenPayload);
         const url = window.location.origin + window.location.pathname + '?token=' + token;
 
         document.getElementById('share-url').value = url;
@@ -4121,10 +4084,12 @@
     }
 
     function limparLogs() {
-        accessLog = [];
-        localStorage.removeItem('fire_access_log');
-        atualizarLogAcessos();
-        showToast('🗑️ Histórico limpo');
+        if (confirm('Deseja realmente limpar todo o histórico de acessos?')) {
+            accessLog = [];
+            localStorage.removeItem('fire_access_log');
+            atualizarLogAcessos();
+            showToast('🗑️ Histórico limpo');
+        }
     }
 
     // ==========================================
@@ -4137,19 +4102,17 @@
         setTimeout(() => { t.style.display = 'none'; }, 3500);
     }
 
-    function confirmar(mensagem, callback) {
-        document.getElementById('confirm-mensagem').innerText = mensagem;
-        confirmCallback = callback;
-        document.getElementById('modal-confirm').style.display = 'flex';
-    }
+    // Verificar conexão
+    window.addEventListener('online', () => {
+        document.getElementById('connection-banner').classList.remove('offline');
+        document.getElementById('connection-text').textContent = 'Online';
+    });
+    window.addEventListener('offline', () => {
+        document.getElementById('connection-banner').classList.add('offline');
+        document.getElementById('connection-text').textContent = 'Offline';
+    });
 
-    function fecharModalConfirm(event) {
-        if (!event || event.target.id === 'modal-confirm' || event.target.classList.contains('modal-close')) {
-            document.getElementById('modal-confirm').style.display = 'none';
-            confirmCallback = null;
-        }
-    }
-
+    // Teclas de atalho
     document.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 's') {
             e.preventDefault();
@@ -4160,13 +4123,11 @@
         }
         if (e.key === 'Escape') {
             fecharModal();
-            fecharModalConfirm();
             if (document.getElementById('modal-senha-link').style.display === 'flex') {
                 document.getElementById('modal-senha-link').style.display = 'none';
             }
-            if (document.getElementById('expired-screen').style.display === 'flex') {
-                document.getElementById('expired-screen').style.display = 'none';
-                document.body.style.overflow = 'auto';
+            if (document.getElementById('modal-expired').style.display === 'flex') {
+                document.getElementById('modal-expired').style.display = 'none';
             }
         }
     });
