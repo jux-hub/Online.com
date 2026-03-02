@@ -7,11 +7,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-    <!-- REMOVIDO: XLSX library não é mais necessária -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     
     <style>
-        /* ... (mesmo CSS do original, mantido para não quebrar layout) ... */
         :root {
             --primary: #d32f2f;
             --primary-dark: #b71c1c;
@@ -36,6 +34,7 @@
             box-sizing: border-box; 
             font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; 
             outline: none; 
+            -webkit-tap-highlight-color: transparent;
         }
         
         body { 
@@ -45,6 +44,7 @@
             color: var(--text-main); 
             padding-bottom: 80px;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
         
         .container { 
@@ -60,6 +60,7 @@
             box-shadow: var(--shadow); 
             margin-bottom: 20px;
             animation: fadeInUp 0.4s ease;
+            word-wrap: break-word;
         }
         
         @keyframes fadeInUp {
@@ -167,6 +168,7 @@
             margin-bottom: 20px; 
             scrollbar-width: thin;
             scrollbar-color: var(--primary) var(--border);
+            -webkit-overflow-scrolling: touch;
         }
         
         .main-nav::-webkit-scrollbar {
@@ -202,6 +204,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             position: relative;
             overflow: hidden;
+            white-space: nowrap;
         }
         
         .nav-btn::before {
@@ -442,6 +445,8 @@
             font-size: 1rem; 
             transition: all 0.3s; 
             background: #fff;
+            -webkit-appearance: none;
+            appearance: none;
         }
         
         input:focus, select:focus, textarea:focus { 
@@ -474,6 +479,7 @@
             box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
             position: relative;
             overflow: hidden;
+            touch-action: manipulation;
         }
         
         .btn-save::before {
@@ -574,6 +580,7 @@
             margin: 0 0 8px 0; 
             color: var(--text-main);
             font-size: 1.05rem;
+            word-break: break-word;
         }
         
         .item-info p { 
@@ -583,6 +590,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            word-break: break-word;
         }
         
         .badge { 
@@ -600,6 +608,7 @@
         .actions { 
             display: flex; 
             gap: 8px; 
+            flex-shrink: 0;
         }
         
         .btn-icon { 
@@ -614,6 +623,7 @@
             font-size: 0.95rem; 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            flex-shrink: 0;
         }
         
         .btn-icon:hover {
@@ -667,6 +677,7 @@
             font-weight: bold; 
             cursor: pointer;
             transition: all 0.3s;
+            gap: 10px;
         }
         
         .area-header:hover { 
@@ -675,6 +686,7 @@
         
         .area-header i {
             transition: transform 0.3s;
+            flex-shrink: 0;
         }
         
         .area-header.open i {
@@ -732,6 +744,7 @@
             transition: all 0.3s;
             font-size: 0.85rem;
             font-weight: 600;
+            user-select: none;
         }
 
         .filter-chip:hover {
@@ -770,6 +783,7 @@
             align-items: center; 
             z-index: 1000;
             animation: fadeInModal 0.3s;
+            padding: 20px;
         }
         
         @keyframes fadeInModal {
@@ -787,13 +801,14 @@
             overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             animation: slideInModal 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
         
         @keyframes slideInModal {
             from { 
                 opacity: 0;
                 transform: translateY(-50px) scale(0.9);
-            }
+            } 
             to { 
                 opacity: 1;
                 transform: translateY(0) scale(1);
@@ -828,6 +843,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
+            flex-shrink: 0;
         }
         
         .modal-close:hover {
@@ -867,6 +883,8 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             animation: slideUpToast 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 500;
+            max-width: 90%;
+            text-align: center;
         }
         
         @keyframes slideUpToast { 
@@ -902,6 +920,7 @@
             padding: 15px;
             max-height: 600px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .equipamentos-recentes h4 {
@@ -939,6 +958,8 @@
             margin-bottom: 20px; 
             border-bottom: 2px solid #e0e0e0;
             padding-bottom: 5px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
         
         .sub-tab { 
@@ -951,6 +972,8 @@
             border-radius: 8px 8px 0 0;
             transition: all 0.3s;
             position: relative;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         
         .sub-tab::after {
@@ -1036,6 +1059,7 @@
             height: 20px;
             cursor: pointer;
             accent-color: var(--primary);
+            flex-shrink: 0;
         }
 
         .filter-option label {
@@ -1107,6 +1131,7 @@
             gap: 10px;
             transition: all 0.3s;
             font-size: 1rem;
+            touch-action: manipulation;
         }
 
         .btn-export-pdf {
@@ -1167,6 +1192,16 @@
             }
 
             .export-filters {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                max-width: 95%;
+                width: 100%;
+                padding: 20px;
+            }
+            
+            .export-actions {
                 grid-template-columns: 1fr;
             }
         }
@@ -1462,6 +1497,7 @@
             margin-top: 8px;
             box-shadow: 0 6px 20px rgba(183,28,28,0.4);
             letter-spacing: 0.5px;
+            touch-action: manipulation;
         }
         
         .login-btn:hover {
@@ -1565,6 +1601,7 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
+            touch-action: manipulation;
         }
 
         .file-input-label:hover {
@@ -1579,6 +1616,7 @@
             margin-top: 20px;
             max-height: 300px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .access-log h4 {
@@ -1596,6 +1634,7 @@
             margin-bottom: 8px;
             font-size: 0.85rem;
             border-left: 4px solid var(--info);
+            word-break: break-word;
         }
 
         .log-item.success {
@@ -1620,6 +1659,7 @@
             align-items: center;
             gap: 5px;
             margin-bottom: 10px;
+            touch-action: manipulation;
         }
 
         .btn-limpar-logs:hover {
@@ -1634,11 +1674,6 @@
             border-radius: 12px;
             padding: 20px;
             margin-top: 20px;
-        }
-
-        .modal-expired {
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
         }
 
         .context-menu {
@@ -1697,11 +1732,59 @@
             color: var(--text-sub);
             font-size: 0.8rem;
         }
+
+        /* Backup Modal */
+        #modal-backup .modal-content {
+            background: #1a1a1a;
+            color: #fff;
+            max-width: 600px;
+            width: 95%;
+        }
+        
+        #modal-backup .modal-header {
+            border-bottom-color: #444;
+        }
+        
+        #modal-backup .modal-header h3 {
+            color: #fff;
+        }
+        
+        .backup-modal-textarea {
+            width: 100%;
+            height: 300px;
+            background: #2d2d2d;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            resize: none;
+        }
+        
+        .btn-copiar-codigo {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-copiar-codigo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(211,47,47,0.3);
+        }
     </style>
 </head>
 <body>
 
-    <!-- TELA DE LOGIN (VERSÃO BETA) -->
+    <!-- TELA DE LOGIN -->
     <div id="login-screen" class="login-screen">
         <div class="login-bg-particles">
             <span></span><span></span><span></span><span></span><span></span>
@@ -1747,7 +1830,7 @@
         <i class="fas fa-eye"></i> MODO VISUALIZAÇÃO (Somente Leitura) — Edição Bloqueada
     </div>
 
-    <!-- INDICADOR DE CONEXÃO DISCRETO -->
+    <!-- INDICADOR DE CONEXÃO -->
     <div id="connection-indicator" class="connection-indicator">
         <i class="fas fa-wifi"></i> <span id="connection-text">Online</span>
     </div>
@@ -1758,7 +1841,7 @@
     </header>
 
     <div class="container">
-        <!-- NAVEGAÇÃO PRINCIPAL -->
+        <!-- NAVEGAÇÃO -->
         <nav class="main-nav">
             <button class="nav-btn active" onclick="navegar('dashboard')" id="nav-dashboard">
                 <i class="fas fa-chart-line"></i> Dashboard
@@ -1929,7 +2012,6 @@
                             <input type="text" id="cad-codigo" required placeholder="AK - 01" value="AK - ">
                         </div>
 
-                        <!-- Campos específicos para Mangueira -->
                         <div id="campos-mangueira" style="display: none; background: linear-gradient(135deg, #fff3e0, #ffe0b2); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 2px dashed #fb8c00;">
                             <h5 style="margin: 0 0 15px 0; color: #e65100; display: flex; align-items: center; gap: 8px;">
                                 <i class="fas fa-tape"></i> Configurações Específicas de Mangueira
@@ -1970,7 +2052,6 @@
                             <input type="text" id="cad-local" required placeholder="Ex: Coluna A-10">
                         </div>
 
-                        <!-- Campos de Data (mostrados condicionalmente) -->
                         <div id="datas-fieldset">
                             <hr style="margin: 25px 0; border: 0; border-top: 2px solid #e0e0e0;">
                             <h4 style="margin-bottom: 15px; color: var(--primary); display: flex; align-items: center; gap: 8px;">
@@ -2005,7 +2086,6 @@
                         </button>
                     </form>
 
-                    <!-- LISTA DE EQUIPAMENTOS RECENTES -->
                     <div class="equipamentos-recentes">
                         <h4>
                             <i class="fas fa-list"></i> 
@@ -2022,7 +2102,7 @@
             </div>
         </div>
 
-        <!-- BUSCA AVANÇADA -->
+        <!-- BUSCA -->
         <div id="busca" class="tab-content">
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-search"></i> Busca Avançada de Equipamentos</h3>
@@ -2063,7 +2143,7 @@
             </div>
         </div>
 
-        <!-- LISTA DE EQUIPAMENTOS -->
+        <!-- LISTA -->
         <div id="lista" class="tab-content">
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-list"></i> Lista Completa de Equipamentos</h3>
@@ -2098,7 +2178,7 @@
             </div>
         </div>
 
-        <!-- ORGANIZAÇÃO POR ÁREA -->
+        <!-- ORGANIZAÇÃO -->
         <div id="organizacao" class="tab-content">
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-layer-group"></i> Organização por Áreas</h3>
@@ -2111,7 +2191,7 @@
             </div>
         </div>
 
-        <!-- EXPORTAR FILTRADO (mantido do oficial) -->
+        <!-- EXPORTAR FILTRADO -->
         <div id="exportar-filtrado" class="tab-content">
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-filter"></i> Exportação Filtrada de Equipamentos</h3>
@@ -2122,9 +2202,7 @@
                     Você pode combinar múltiplos filtros para refinar sua exportação.
                 </div>
 
-                <!-- Filtros de Exportação -->
                 <div class="export-filters">
-                    <!-- Filtro por Status -->
                     <div class="export-filter-group">
                         <h4><i class="fas fa-clipboard-check"></i> Status de Validade</h4>
                         <div class="filter-options">
@@ -2147,7 +2225,6 @@
                         </div>
                     </div>
 
-                    <!-- Filtro por Tipo -->
                     <div class="export-filter-group">
                         <h4><i class="fas fa-fire-extinguisher"></i> Tipo de Equipamento</h4>
                         <div class="filter-options">
@@ -2170,7 +2247,6 @@
                         </div>
                     </div>
 
-                    <!-- Filtro específico para Mangueiras -->
                     <div class="export-filter-group" id="filtros-mangueira" style="display: none;">
                         <h4><i class="fas fa-tape"></i> Especificações de Mangueira</h4>
                         <div class="filter-options">
@@ -2193,7 +2269,6 @@
                         </div>
                     </div>
 
-                    <!-- Filtro por Data -->
                     <div class="export-filter-group">
                         <h4><i class="fas fa-calendar-alt"></i> Controle de Data</h4>
                         <div class="filter-options">
@@ -2209,7 +2284,6 @@
                     </div>
                 </div>
 
-                <!-- Preview da Exportação -->
                 <div class="export-preview">
                     <h4><i class="fas fa-eye"></i> Preview da Exportação</h4>
                     
@@ -2244,14 +2318,12 @@
                     </div>
                 </div>
 
-                <!-- Botões de Exportação -->
                 <div class="export-actions">
                     <button class="btn-export btn-export-pdf" onclick="exportarFiltradoPDF()" id="btn-export-pdf" disabled>
-                        <i class="fas fa-file-pdf"></i> Exportar em PDF (Nova Aba)
+                        <i class="fas fa-file-pdf"></i> Exportar em PDF
                     </button>
-                    <!-- Botão TXT -->
                     <button class="btn-export btn-export-txt" onclick="exportarFiltradoTXT()" id="btn-export-txt" disabled>
-                        <i class="fas fa-file-alt"></i> Exportar em TXT (Nova Aba)
+                        <i class="fas fa-file-alt"></i> Exportar em TXT
                     </button>
                 </div>
             </div>
@@ -2269,7 +2341,6 @@
                 </div>
 
                 <div class="backup-options">
-                    <!-- Criar Backup -->
                     <div class="backup-card" onclick="criarBackup()">
                         <i class="fas fa-download"></i>
                         <h4>Criar Backup</h4>
@@ -2279,12 +2350,10 @@
                         </button>
                     </div>
 
-                    <!-- Restaurar Backup -->
                     <div class="backup-card">
                         <i class="fas fa-upload"></i>
                         <h4>Restaurar Backup</h4>
                         <p>Selecione um arquivo de backup anterior para restaurar seus dados</p>
-                        <!-- Input file oculto -->
                         <input type="file" id="input-backup" accept=".json" style="display:none" onchange="restaurarBackup(this)">
                         <button class="btn-save" style="margin-top: 15px; background: linear-gradient(135deg, #1976d2, #1565c0);" onclick="document.getElementById('input-backup').click()">
                             <i class="fas fa-folder-open"></i> SELECIONAR ARQUIVO DE BACKUP
@@ -2292,7 +2361,6 @@
                     </div>
                 </div>
 
-                <!-- Informações do Backup Atual -->
                 <div class="card" style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); border: 2px solid #4caf50;">
                     <h4 style="margin: 0 0 15px 0; color: #2e7d32; display: flex; align-items: center; gap: 8px;">
                         <i class="fas fa-info-circle"></i> Informações do Sistema
@@ -2313,7 +2381,7 @@
             </div>
         </div>
 
-        <!-- RELATÓRIOS (com compartilhamento aprimorado do beta) -->
+        <!-- RELATÓRIOS -->
         <div id="relatorios" class="tab-content">
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-file-export"></i> Exportação e Compartilhamento</h3>
@@ -2324,17 +2392,15 @@
                 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 30px;">
                     <button class="btn-save" style="background: linear-gradient(135deg, #e53935, #c62828);" onclick="gerarPDF()">
-                        <i class="fas fa-file-pdf"></i> Exportar PDF (Nova Aba)
+                        <i class="fas fa-file-pdf"></i> Exportar PDF
                     </button>
-                    <!-- Botão TXT -->
                     <button class="btn-save" style="background: linear-gradient(135deg, #2e7d32, #1b5e20);" onclick="gerarTXT()">
-                        <i class="fas fa-file-alt"></i> Exportar TXT (Nova Aba)
+                        <i class="fas fa-file-alt"></i> Exportar TXT
                     </button>
                 </div>
 
                 <hr style="margin: 30px 0; border: 0; border-top: 2px solid #e0e0e0;">
 
-                <!-- Compartilhamento de Acesso (Somente Leitura) -->
                 <h4 style="margin: 0 0 10px 0; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
                     <i class="fas fa-share-alt"></i> Compartilhar Acesso (Somente Leitura)
                 </h4>
@@ -2355,7 +2421,6 @@
                         </select>
                     </div>
 
-                    <!-- Senha para o link -->
                     <div class="senha-link-box">
                         <div class="field-group" style="margin-bottom: 10px;">
                             <label style="color: #e65100;"><i class="fas fa-lock"></i> Senha de Acesso do Link *</label>
@@ -2389,7 +2454,6 @@
                     </div>
                 </div>
 
-                <!-- Histórico de Acessos com botão Limpar -->
                 <div class="access-log" id="access-log-container">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <h4 style="margin: 0;"><i class="fas fa-history"></i> Histórico de Acessos</h4>
@@ -2406,7 +2470,7 @@
 
     </div>
 
-    <!-- MODAL DE DETALHES -->
+    <!-- MODAL DETALHES -->
     <div id="modal-detalhes" class="modal-overlay" onclick="fecharModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -2417,7 +2481,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE SENHA DO LINK (BETA) -->
+    <!-- MODAL SENHA LINK -->
     <div id="modal-senha-link" class="modal-overlay" style="z-index: 3000; display: none;">
         <div class="modal-content" style="max-width: 400px;">
             <div class="modal-header">
@@ -2442,7 +2506,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE EXPIRAÇÃO DE LINK -->
+    <!-- MODAL EXPIRADO -->
     <div id="modal-expired" class="modal-overlay" style="display: none;">
         <div class="modal-content" style="text-align: center;">
             <i class="fas fa-hourglass-end" style="font-size: 4rem; color: var(--danger); margin-bottom: 20px;"></i>
@@ -2454,12 +2518,12 @@
         </div>
     </div>
 
-    <!-- MODAL DE BACKUP MANUAL (fallback) -->
+    <!-- MODAL BACKUP MANUAL -->
     <div id="modal-backup" class="modal-overlay" style="display: none;" onclick="if(event.target===this)fecharModalBackup()">
-        <div class="modal-content backup-modal-content" style="max-width: 600px; width: 95%;">
-            <div class="modal-header" style="border-bottom-color: #444;">
-                <h3 style="color: #fff;"><i class="fas fa-copy"></i> Copiar Dados de Backup</h3>
-                <button class="modal-close" style="background: #333; color: #fff;" onclick="fecharModalBackup()">&times;</button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-copy"></i> Copiar Dados de Backup</h3>
+                <button class="modal-close" onclick="fecharModalBackup()">&times;</button>
             </div>
             <div style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem;">
                 <i class="fas fa-info-circle"></i> O download automático não está disponível neste ambiente. Copie o texto abaixo e salve em um arquivo .json.
@@ -2471,7 +2535,7 @@
         </div>
     </div>
 
-    <!-- NOVO: Context Menu para exclusão de tipos -->
+    <!-- CONTEXT MENU -->
     <div id="context-menu" class="context-menu">
         <div class="context-menu-item danger" onclick="excluirTipoSelecionado()">
             <i class="fas fa-trash"></i> Excluir Tipo
@@ -2558,15 +2622,24 @@
     }
 
     // ==========================================
-    // GERENCIAMENTO DE TIPOS - CORRIGIDO (sem datalist)
+    // GERENCIAMENTO DE TIPOS - CORRIGIDO
     // ==========================================
     function atualizarListaTipos() {
+        const datalist = document.getElementById('lista-tipos');
         const container = document.getElementById('tipos-container');
         const lista = document.getElementById('tipos-lista');
         const inputTipo = document.getElementById('cad-tipo');
         
-        if (!container || !lista || !inputTipo) return;
+        if (!datalist || !container || !lista || !inputTipo) return;
         
+        // Atualizar datalist
+        datalist.innerHTML = '';
+        tiposEquipamentos.forEach(tipo => {
+            const option = document.createElement('option');
+            option.value = tipo;
+            datalist.appendChild(option);
+        });
+
         // Renderizar lista de tipos (apenas se não estiver em modo leitura)
         if (!isReadOnly) {
             lista.innerHTML = '';
@@ -2637,11 +2710,10 @@
             atualizarListaTipos();
             showToast(`🗑️ Tipo "${tipo}" excluído`);
         }
-        fecharContextMenu();
     }
 
     // ==========================================
-    // VERIFICAÇÃO DE TOKEN (ACESSO VIA LINK)
+    // VERIFICAÇÃO DE TOKEN
     // ==========================================
     function verificarTokenCompartilhado(token) {
         try {
@@ -2653,7 +2725,6 @@
                 return;
             }
 
-            // Registrar acesso com informações do dispositivo
             const userAgent = navigator.userAgent;
             const platform = navigator.platform;
             registrarLog('Tentativa de acesso via link', `Token válido - Dispositivo: ${platform} - User Agent: ${userAgent.substring(0, 100)}`);
@@ -2708,7 +2779,6 @@
     function ativarModoSomenteLeitura() {
         isReadOnly = true;
         document.getElementById('readonly-banner').style.display = 'block';
-        // Oculta botões de edição/backup/exportação que não são permitidos
         document.querySelectorAll('.nav-btn').forEach(btn => {
             const oc = btn.getAttribute('onclick') || '';
             if (oc.includes('cadastro') || oc.includes('backup') || oc.includes('relatorios')) {
@@ -2722,7 +2792,7 @@
     }
 
     // ==========================================
-    // LOGIN ADMINISTRADOR
+    // LOGIN
     // ==========================================
     function fazerLogin() {
         const senhaInput = document.getElementById('login-senha').value;
@@ -2768,7 +2838,7 @@
     }
 
     // ==========================================
-    // INICIALIZAÇÃO DE DATAS E CAMPOS
+    // INICIALIZAÇÃO DE DATAS
     // ==========================================
     function inicializarDatasDefault() {
         const hoje = new Date().toISOString().split('T')[0];
@@ -2808,7 +2878,7 @@
     }
 
     // ==========================================
-    // NAVEGAÇÃO E ABAS
+    // NAVEGAÇÃO
     // ==========================================
     function navegar(tabId) {
         const targetTab = document.getElementById(tabId);
@@ -2897,7 +2967,6 @@
         setTimeout(() => {
             const tipo = document.getElementById('cad-tipo').value;
             
-            // NOVO: Adicionar tipo à lista se for novo
             if (tipo && !tiposEquipamentos.includes(tipo)) {
                 tiposEquipamentos.push(tipo);
                 localStorage.setItem('fire_tipos', JSON.stringify(tiposEquipamentos));
@@ -3586,7 +3655,7 @@
     }
 
     // ==========================================
-    // EXPORTAÇÃO FILTRADA (mantida do oficial)
+    // EXPORTAÇÃO FILTRADA
     // ==========================================
     function verificarFiltrosMangueira() {
         const temMangueiras = db.some(i => i.tipo === 'Mangueira');
@@ -3706,22 +3775,6 @@
         document.getElementById('btn-export-txt').disabled = itensFiltrados.length === 0;
     }
 
-    // Função para abrir download em nova aba (adaptada para usar o método de link com download)
-    function abrirDownloadNovaAba(blob, filename) {
-        const url = URL.createObjectURL(blob);
-        
-        // Usar o método de link com atributo download (mais compatível)
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        // Limpar URL após um tempo
-        setTimeout(() => URL.revokeObjectURL(url), 5000);
-    }
-
     function exportarFiltradoPDF() {
         if (isReadOnly) {
             showToast('❌ Função não disponível no modo visualização');
@@ -3794,13 +3847,20 @@
             margin: { top: 40 }
         });
 
-        // Abrir em nova aba
+        // Usar Blob para compatibilidade Android
         const pdfBlob = doc.output('blob');
-        abrirDownloadNovaAba(pdfBlob, `FireGuardian_Filtrado_${new Date().toISOString().split('T')[0]}.pdf`);
+        const url = URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `FireGuardian_Filtrado_${new Date().toISOString().split('T')[0]}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        
         showToast('📄 PDF filtrado gerado!');
     }
 
-    // Exportar Filtrado TXT
     function exportarFiltradoTXT() {
         if (isReadOnly) {
             showToast('❌ Função não disponível no modo visualização');
@@ -3831,7 +3891,6 @@
         
         conteudo += '=' .repeat(80) + '\n\n';
         
-        // Cabeçalho
         conteudo += 'TAG'.padEnd(12) + ' | ';
         conteudo += 'TIPO'.padEnd(15) + ' | ';
         conteudo += 'DESCRIÇÃO'.padEnd(30) + ' | ';
@@ -3843,7 +3902,6 @@
         conteudo += 'ADAPTADOR'.padEnd(10) + '\n';
         conteudo += '-'.repeat(180) + '\n';
         
-        // Dados
         itensFiltrados.forEach(item => {
             const st = getStatus(item.validade);
             const validade = item.validade ? item.validade.split('-').reverse().join('/') : 'N/A';
@@ -3869,12 +3927,20 @@
         conteudo += 'Fim do relatório\n';
         
         const blob = new Blob([conteudo], { type: 'text/plain;charset=utf-8' });
-        abrirDownloadNovaAba(blob, `FireGuardian_Filtrado_${new Date().toISOString().split('T')[0]}.txt`);
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `FireGuardian_Filtrado_${new Date().toISOString().split('T')[0]}.txt`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        
         showToast('📄 TXT filtrado gerado!');
     }
 
     // ==========================================
-    // EXPORTAÇÃO DE TODOS OS DADOS (PDF e TXT)
+    // EXPORTAÇÃO GERAL
     // ==========================================
     function gerarPDF() {
         if (isReadOnly) {
@@ -3930,13 +3996,20 @@
             margin: { top: 40 }
         });
 
-        // Abrir em nova aba
+        // Usar Blob para compatibilidade Android
         const pdfBlob = doc.output('blob');
-        abrirDownloadNovaAba(pdfBlob, `FireGuardian_Relatorio_${new Date().toISOString().split('T')[0]}.pdf`);
+        const url = URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `FireGuardian_Relatorio_${new Date().toISOString().split('T')[0]}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        
         showToast('📄 PDF gerado!');
     }
 
-    // Gerar TXT
     function gerarTXT() {
         if (isReadOnly) {
             showToast('❌ Função não disponível no modo visualização');
@@ -3949,7 +4022,6 @@
         conteudo += `Total de Itens: ${db.length}\n`;
         conteudo += '=' .repeat(80) + '\n\n';
         
-        // Cabeçalho
         conteudo += 'TAG'.padEnd(12) + ' | ';
         conteudo += 'TIPO'.padEnd(15) + ' | ';
         conteudo += 'DESCRIÇÃO'.padEnd(30) + ' | ';
@@ -3961,7 +4033,6 @@
         conteudo += 'ADAPTADOR'.padEnd(10) + '\n';
         conteudo += '-'.repeat(180) + '\n';
         
-        // Dados
         db.forEach(item => {
             const st = getStatus(item.validade);
             const validade = item.validade ? item.validade.split('-').reverse().join('/') : 'N/A';
@@ -3987,15 +4058,21 @@
         conteudo += 'Fim do relatório\n';
         
         const blob = new Blob([conteudo], { type: 'text/plain;charset=utf-8' });
-        abrirDownloadNovaAba(blob, `FireGuardian_Completo_${new Date().toISOString().split('T')[0]}.txt`);
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `FireGuardian_Completo_${new Date().toISOString().split('T')[0]}.txt`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        
         showToast('📄 TXT gerado!');
     }
 
     // ==========================================
-    // BACKUP E RESTAURAÇÃO - USANDO BLOB
+    // BACKUP E RESTAURAÇÃO - BLOB PARA ANDROID
     // ==========================================
-    
-    // Criar backup usando Blob para compatibilidade Android
     function criarBackup() {
         if (db.length === 0) {
             showToast('⚠️ Não há dados para fazer backup');
@@ -4004,13 +4081,12 @@
 
         const backupData = {
             data: db,
-            tipos: tiposEquipamentos, // Incluir tipos personalizados
+            tipos: tiposEquipamentos,
             timestamp: new Date().toISOString(),
             versao: '2.0',
             totalEquipamentos: db.length
         };
 
-        // Usar Blob para compatibilidade com Android WebView
         try {
             const dataStr = JSON.stringify(backupData, null, 2);
             const blob = new Blob([dataStr], { type: "application/json" });
@@ -4023,14 +4099,12 @@
             link.click();
             document.body.removeChild(link);
             
-            // Limpar URL após download
             setTimeout(() => window.URL.revokeObjectURL(url), 5000);
             
             localStorage.setItem('fire_last_backup', new Date().toLocaleString('pt-BR'));
             atualizarInfoBackup();
             showToast('💾 Backup gerado e download iniciado!');
         } catch (e) {
-            // Fallback: mostrar modal com texto
             console.warn('Download automático falhou, exibindo modal manual', e);
             document.getElementById('backup-manual-texto').value = JSON.stringify(backupData, null, 2);
             document.getElementById('modal-backup').style.display = 'flex';
@@ -4041,11 +4115,15 @@
     function copiarBackupManual() {
         const textarea = document.getElementById('backup-manual-texto');
         textarea.select();
-        try { navigator.clipboard.writeText(textarea.value).then(() => showToast('📋 Backup copiado!')); }
-        catch (err) { document.execCommand('copy'); showToast('📋 Backup copiado!'); }
+        try { 
+            navigator.clipboard.writeText(textarea.value).then(() => showToast('📋 Backup copiado!')); 
+        }
+        catch (err) { 
+            document.execCommand('copy'); 
+            showToast('📋 Backup copiado!'); 
+        }
     }
 
-    // Restaurar backup com input file oculto
     function restaurarBackup(input) {
         const file = input.files[0];
         if (!file) return;
@@ -4058,32 +4136,20 @@
         const reader = new FileReader();
         reader.onload = function(e) {
             try {
-                const conteudo = JSON.parse(e.target.result);
+                const backupData = JSON.parse(e.target.result);
                 
-                // Verificar se é o novo formato (objeto com propriedade 'data') ou array direto
-                let dadosRestaurados;
-                let tiposRestaurados = tiposEquipamentos; // manter atuais se não houver no backup
-
-                if (Array.isArray(conteudo)) {
-                    // Formato antigo (apenas array de equipamentos)
-                    dadosRestaurados = conteudo;
-                } else if (conteudo.data && Array.isArray(conteudo.data)) {
-                    // Formato novo com objeto contendo 'data' e opcionalmente 'tipos'
-                    dadosRestaurados = conteudo.data;
-                    if (conteudo.tipos && Array.isArray(conteudo.tipos)) {
-                        tiposRestaurados = conteudo.tipos;
-                    }
-                } else {
+                if (!backupData.data || !Array.isArray(backupData.data)) {
                     throw new Error('Formato de arquivo inválido');
                 }
 
-                db = dadosRestaurados;
+                db = backupData.data;
                 localStorage.setItem('fire_db', JSON.stringify(db));
                 
-                // Restaurar tipos se existirem no backup
-                localStorage.setItem('fire_tipos', JSON.stringify(tiposRestaurados));
-                tiposEquipamentos = tiposRestaurados;
-                atualizarListaTipos();
+                if (backupData.tipos && Array.isArray(backupData.tipos)) {
+                    tiposEquipamentos = backupData.tipos;
+                    localStorage.setItem('fire_tipos', JSON.stringify(tiposEquipamentos));
+                    atualizarListaTipos();
+                }
                 
                 atualizarUI();
                 atualizarInfoBackup();
@@ -4107,7 +4173,7 @@
     }
 
     // ==========================================
-    // COMPARTILHAMENTO E LOG DE ACESSOS (BETA)
+    // COMPARTILHAMENTO E LOGS
     // ==========================================
     function gerarLink() {
         const minutos = parseInt(document.getElementById('share-time').value);
@@ -4190,7 +4256,6 @@
         setTimeout(() => { t.style.display = 'none'; }, 3500);
     }
 
-    // Teclas de atalho
     document.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 's') {
             e.preventDefault();
