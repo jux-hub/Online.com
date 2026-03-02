@@ -2,14 +2,18 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FireGuardian Pro - Backup Local</title>
+    <!-- VIEWPORT CORRIGIDA PARA WEBVIEW ANDROID -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>FireGuardian Pro v1.5</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    
+    <!-- Biblioteca LZString para compressão do link de compartilhamento -->
+    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
+
     <style>
+        /* RESET E VARIÁVEIS */
         :root {
             --primary: #d32f2f;
             --primary-dark: #b71c1c;
@@ -34,7 +38,6 @@
             box-sizing: border-box; 
             font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; 
             outline: none; 
-            -webkit-tap-highlight-color: transparent;
         }
         
         body { 
@@ -44,7 +47,6 @@
             color: var(--text-main); 
             padding-bottom: 80px;
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
         }
         
         .container { 
@@ -60,18 +62,11 @@
             box-shadow: var(--shadow); 
             margin-bottom: 20px;
             animation: fadeInUp 0.4s ease;
-            word-wrap: break-word;
         }
         
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .app-header { 
@@ -117,6 +112,18 @@
             margin: 8px 0 0 0;
             opacity: 0.9;
             font-size: 0.95rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .app-version {
+            display: inline-block;
+            margin-top: 6px;
+            font-size: 0.75rem;
+            background: rgba(255,255,255,0.15);
+            padding: 2px 10px;
+            border-radius: 10px;
+            color: rgba(255,255,255,0.9);
             position: relative;
             z-index: 1;
         }
@@ -168,22 +175,11 @@
             margin-bottom: 20px; 
             scrollbar-width: thin;
             scrollbar-color: var(--primary) var(--border);
-            -webkit-overflow-scrolling: touch;
         }
         
-        .main-nav::-webkit-scrollbar {
-            height: 6px;
-        }
-        
-        .main-nav::-webkit-scrollbar-track {
-            background: var(--border);
-            border-radius: 10px;
-        }
-        
-        .main-nav::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 10px;
-        }
+        .main-nav::-webkit-scrollbar { height: 6px; }
+        .main-nav::-webkit-scrollbar-track { background: var(--border); border-radius: 10px; }
+        .main-nav::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
         
         .nav-btn { 
             flex: 1; 
@@ -204,7 +200,6 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             position: relative;
             overflow: hidden;
-            white-space: nowrap;
         }
         
         .nav-btn::before {
@@ -218,9 +213,7 @@
             transition: left 0.5s;
         }
         
-        .nav-btn:hover::before {
-            left: 100%;
-        }
+        .nav-btn:hover::before { left: 100%; }
         
         .nav-btn.active { 
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -229,13 +222,9 @@
             box-shadow: 0 6px 15px rgba(211, 47, 47, 0.4);
         }
         
-        .nav-btn i { 
-            font-size: 1.3rem; 
-        }
+        .nav-btn i { font-size: 1.3rem; }
 
-        .tab-content { 
-            display: none; 
-        }
+        .tab-content { display: none; }
         
         .tab-content.active { 
             display: block;
@@ -286,10 +275,7 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
         
-        .stat-card:hover::before {
-            top: -25%;
-            right: -25%;
-        }
+        .stat-card:hover::before { top: -25%; right: -25%; }
         
         .stat-card strong { 
             font-size: 2.5rem; 
@@ -418,24 +404,19 @@
             transform: scale(1.02);
         }
 
-        .field-group { 
-            margin-bottom: 18px; 
-        }
+        .field-group { margin-bottom: 18px; }
         
         label { 
-            display: block; 
+            display: flex;
+            align-items: center;
+            gap: 6px;
             font-weight: 600; 
             font-size: 0.95rem; 
             margin-bottom: 8px; 
             color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
         
-        label i {
-            color: var(--primary);
-        }
+        label i { color: var(--primary); }
         
         input, select, textarea { 
             width: 100%; 
@@ -445,8 +426,6 @@
             font-size: 1rem; 
             transition: all 0.3s; 
             background: #fff;
-            -webkit-appearance: none;
-            appearance: none;
         }
         
         input:focus, select:focus, textarea:focus { 
@@ -479,7 +458,6 @@
             box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
             position: relative;
             overflow: hidden;
-            touch-action: manipulation;
         }
         
         .btn-save::before {
@@ -495,19 +473,14 @@
             transition: width 0.6s, height 0.6s;
         }
         
-        .btn-save:hover::before {
-            width: 300px;
-            height: 300px;
-        }
+        .btn-save:hover::before { width: 300px; height: 300px; }
         
         .btn-save:hover { 
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(211, 47, 47, 0.4);
         }
         
-        .btn-save:active {
-            transform: translateY(0);
-        }
+        .btn-save:active { transform: translateY(0); }
         
         .btn-save:disabled { 
             opacity: 0.6; 
@@ -567,9 +540,7 @@
             border-color: var(--border);
         }
         
-        .item-card:hover::before {
-            width: 8px;
-        }
+        .item-card:hover::before { width: 8px; }
         
         .item-card.expired::before { background: linear-gradient(135deg, var(--danger), #d32f2f); }
         .item-card.warning::before { background: linear-gradient(135deg, var(--warn), #f57c00); }
@@ -580,7 +551,6 @@
             margin: 0 0 8px 0; 
             color: var(--text-main);
             font-size: 1.05rem;
-            word-break: break-word;
         }
         
         .item-info p { 
@@ -590,7 +560,6 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            word-break: break-word;
         }
         
         .badge { 
@@ -605,11 +574,7 @@
             font-weight: 600;
         }
         
-        .actions { 
-            display: flex; 
-            gap: 8px; 
-            flex-shrink: 0;
-        }
+        .actions { display: flex; gap: 8px; }
         
         .btn-icon { 
             width: 38px; 
@@ -623,7 +588,6 @@
             font-size: 0.95rem; 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            flex-shrink: 0;
         }
         
         .btn-icon:hover {
@@ -631,29 +595,12 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         
-        .btn-icon:active {
-            transform: scale(0.95);
-        }
+        .btn-icon:active { transform: scale(0.95); }
         
-        .btn-edit { 
-            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-            color: #1976d2; 
-        }
-        
-        .btn-edit:hover { 
-            background: linear-gradient(135deg, #1976d2, #1565c0);
-            color: white; 
-        }
-        
-        .btn-del { 
-            background: linear-gradient(135deg, #ffebee, #ffcdd2);
-            color: var(--danger); 
-        }
-        
-        .btn-del:hover { 
-            background: linear-gradient(135deg, var(--danger), #b71c1c);
-            color: white; 
-        }
+        .btn-edit { background: linear-gradient(135deg, #e3f2fd, #bbdefb); color: #1976d2; }
+        .btn-edit:hover { background: linear-gradient(135deg, #1976d2, #1565c0); color: white; }
+        .btn-del { background: linear-gradient(135deg, #ffebee, #ffcdd2); color: var(--danger); }
+        .btn-del:hover { background: linear-gradient(135deg, var(--danger), #b71c1c); color: white; }
 
         .area-section { 
             margin-bottom: 15px; 
@@ -663,10 +610,7 @@
             transition: all 0.3s;
         }
         
-        .area-section:hover {
-            border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+        .area-section:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         
         .area-header { 
             background: linear-gradient(135deg, #f8f9fa, #e9ecef);
@@ -677,21 +621,11 @@
             font-weight: bold; 
             cursor: pointer;
             transition: all 0.3s;
-            gap: 10px;
         }
         
-        .area-header:hover { 
-            background: linear-gradient(135deg, #e9ecef, #dee2e6);
-        }
-        
-        .area-header i {
-            transition: transform 0.3s;
-            flex-shrink: 0;
-        }
-        
-        .area-header.open i {
-            transform: rotate(90deg);
-        }
+        .area-header:hover { background: linear-gradient(135deg, #e9ecef, #dee2e6); }
+        .area-header i { transition: transform 0.3s; }
+        .area-header.open i { transform: rotate(90deg); }
         
         .area-content { 
             padding: 0;
@@ -700,16 +634,9 @@
             transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s;
         }
         
-        .area-content.open { 
-            padding: 12px;
-            max-height: 2000px;
-        }
+        .area-content.open { padding: 12px; max-height: 2000px; }
 
-        .search-box { 
-            position: relative; 
-            margin-bottom: 20px; 
-        }
-        
+        .search-box { position: relative; margin-bottom: 20px; }
         .search-box i { 
             position: absolute; 
             left: 15px; 
@@ -718,11 +645,7 @@
             color: var(--text-sub);
             font-size: 1.1rem;
         }
-        
-        .search-box input { 
-            padding-left: 45px;
-            font-size: 1.05rem;
-        }
+        .search-box input { padding-left: 45px; font-size: 1.05rem; }
 
         .search-filters {
             display: grid;
@@ -744,19 +667,10 @@
             transition: all 0.3s;
             font-size: 0.85rem;
             font-weight: 600;
-            user-select: none;
         }
 
-        .filter-chip:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .filter-chip.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
+        .filter-chip:hover { border-color: var(--primary); transform: translateY(-2px); }
+        .filter-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
         
         .section-title { 
             font-size: 1.2rem; 
@@ -770,87 +684,84 @@
             font-weight: 700;
         }
 
-        .modal-overlay { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
-            display: none; 
-            justify-content: center; 
-            align-items: center; 
-            z-index: 1000;
-            animation: fadeInModal 0.3s;
-            padding: 20px;
+        /* ========== MODAL ========== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
         }
-        
-        @keyframes fadeInModal {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .modal-content { 
-            background: white; 
-            padding: 25px; 
-            border-radius: 16px; 
-            max-width: 90%; 
-            width: 450px; 
-            max-height: 85vh; 
+
+        .modal-overlay.active { display: flex; }
+
+        .modal-content {
+            background: #ffffff;
+            width: 92%;
+            max-width: 450px;
+            margin: auto;
+            border-radius: 20px;
+            max-height: 85%;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: slideInModal 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            transform: none !important;
+            display: flex;
+            flex-direction: column;
         }
-        
-        @keyframes slideInModal {
-            from { 
-                opacity: 0;
-                transform: translateY(-50px) scale(0.9);
-            } 
-            to { 
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 2px solid #eee;
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 20px 20px 0 0;
         }
-        
-        .modal-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 20px; 
-            border-bottom: 3px solid var(--primary); 
-            padding-bottom: 15px; 
-        }
-        
+
         .modal-header h3 {
             margin: 0;
-            color: var(--primary);
-            font-size: 1.3rem;
+            color: #d32f2f;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        
-        .modal-close { 
+
+        .modal-close {
             background: #f5f5f5;
-            border: none; 
-            font-size: 1.5rem; 
-            cursor: pointer; 
-            color: var(--text-sub);
-            width: 35px;
-            height: 35px;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #607d8b;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
-            flex-shrink: 0;
         }
-        
-        .modal-close:hover {
-            background: var(--danger);
-            color: white;
-            transform: rotate(90deg);
+
+        .modal-close:hover { background: #d32f2f; color: white; transform: rotate(90deg); }
+
+        #modal-body { padding: 20px; color: #333; overflow-y: auto; }
+
+        @media (max-width: 480px) {
+            .modal-content { width: 95%; }
+            .modal-header { padding: 15px; }
+            #modal-body { padding: 15px; }
         }
+        /* ========== FIM MODAL ========== */
         
         .empty-state { 
             text-align: center; 
@@ -858,16 +769,8 @@
             color: var(--text-sub); 
         }
         
-        .empty-state i { 
-            font-size: 4rem; 
-            margin-bottom: 15px; 
-            color: #ddd; 
-        }
-        
-        .empty-state p {
-            font-size: 1.05rem;
-            margin: 10px 0;
-        }
+        .empty-state i { font-size: 4rem; margin-bottom: 15px; color: #ddd; }
+        .empty-state p { font-size: 1.05rem; margin: 10px 0; }
         
         .toast { 
             position: fixed; 
@@ -883,19 +786,11 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             animation: slideUpToast 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 500;
-            max-width: 90%;
-            text-align: center;
         }
         
         @keyframes slideUpToast { 
-            from { 
-                transform: translateX(-50%) translateY(30px); 
-                opacity: 0; 
-            } 
-            to { 
-                transform: translateX(-50%) translateY(0); 
-                opacity: 1; 
-            } 
+            from { transform: translateX(-50%) translateY(30px); opacity: 0; } 
+            to { transform: translateX(-50%) translateY(0); opacity: 1; } 
         }
 
         .cadastro-split {
@@ -905,14 +800,10 @@
         }
 
         @media (min-width: 768px) {
-            .cadastro-split {
-                grid-template-columns: 1fr 1fr;
-            }
+            .cadastro-split { grid-template-columns: 1fr 1fr; }
         }
 
-        .cadastro-split > * {
-            min-width: 0;
-        }
+        .cadastro-split > * { min-width: 0; }
 
         .equipamentos-recentes {
             background: #f8f9fa;
@@ -920,7 +811,6 @@
             padding: 15px;
             max-height: 600px;
             overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
         }
 
         .equipamentos-recentes h4 {
@@ -943,14 +833,8 @@
             font-size: 0.85rem;
         }
 
-        .mini-item-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .mini-item-card strong {
-            color: var(--primary);
-        }
+        .mini-item-card:hover { transform: translateX(5px); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .mini-item-card strong { color: var(--primary); }
 
         .sub-tabs { 
             display: flex; 
@@ -958,8 +842,6 @@
             margin-bottom: 20px; 
             border-bottom: 2px solid #e0e0e0;
             padding-bottom: 5px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
         }
         
         .sub-tab { 
@@ -972,8 +854,6 @@
             border-radius: 8px 8px 0 0;
             transition: all 0.3s;
             position: relative;
-            white-space: nowrap;
-            flex-shrink: 0;
         }
         
         .sub-tab::after {
@@ -988,14 +868,8 @@
             transition: transform 0.3s;
         }
         
-        .sub-tab.active { 
-            background: var(--primary);
-            color: white; 
-        }
-        
-        .sub-tab.active::after {
-            transform: scaleX(1);
-        }
+        .sub-tab.active { background: var(--primary); color: white; }
+        .sub-tab.active::after { transform: scaleX(1); }
 
         .export-filters {
             display: grid;
@@ -1027,15 +901,9 @@
             font-size: 1rem;
         }
 
-        .export-filter-group h4 i {
-            color: var(--primary);
-        }
+        .export-filter-group h4 i { color: var(--primary); }
 
-        .filter-options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+        .filter-options { display: flex; flex-direction: column; gap: 10px; }
 
         .filter-option {
             display: flex;
@@ -1049,25 +917,16 @@
             border: 2px solid transparent;
         }
 
-        .filter-option:hover {
-            border-color: var(--primary-light);
-            background: #fff5f5;
-        }
+        .filter-option:hover { border-color: var(--primary-light); background: #fff5f5; }
 
         .filter-option input[type="checkbox"] {
             width: 20px;
             height: 20px;
             cursor: pointer;
             accent-color: var(--primary);
-            flex-shrink: 0;
         }
 
-        .filter-option label {
-            margin: 0;
-            cursor: pointer;
-            flex: 1;
-            font-weight: 500;
-        }
+        .filter-option label { margin: 0; cursor: pointer; flex: 1; font-weight: 500; }
 
         .export-preview {
             background: #f8f9fa;
@@ -1107,10 +966,7 @@
             margin-bottom: 5px;
         }
 
-        .export-stat span {
-            font-size: 0.85rem;
-            color: var(--text-sub);
-        }
+        .export-stat span { font-size: 0.85rem; color: var(--text-sub); }
 
         .export-actions {
             display: grid;
@@ -1131,7 +987,6 @@
             gap: 10px;
             transition: all 0.3s;
             font-size: 1rem;
-            touch-action: manipulation;
         }
 
         .btn-export-pdf {
@@ -1140,27 +995,9 @@
             box-shadow: 0 4px 15px rgba(229, 57, 53, 0.3);
         }
 
-        .btn-export-pdf:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(229, 57, 53, 0.4);
-        }
+        .btn-export-pdf:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(229, 57, 53, 0.4); }
 
-        .btn-export-txt {
-            background: linear-gradient(135deg, #2e7d32, #1b5e20);
-            color: white;
-            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
-        }
-
-        .btn-export-txt:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
-        }
-
-        .btn-export:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
-        }
+        .btn-export:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
 
         .mangueira-indicator {
             display: inline-flex;
@@ -1175,35 +1012,11 @@
         }
 
         @media (max-width: 768px) {
-            .dash-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .stat-card strong {
-                font-size: 2rem;
-            }
-            
-            .app-header h1 {
-                font-size: 1.5rem;
-            }
-            
-            .cadastro-split {
-                grid-template-columns: 1fr;
-            }
-
-            .export-filters {
-                grid-template-columns: 1fr;
-            }
-            
-            .modal-content {
-                max-width: 95%;
-                width: 100%;
-                padding: 20px;
-            }
-            
-            .export-actions {
-                grid-template-columns: 1fr;
-            }
+            .dash-grid { grid-template-columns: repeat(2, 1fr); }
+            .stat-card strong { font-size: 2rem; }
+            .app-header h1 { font-size: 1.5rem; }
+            .cadastro-split { grid-template-columns: 1fr; }
+            .export-filters { grid-template-columns: 1fr; }
         }
 
         .d-none { display: none !important; }
@@ -1229,24 +1042,10 @@
             border: 2px dashed #2196f3;
         }
 
-        ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-dark);
-        }
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
 
         .info-box {
             background: linear-gradient(135deg, #e3f2fd, #bbdefb);
@@ -1257,11 +1056,9 @@
             color: var(--text-main);
         }
 
-        .info-box i {
-            color: var(--info);
-            margin-right: 8px;
-        }
+        .info-box i { color: var(--info); margin-right: 8px; }
 
+        /* ========== TELA DE LOGIN ========== */
         .login-screen {
             position: fixed;
             top: 0;
@@ -1279,10 +1076,8 @@
         
         .login-bg-particles {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             overflow: hidden;
             pointer-events: none;
         }
@@ -1290,8 +1085,7 @@
         .login-bg-particles span {
             position: absolute;
             display: block;
-            width: 20px;
-            height: 20px;
+            width: 20px; height: 20px;
             background: rgba(255,255,255,0.05);
             border-radius: 50%;
             animation: floatParticle 15s infinite linear;
@@ -1341,10 +1135,8 @@
         .login-header::before {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -30%;
-            width: 200px;
-            height: 200px;
+            top: -50%; right: -30%;
+            width: 200px; height: 200px;
             border-radius: 50%;
             background: rgba(255,255,255,0.08);
             pointer-events: none;
@@ -1353,18 +1145,15 @@
         .login-header::after {
             content: '';
             position: absolute;
-            bottom: -30%;
-            left: -20%;
-            width: 150px;
-            height: 150px;
+            bottom: -30%; left: -20%;
+            width: 150px; height: 150px;
             border-radius: 50%;
             background: rgba(255,255,255,0.05);
             pointer-events: none;
         }
         
         .login-icon-wrap {
-            width: 80px;
-            height: 80px;
+            width: 80px; height: 80px;
             border-radius: 50%;
             background: rgba(255,255,255,0.15);
             display: flex;
@@ -1412,13 +1201,8 @@
             color: rgba(255,255,255,0.9);
         }
         
-        .login-body {
-            padding: 30px;
-        }
-        
-        .login-body .field-group {
-            margin-bottom: 18px;
-        }
+        .login-body { padding: 30px; }
+        .login-body .field-group { margin-bottom: 18px; }
         
         .login-body label {
             display: flex;
@@ -1430,13 +1214,9 @@
             margin-bottom: 8px;
         }
         
-        .login-body label i {
-            color: rgba(255,102,89,0.9);
-        }
+        .login-body label i { color: rgba(255,102,89,0.9); }
         
-        .login-input-wrap {
-            position: relative;
-        }
+        .login-input-wrap { position: relative; }
         
         .login-input-wrap input {
             width: 100%;
@@ -1449,9 +1229,7 @@
             transition: all 0.3s;
         }
         
-        .login-input-wrap input::placeholder {
-            color: rgba(255,255,255,0.4);
-        }
+        .login-input-wrap input::placeholder { color: rgba(255,255,255,0.4); }
         
         .login-input-wrap input:focus {
             border-color: rgba(255,102,89,0.7);
@@ -1459,10 +1237,7 @@
             box-shadow: 0 0 0 3px rgba(211,47,47,0.2);
         }
         
-        .login-input-wrap input:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+        .login-input-wrap input:disabled { opacity: 0.6; cursor: not-allowed; }
         
         .login-input-wrap .toggle-senha {
             position: absolute;
@@ -1475,9 +1250,7 @@
             transition: color 0.2s;
         }
         
-        .login-input-wrap .toggle-senha:hover {
-            color: rgba(255,255,255,0.9);
-        }
+        .login-input-wrap .toggle-senha:hover { color: rgba(255,255,255,0.9); }
         
         .login-btn {
             width: 100%;
@@ -1497,17 +1270,10 @@
             margin-top: 8px;
             box-shadow: 0 6px 20px rgba(183,28,28,0.4);
             letter-spacing: 0.5px;
-            touch-action: manipulation;
         }
         
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(183,28,28,0.5);
-        }
-        
-        .login-btn:active {
-            transform: translateY(0);
-        }
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(183,28,28,0.5); }
+        .login-btn:active { transform: translateY(0); }
         
         .login-footer {
             text-align: center;
@@ -1517,9 +1283,7 @@
             border-top: 1px solid rgba(255,255,255,0.08);
         }
         
-        .login-footer i {
-            margin-right: 5px;
-        }
+        .login-footer i { margin-right: 5px; }
         
         .login-error-msg {
             background: rgba(198,40,40,0.2);
@@ -1540,6 +1304,7 @@
             40%, 80% { transform: translateX(8px); }
         }
 
+        /* ========== BACKUP MODAL ========== */
         .backup-options {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -1557,40 +1322,13 @@
             cursor: pointer;
         }
 
-        .backup-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
+        .backup-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .backup-card i { font-size: 3rem; color: var(--primary); margin-bottom: 15px; }
+        .backup-card h4 { margin: 0 0 10px 0; color: var(--text-main); }
+        .backup-card p { margin: 0; color: var(--text-sub); font-size: 0.9rem; }
 
-        .backup-card i {
-            font-size: 3rem;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .backup-card h4 {
-            margin: 0 0 10px 0;
-            color: var(--text-main);
-        }
-
-        .backup-card p {
-            margin: 0;
-            color: var(--text-sub);
-            font-size: 0.9rem;
-        }
-
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            width: 100%;
-        }
-
-        .file-input-wrapper input[type=file] {
-            position: absolute;
-            left: -9999px;
-        }
+        .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
+        .file-input-wrapper input[type=file] { position: absolute; left: -9999px; }
 
         .file-input-label {
             display: block;
@@ -1601,14 +1339,11 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
-            touch-action: manipulation;
         }
 
-        .file-input-label:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(211, 47, 47, 0.3);
-        }
+        .file-input-label:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(211, 47, 47, 0.3); }
 
+        /* ========== LOG DE ACESSOS ========== */
         .access-log {
             background: #f8f9fa;
             border-radius: 12px;
@@ -1616,16 +1351,9 @@
             margin-top: 20px;
             max-height: 300px;
             overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
         }
 
-        .access-log h4 {
-            margin: 0 0 15px 0;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .access-log h4 { margin: 0 0 15px 0; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
 
         .log-item {
             padding: 10px;
@@ -1634,16 +1362,10 @@
             margin-bottom: 8px;
             font-size: 0.85rem;
             border-left: 4px solid var(--info);
-            word-break: break-word;
         }
 
-        .log-item.success {
-            border-left-color: var(--ok);
-        }
-
-        .log-item.error {
-            border-left-color: var(--danger);
-        }
+        .log-item.success { border-left-color: var(--ok); }
+        .log-item.error { border-left-color: var(--danger); }
 
         .btn-limpar-logs {
             padding: 8px 15px;
@@ -1659,14 +1381,9 @@
             align-items: center;
             gap: 5px;
             margin-bottom: 10px;
-            touch-action: manipulation;
         }
 
-        .btn-limpar-logs:hover {
-            background: linear-gradient(135deg, #ffebee, #ffcdd2);
-            color: var(--danger);
-            transform: translateY(-2px);
-        }
+        .btn-limpar-logs:hover { background: linear-gradient(135deg, #ffebee, #ffcdd2); color: var(--danger); transform: translateY(-2px); }
 
         .senha-link-box {
             background: linear-gradient(135deg, #fff3e0, #ffe0b2);
@@ -1676,6 +1393,250 @@
             margin-top: 20px;
         }
 
+        /* ========== MODAL EXPIRADO - APRIMORADO ========== */
+        .modal-expired-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(26,26,46,0.97), rgba(183,28,28,0.95));
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 20000;
+            padding: 20px;
+        }
+
+        .modal-expired-box {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 24px;
+            padding: 0;
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+            overflow: hidden;
+            animation: slideInLogin 0.5s ease;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.6);
+        }
+
+        .modal-expired-header {
+            background: linear-gradient(135deg, #b71c1c, #7f0000);
+            padding: 35px 30px 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-expired-header::before {
+            content: '';
+            position: absolute;
+            top: -40%; right: -20%;
+            width: 180px; height: 180px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+        }
+
+        .expired-icon-wrap {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.1);
+        }
+
+        .expired-icon-wrap i { font-size: 2.5rem; color: white; }
+
+        .modal-expired-header h2 {
+            margin: 0 0 8px 0;
+            color: white;
+            font-size: 1.6rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .modal-expired-header p {
+            margin: 0;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .modal-expired-body {
+            padding: 30px;
+        }
+
+        .modal-expired-body p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .btn-expired-home {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(183,28,28,0.4);
+        }
+
+        .btn-expired-home:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(183,28,28,0.5); }
+
+        /* ========== MODAL SENHA LINK - APRIMORADO ========== */
+        .modal-senha-link-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(26,26,46,0.97), rgba(15,52,96,0.95));
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 15000;
+            padding: 20px;
+        }
+
+        .modal-senha-link-box {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 24px;
+            max-width: 420px;
+            width: 100%;
+            overflow: hidden;
+            animation: slideInLogin 0.5s ease;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.6);
+        }
+
+        .modal-senha-link-header {
+            background: linear-gradient(135deg, #1565c0, #0d47a1);
+            padding: 35px 30px 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-senha-link-header::before {
+            content: '';
+            position: absolute;
+            top: -40%; right: -20%;
+            width: 180px; height: 180px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+        }
+
+        .senha-link-icon-wrap {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.1);
+            animation: iconPulse 2.5s ease-in-out infinite;
+        }
+
+        .senha-link-icon-wrap i { font-size: 2.2rem; color: white; }
+
+        .modal-senha-link-header h2 {
+            margin: 0 0 6px 0;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .modal-senha-link-header p {
+            margin: 0;
+            color: rgba(255,255,255,0.75);
+            font-size: 0.88rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .modal-senha-link-body { padding: 30px; }
+
+        .modal-senha-link-body .field-group { margin-bottom: 18px; }
+
+        .modal-senha-link-body label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 8px;
+        }
+
+        .modal-senha-link-body label i { color: rgba(100,181,246,0.9); }
+
+        .modal-senha-link-body .login-input-wrap input {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.15);
+        }
+
+        .modal-senha-link-body .login-input-wrap input:focus {
+            border-color: rgba(100,181,246,0.7);
+            box-shadow: 0 0 0 3px rgba(21,101,192,0.2);
+        }
+
+        .btn-acessar-link {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #1565c0, #0d47a1);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(13,71,161,0.4);
+        }
+
+        .btn-acessar-link:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(13,71,161,0.5); }
+
+        .senha-link-error {
+            background: rgba(198,40,40,0.2);
+            border: 1px solid rgba(198,40,40,0.4);
+            color: #ff8a80;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            margin-top: 12px;
+            text-align: center;
+            display: none;
+            animation: shakeError 0.4s ease;
+        }
+
+        .modal-senha-link-footer {
+            text-align: center;
+            padding: 15px 30px 25px;
+            color: rgba(255,255,255,0.35);
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        /* ========== CONTEXT MENU ========== */
         .context-menu {
             position: absolute;
             background: white;
@@ -1698,17 +1659,9 @@
             font-size: 0.9rem;
         }
 
-        .context-menu-item:hover {
-            background: #f5f5f5;
-        }
-
-        .context-menu-item.danger {
-            color: var(--danger);
-        }
-
-        .context-menu-item.danger:hover {
-            background: #ffebee;
-        }
+        .context-menu-item:hover { background: #f5f5f5; }
+        .context-menu-item.danger { color: var(--danger); }
+        .context-menu-item.danger:hover { background: #ffebee; }
 
         .tipo-item {
             padding: 8px 12px;
@@ -1720,51 +1673,32 @@
             justify-content: space-between;
         }
 
-        .tipo-item:hover {
-            background: #f5f5f5;
-        }
+        .tipo-item:hover { background: #f5f5f5; }
+        .tipo-item:active { background: #e0e0e0; }
+        .tipo-item i { color: var(--text-sub); font-size: 0.8rem; }
 
-        .tipo-item:active {
-            background: #e0e0e0;
-        }
+        /* Modal de confirmação */
+        #modal-confirm .modal-content { text-align: center; }
+        #modal-confirm .modal-header { border-bottom: none; padding-bottom: 0; }
+        #modal-confirm .btn-save { width: auto; margin: 0 5px; }
 
-        .tipo-item i {
-            color: var(--text-sub);
-            font-size: 0.8rem;
-        }
-
-        /* Backup Modal */
-        #modal-backup .modal-content {
-            background: #1a1a1a;
-            color: #fff;
-            max-width: 600px;
-            width: 95%;
-        }
-        
-        #modal-backup .modal-header {
-            border-bottom-color: #444;
-        }
-        
-        #modal-backup .modal-header h3 {
-            color: #fff;
-        }
-        
+        /* Backup modal manual */
+        .backup-modal-content { background: #2d2d2d !important; color: #ccc; }
         .backup-modal-textarea {
             width: 100%;
             height: 300px;
-            background: #2d2d2d;
-            color: #fff;
+            background: #1a1a1a;
+            color: #00ff88;
             border: 1px solid #444;
             border-radius: 8px;
             padding: 15px;
             font-family: monospace;
             font-size: 0.85rem;
-            resize: none;
+            resize: vertical;
         }
-        
         .btn-copiar-codigo {
             padding: 12px 20px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: linear-gradient(135deg, #43a047, #2e7d32);
             color: white;
             border: none;
             border-radius: 8px;
@@ -1775,17 +1709,13 @@
             gap: 8px;
             transition: all 0.3s;
         }
-        
-        .btn-copiar-codigo:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(211,47,47,0.3);
-        }
+        .btn-copiar-codigo:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
 
     <!-- TELA DE LOGIN -->
-    <div id="login-screen" class="login-screen">
+    <div id="login-screen" class="login-screen" style="display:none;">
         <div class="login-bg-particles">
             <span></span><span></span><span></span><span></span><span></span>
         </div>
@@ -1796,7 +1726,7 @@
                 </div>
                 <h1>FireGuardian Pro</h1>
                 <p>Gestão de Segurança Contra Incêndio</p>
-                <span class="login-version">v2.0 — Acesso Restrito</span>
+                <span class="login-version">v1.5 — Acesso Restrito</span>
             </div>
             <div class="login-body">
                 <div class="field-group">
@@ -1825,6 +1755,58 @@
         </div>
     </div>
 
+    <!-- MODAL SENHA LINK - APRIMORADO -->
+    <div id="modal-senha-link" class="modal-senha-link-overlay" style="display:none;">
+        <div class="modal-senha-link-box">
+            <div class="modal-senha-link-header">
+                <div class="senha-link-icon-wrap">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h2>Acesso Restrito</h2>
+                <p>FireGuardian Pro — Visualização</p>
+            </div>
+            <div class="modal-senha-link-body">
+                <div class="field-group">
+                    <label><i class="fas fa-lock"></i> Senha de Acesso</label>
+                    <div class="login-input-wrap">
+                        <input type="password" id="acesso-senha-link" placeholder="Digite a senha do link..." 
+                               onkeypress="if(event.key==='Enter')verificarSenhaLink()"
+                               style="text-align: center; font-size: 1.1rem; letter-spacing: 2px; padding-right: 45px;">
+                        <i class="fas fa-eye toggle-senha" onclick="toggleSenhaModal()"></i>
+                    </div>
+                </div>
+                <div id="senha-erro" class="senha-link-error">
+                    <i class="fas fa-exclamation-circle"></i> Senha incorreta. Tente novamente.
+                </div>
+                <button class="btn-acessar-link" onclick="verificarSenhaLink()" style="margin-top: 10px;">
+                    <i class="fas fa-unlock-alt"></i> ACESSAR VISUALIZAÇÃO
+                </button>
+            </div>
+            <div class="modal-senha-link-footer">
+                <i class="fas fa-eye"></i> Acesso somente leitura — Dados não podem ser alterados
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL LINK EXPIRADO - APRIMORADO -->
+    <div id="modal-expired" class="modal-expired-overlay" style="display:none;">
+        <div class="modal-expired-box">
+            <div class="modal-expired-header">
+                <div class="expired-icon-wrap">
+                    <i class="fas fa-hourglass-end"></i>
+                </div>
+                <h2>Link Expirado</h2>
+                <p>Este acesso não é mais válido</p>
+            </div>
+            <div class="modal-expired-body">
+                <p>O link de compartilhamento que você tentou acessar expirou ou é inválido. Solicite um novo link ao administrador do sistema.</p>
+                <button class="btn-expired-home" onclick="window.location.href=window.location.pathname">
+                    <i class="fas fa-home"></i> IR PARA PÁGINA INICIAL
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- BANNER MODO LEITURA -->
     <div id="readonly-banner" class="readonly-banner">
         <i class="fas fa-eye"></i> MODO VISUALIZAÇÃO (Somente Leitura) — Edição Bloqueada
@@ -1838,10 +1820,11 @@
     <header class="app-header">
         <h1><i class="fas fa-fire-extinguisher"></i> FireGuardian Pro</h1>
         <p>Gestão Inteligente de Segurança Contra Incêndio</p>
+        <span class="app-version">v1.5</span>
     </header>
 
     <div class="container">
-        <!-- NAVEGAÇÃO -->
+        <!-- NAVEGAÇÃO PRINCIPAL -->
         <nav class="main-nav">
             <button class="nav-btn active" onclick="navegar('dashboard')" id="nav-dashboard">
                 <i class="fas fa-chart-line"></i> Dashboard
@@ -1997,8 +1980,7 @@
 
                         <div class="field-group">
                             <label><i class="fas fa-tools"></i> Tipo de Equipamento *</label>
-                            <input type="text" id="cad-tipo" list="lista-tipos" required placeholder="Ex: Extintor, Mangueira, Hidrante..." oninput="verificarTipoMangueira()">
-                            <datalist id="lista-tipos"></datalist>
+                            <input type="text" id="cad-tipo" required placeholder="Ex: Extintor, Mangueira, Hidrante..." oninput="verificarTipoMangueira()">
                             <div id="tipos-container" style="margin-top: 10px; max-height: 200px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 8px; display: none;">
                                 <div id="tipos-lista" style="padding: 5px;"></div>
                             </div>
@@ -2012,11 +1994,11 @@
                             <input type="text" id="cad-codigo" required placeholder="AK - 01" value="AK - ">
                         </div>
 
+                        <!-- Campos específicos para Mangueira -->
                         <div id="campos-mangueira" style="display: none; background: linear-gradient(135deg, #fff3e0, #ffe0b2); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 2px dashed #fb8c00;">
                             <h5 style="margin: 0 0 15px 0; color: #e65100; display: flex; align-items: center; gap: 8px;">
                                 <i class="fas fa-tape"></i> Configurações Específicas de Mangueira
                             </h5>
-                            
                             <div class="field-group" style="margin-bottom: 12px;">
                                 <label><i class="fas fa-key"></i> Chave Storz</label>
                                 <select id="cad-chave-storz">
@@ -2025,7 +2007,6 @@
                                     <option value="nao">Não</option>
                                 </select>
                             </div>
-
                             <div class="field-group" style="margin-bottom: 0;">
                                 <label><i class="fas fa-plug"></i> Adaptador Storz</label>
                                 <select id="cad-adaptador-storz">
@@ -2052,6 +2033,7 @@
                             <input type="text" id="cad-local" required placeholder="Ex: Coluna A-10">
                         </div>
 
+                        <!-- Campos de Data -->
                         <div id="datas-fieldset">
                             <hr style="margin: 25px 0; border: 0; border-top: 2px solid #e0e0e0;">
                             <h4 style="margin-bottom: 15px; color: var(--primary); display: flex; align-items: center; gap: 8px;">
@@ -2066,7 +2048,7 @@
                             <div class="field-group">
                                 <label><i class="fas fa-calendar-times"></i> Próxima Validade/Inspeção *</label>
                                 <input type="date" id="cad-validade" required onchange="validarDatas()">
-                                <small id="data-erro" style="color: var(--danger); display: none; margin-top: 8px; display: flex; align-items: center; gap: 5px;">
+                                <small id="data-erro" style="color: var(--danger); display: none; margin-top: 8px; flex; align-items: center; gap: 5px;">
                                     <i class="fas fa-exclamation-circle"></i> A validade deve ser posterior à última inspeção
                                 </small>
                             </div>
@@ -2086,6 +2068,7 @@
                         </button>
                     </form>
 
+                    <!-- LISTA DE EQUIPAMENTOS RECENTES -->
                     <div class="equipamentos-recentes">
                         <h4>
                             <i class="fas fa-list"></i> 
@@ -2102,7 +2085,7 @@
             </div>
         </div>
 
-        <!-- BUSCA -->
+        <!-- BUSCA AVANÇADA -->
         <div id="busca" class="tab-content">
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-search"></i> Busca Avançada de Equipamentos</h3>
@@ -2143,7 +2126,7 @@
             </div>
         </div>
 
-        <!-- LISTA -->
+        <!-- LISTA DE EQUIPAMENTOS -->
         <div id="lista" class="tab-content">
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-list"></i> Lista Completa de Equipamentos</h3>
@@ -2178,15 +2161,13 @@
             </div>
         </div>
 
-        <!-- ORGANIZAÇÃO -->
+        <!-- ORGANIZAÇÃO POR ÁREA -->
         <div id="organizacao" class="tab-content">
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-layer-group"></i> Organização por Áreas</h3>
-                
                 <p style="color: var(--text-sub); font-size: 0.95rem; margin-bottom: 20px; background: linear-gradient(135deg, #e3f2fd, #bbdefb); padding: 15px; border-radius: 10px; border-left: 4px solid #2196f3;">
                     <i class="fas fa-info-circle"></i> Os equipamentos são agrupados automaticamente pelo campo "Área". Clique no cabeçalho para expandir/recolher cada seção.
                 </p>
-                
                 <div id="areas-container"></div>
             </div>
         </div>
@@ -2203,6 +2184,7 @@
                 </div>
 
                 <div class="export-filters">
+                    <!-- Filtro por Status -->
                     <div class="export-filter-group">
                         <h4><i class="fas fa-clipboard-check"></i> Status de Validade</h4>
                         <div class="filter-options">
@@ -2225,6 +2207,7 @@
                         </div>
                     </div>
 
+                    <!-- Filtro por Tipo -->
                     <div class="export-filter-group">
                         <h4><i class="fas fa-fire-extinguisher"></i> Tipo de Equipamento</h4>
                         <div class="filter-options">
@@ -2247,6 +2230,7 @@
                         </div>
                     </div>
 
+                    <!-- Filtro específico para Mangueiras -->
                     <div class="export-filter-group" id="filtros-mangueira" style="display: none;">
                         <h4><i class="fas fa-tape"></i> Especificações de Mangueira</h4>
                         <div class="filter-options">
@@ -2269,6 +2253,7 @@
                         </div>
                     </div>
 
+                    <!-- Filtro por Data -->
                     <div class="export-filter-group">
                         <h4><i class="fas fa-calendar-alt"></i> Controle de Data</h4>
                         <div class="filter-options">
@@ -2284,9 +2269,9 @@
                     </div>
                 </div>
 
+                <!-- Preview da Exportação -->
                 <div class="export-preview">
                     <h4><i class="fas fa-eye"></i> Preview da Exportação</h4>
-                    
                     <div class="export-stats" id="export-stats">
                         <div class="export-stat">
                             <strong id="export-total">0</strong>
@@ -2318,12 +2303,10 @@
                     </div>
                 </div>
 
+                <!-- Botões de Exportação -->
                 <div class="export-actions">
                     <button class="btn-export btn-export-pdf" onclick="exportarFiltradoPDF()" id="btn-export-pdf" disabled>
-                        <i class="fas fa-file-pdf"></i> Exportar em PDF
-                    </button>
-                    <button class="btn-export btn-export-txt" onclick="exportarFiltradoTXT()" id="btn-export-txt" disabled>
-                        <i class="fas fa-file-alt"></i> Exportar em TXT
+                        <i class="fas fa-file-pdf"></i> Exportar em PDF (Nova Aba)
                     </button>
                 </div>
             </div>
@@ -2392,22 +2375,20 @@
                 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 30px;">
                     <button class="btn-save" style="background: linear-gradient(135deg, #e53935, #c62828);" onclick="gerarPDF()">
-                        <i class="fas fa-file-pdf"></i> Exportar PDF
-                    </button>
-                    <button class="btn-save" style="background: linear-gradient(135deg, #2e7d32, #1b5e20);" onclick="gerarTXT()">
-                        <i class="fas fa-file-alt"></i> Exportar TXT
+                        <i class="fas fa-file-pdf"></i> Exportar PDF (Nova Aba)
                     </button>
                 </div>
 
                 <hr style="margin: 30px 0; border: 0; border-top: 2px solid #e0e0e0;">
 
+                <!-- Compartilhamento de Acesso -->
                 <h4 style="margin: 0 0 10px 0; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
                     <i class="fas fa-share-alt"></i> Compartilhar Acesso (Somente Leitura)
                 </h4>
                 
                 <p style="font-size: 0.95rem; color: var(--text-sub); margin-bottom: 20px; line-height: 1.6;">
                     Gere um link temporário para visualização <strong>somente leitura</strong> protegido por senha. 
-                    O destinatário NÃO precisará da senha de administrador — apenas da senha definida para o link.
+                    Os dados atuais são <strong>incorporados diretamente no link</strong>, garantindo que o destinatário veja exatamente o estado atual dos equipamentos.
                 </p>
 
                 <div class="share-box">
@@ -2426,7 +2407,7 @@
                             <label style="color: #e65100;"><i class="fas fa-lock"></i> Senha de Acesso do Link *</label>
                             <div class="senha-box" style="position: relative;">
                                 <input type="password" id="share-senha" placeholder="Mínimo 4 dígitos" style="margin-top: 5px; padding-right: 40px;">
-                                <i class="fas fa-eye toggle-senha" onclick="toggleSenhaShare()" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-sub);"></i>
+                                <i class="fas fa-eye toggle-senha" onclick="toggleSenhaShare()" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-sub); font-size: 1.1rem;"></i>
                             </div>
                             <small style="color: var(--text-sub); display: block; margin-top: 5px;">
                                 O destinatário precisará apenas desta senha para acessar o link
@@ -2442,10 +2423,15 @@
                         <label style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-main); font-weight: 600; display: flex; align-items: center; gap: 8px;">
                             <i class="fas fa-check-circle" style="color: var(--ok);"></i> Link gerado com sucesso:
                         </label>
-                        <input type="text" id="share-url" readonly style="font-size: 0.9rem; background: #f5f5f5; margin-bottom: 10px;">
+                        <input type="text" id="share-url" readonly style="font-size: 0.85rem; background: #f5f5f5; margin-bottom: 10px; word-break: break-all;">
                         <div style="background: #fff3e0; padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #ff9800;">
                             <small style="color: #e65100; font-weight: 600;">
                                 <i class="fas fa-key"></i> Senha de acesso: <span id="share-senha-display"></span>
+                            </small>
+                        </div>
+                        <div style="background: #e8f5e9; padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #43a047;">
+                            <small style="color: #2e7d32; font-weight: 600;">
+                                <i class="fas fa-database"></i> Dados incorporados: <span id="share-dados-count">0</span> equipamento(s)
                             </small>
                         </div>
                         <button onclick="copiarLink()" style="padding: 10px 20px; background: linear-gradient(135deg, var(--ok), #1b5e20); color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; transition: all 0.3s;">
@@ -2454,10 +2440,11 @@
                     </div>
                 </div>
 
+                <!-- Histórico de Acessos -->
                 <div class="access-log" id="access-log-container">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <h4 style="margin: 0;"><i class="fas fa-history"></i> Histórico de Acessos</h4>
-                        <button class="btn-limpar-logs" onclick="limparLogs()" title="Limpar todo o histórico">
+                        <button class="btn-limpar-logs" onclick="confirmar('Deseja realmente limpar todo o histórico de acessos?', (ok) => { if(ok) limparLogs(); })" title="Limpar todo o histórico">
                             <i class="fas fa-trash-alt"></i> Limpar Logs
                         </button>
                     </div>
@@ -2468,9 +2455,9 @@
             </div>
         </div>
 
-    </div>
+    </div><!-- /container -->
 
-    <!-- MODAL DETALHES -->
+    <!-- MODAL DE DETALHES -->
     <div id="modal-detalhes" class="modal-overlay" onclick="fecharModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -2481,57 +2468,22 @@
         </div>
     </div>
 
-    <!-- MODAL SENHA LINK -->
-    <div id="modal-senha-link" class="modal-overlay" style="z-index: 3000; display: none;">
-        <div class="modal-content" style="max-width: 400px;">
-            <div class="modal-header">
-                <h3><i class="fas fa-lock"></i> Acesso Restrito</h3>
-            </div>
-            <div style="text-align: center; padding: 20px;">
-                <i class="fas fa-shield-alt" style="font-size: 4rem; color: var(--primary); margin-bottom: 20px;"></i>
-                <p style="margin-bottom: 20px; color: var(--text-sub);">
-                    Este link está protegido por senha. Digite a senha para continuar:
-                </p>
-                <div class="senha-box" style="position: relative; margin-bottom: 20px;">
-                    <input type="password" id="acesso-senha-link" placeholder="Digite a senha" style="text-align: center; font-size: 1.2rem; letter-spacing: 2px; padding-right: 40px;" onkeypress="if(event.key==='Enter')verificarSenhaLink()">
-                    <i class="fas fa-eye toggle-senha" onclick="toggleSenhaModal()" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-sub);"></i>
-                </div>
-                <button class="btn-save" onclick="verificarSenhaLink()">
-                    <i class="fas fa-unlock"></i> ACESSAR
-                </button>
-                <p id="senha-erro" style="color: var(--danger); margin-top: 15px; display: none;">
-                    <i class="fas fa-exclamation-circle"></i> Senha incorreta!
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL EXPIRADO -->
-    <div id="modal-expired" class="modal-overlay" style="display: none;">
-        <div class="modal-content" style="text-align: center;">
-            <i class="fas fa-hourglass-end" style="font-size: 4rem; color: var(--danger); margin-bottom: 20px;"></i>
-            <h3 style="color: var(--danger); margin-bottom: 15px;">Link Expirado</h3>
-            <p style="margin-bottom: 25px; color: var(--text-sub);">Este link de compartilhamento não é mais válido. Solicite um novo link ao administrador.</p>
-            <button class="btn-save" onclick="window.location.href=window.location.pathname" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark));">
-                <i class="fas fa-home"></i> Página Inicial
-            </button>
-        </div>
-    </div>
-
-    <!-- MODAL BACKUP MANUAL -->
+    <!-- MODAL DE BACKUP MANUAL -->
     <div id="modal-backup" class="modal-overlay" style="display: none;" onclick="if(event.target===this)fecharModalBackup()">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-copy"></i> Copiar Dados de Backup</h3>
-                <button class="modal-close" onclick="fecharModalBackup()">&times;</button>
+        <div class="modal-content backup-modal-content" style="max-width: 600px; width: 95%;">
+            <div class="modal-header" style="border-bottom-color: #444; background: #2d2d2d; border-radius: 20px 20px 0 0;">
+                <h3 style="color: #fff;"><i class="fas fa-copy"></i> Copiar Dados de Backup</h3>
+                <button class="modal-close" style="background: #333; color: #fff;" onclick="fecharModalBackup()">&times;</button>
             </div>
-            <div style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem;">
-                <i class="fas fa-info-circle"></i> O download automático não está disponível neste ambiente. Copie o texto abaixo e salve em um arquivo .json.
+            <div style="padding: 20px; background: #2d2d2d;">
+                <div style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem;">
+                    <i class="fas fa-info-circle"></i> O download automático não está disponível neste ambiente. Copie o texto abaixo e salve em um arquivo .json.
+                </div>
+                <textarea id="backup-manual-texto" class="backup-modal-textarea" readonly></textarea>
+                <button class="btn-copiar-codigo" onclick="copiarBackupManual()" style="width: 100%; margin-top: 15px; justify-content: center;">
+                    <i class="fas fa-copy"></i> COPIAR TUDO PARA A ÁREA DE TRANSFERÊNCIA
+                </button>
             </div>
-            <textarea id="backup-manual-texto" class="backup-modal-textarea" readonly></textarea>
-            <button class="btn-copiar-codigo" onclick="copiarBackupManual()" style="width: 100%; margin-top: 15px; justify-content: center;">
-                <i class="fas fa-copy"></i> COPIAR TUDO PARA A ÁREA DE TRANSFERÊNCIA
-            </button>
         </div>
     </div>
 
@@ -2542,6 +2494,23 @@
         </div>
         <div class="context-menu-item" onclick="fecharContextMenu()">
             <i class="fas fa-times"></i> Cancelar
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIRMAÇÃO -->
+    <div id="modal-confirm" class="modal-overlay" style="display: none;" onclick="fecharModalConfirm(event)">
+        <div class="modal-content" style="max-width: 400px;" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3><i class="fas fa-question-circle"></i> Confirmação</h3>
+                <button class="modal-close" onclick="fecharModalConfirm()">&times;</button>
+            </div>
+            <div style="padding: 20px; text-align: center;">
+                <p id="confirm-mensagem" style="font-size: 1.1rem; margin-bottom: 25px; white-space: pre-line;"></p>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button id="confirm-btn-sim" class="btn-save" style="width: auto; padding: 10px 25px;">Sim</button>
+                    <button id="confirm-btn-nao" class="btn-save" style="width: auto; padding: 10px 25px; background: linear-gradient(135deg, #607d8b, #455a64);">Não</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2566,17 +2535,21 @@
     let senhaAtual = localStorage.getItem('fire_senha') || '1234';
     let accessLog = JSON.parse(localStorage.getItem('fire_access_log')) || [];
     let linkSenhaTemp = null;
+    let confirmCallback = null;
+    let linkExpirationTimer = null;
+    let linkExpirationTime = null;
 
     // ==========================================
     // INICIALIZAÇÃO
     // ==========================================
     document.addEventListener('DOMContentLoaded', () => {
-        const params = new URLSearchParams(window.location.search);
-        const token = params.get('token');
+        const hash = window.location.hash;
 
-        if (token) {
-            verificarTokenCompartilhado(token);
+        if (hash && hash.startsWith('#share=')) {
+            // Modo compartilhamento: dados vêm da URL
+            processarLinkCompartilhamento(hash.substring(7));
         } else {
+            // Modo normal: mostrar login
             document.getElementById('login-screen').style.display = 'flex';
             setTimeout(() => {
                 const inp = document.getElementById('login-senha');
@@ -2603,121 +2576,32 @@
         document.addEventListener('click', (e) => {
             const container = document.getElementById('tipos-container');
             const input = document.getElementById('cad-tipo');
-            if (container && !container.contains(e.target) && !input.contains(e.target)) {
+            if (container && !container.contains(e.target) && input && !input.contains(e.target)) {
                 container.style.display = 'none';
             }
         });
+
+        // Event listeners para o modal de confirmação
+        document.getElementById('confirm-btn-sim').addEventListener('click', function() {
+            if (confirmCallback) confirmCallback(true);
+            fecharModalConfirm();
+        });
+        document.getElementById('confirm-btn-nao').addEventListener('click', function() {
+            if (confirmCallback) confirmCallback(false);
+            fecharModalConfirm();
+        });
     });
 
-    function atualizarConexao() {
-        const indicator = document.getElementById('connection-indicator');
-        const text = document.getElementById('connection-text');
-        if (navigator.onLine) {
-            indicator.classList.remove('offline');
-            text.textContent = 'Online';
-        } else {
-            indicator.classList.add('offline');
-            text.textContent = 'Offline';
-        }
-    }
-
     // ==========================================
-    // GERENCIAMENTO DE TIPOS - CORRIGIDO
+    // PROCESSAMENTO DO LINK DE COMPARTILHAMENTO (COMPACTADO COM LZSTRING)
+    // CORREÇÃO PRINCIPAL: dados embutidos na URL e compactados
     // ==========================================
-    function atualizarListaTipos() {
-        const datalist = document.getElementById('lista-tipos');
-        const container = document.getElementById('tipos-container');
-        const lista = document.getElementById('tipos-lista');
-        const inputTipo = document.getElementById('cad-tipo');
-        
-        if (!datalist || !container || !lista || !inputTipo) return;
-        
-        // Atualizar datalist
-        datalist.innerHTML = '';
-        tiposEquipamentos.forEach(tipo => {
-            const option = document.createElement('option');
-            option.value = tipo;
-            datalist.appendChild(option);
-        });
-
-        // Renderizar lista de tipos (apenas se não estiver em modo leitura)
-        if (!isReadOnly) {
-            lista.innerHTML = '';
-            
-            tiposEquipamentos.forEach((tipo) => {
-                const div = document.createElement('div');
-                div.className = 'tipo-item';
-                div.innerHTML = `
-                    <span class="tipo-nome">${tipo}</span>
-                    <button type="button" class="btn-excluir-tipo" onclick="event.stopPropagation(); confirmarExclusaoTipo('${tipo}')" title="Excluir tipo">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                `;
-                
-                // Clique simples seleciona o tipo
-                div.addEventListener('click', (e) => {
-                    if (e.target.closest('.btn-excluir-tipo')) return;
-                    inputTipo.value = tipo;
-                    verificarTipoMangueira();
-                    container.style.display = 'none';
-                });
-                
-                lista.appendChild(div);
-            });
-        }
-        
-        // Configurar eventos do input (apenas uma vez)
-        if (!inputTipo.dataset.eventsConfigured) {
-            inputTipo.dataset.eventsConfigured = 'true';
-            
-            // Mostrar lista ao focar
-            inputTipo.addEventListener('focus', () => {
-                if (!isReadOnly) {
-                    container.style.display = 'block';
-                    // Resetar filtros
-                    const itens = lista.querySelectorAll('.tipo-item');
-                    itens.forEach(item => item.style.display = 'flex');
-                }
-            });
-            
-            // Filtrar ao digitar
-            inputTipo.addEventListener('input', (e) => {
-                const termo = e.target.value.toLowerCase();
-                const itens = lista.querySelectorAll('.tipo-item');
-                let temVisivel = false;
-                
-                itens.forEach(item => {
-                    const texto = item.querySelector('.tipo-nome').textContent.toLowerCase();
-                    const visivel = texto.includes(termo);
-                    item.style.display = visivel ? 'flex' : 'none';
-                    if (visivel) temVisivel = true;
-                });
-                
-                // Mostrar container se houver resultados e estiver digitando
-                if (termo.length > 0 && temVisivel) {
-                    container.style.display = 'block';
-                }
-            });
-        }
-    }
-
-    function confirmarExclusaoTipo(tipo) {
-        if (isReadOnly) return;
-        
-        if (confirm(`Deseja realmente excluir o tipo "${tipo}"?\n\nEquipamentos já cadastrados com este tipo não serão afetados.`)) {
-            tiposEquipamentos = tiposEquipamentos.filter(t => t !== tipo);
-            localStorage.setItem('fire_tipos', JSON.stringify(tiposEquipamentos));
-            atualizarListaTipos();
-            showToast(`🗑️ Tipo "${tipo}" excluído`);
-        }
-    }
-
-    // ==========================================
-    // VERIFICAÇÃO DE TOKEN
-    // ==========================================
-    function verificarTokenCompartilhado(token) {
+    function processarLinkCompartilhamento(encodedData) {
         try {
-            const payload = JSON.parse(atob(token));
+            // Descomprimir com LZString
+            const jsonStr = LZString.decompressFromEncodedURIComponent(encodedData);
+            if (!jsonStr) throw new Error('Falha na descompressão');
+            const payload = JSON.parse(jsonStr);
             const agora = Date.now();
 
             if (agora > payload.exp) {
@@ -2725,39 +2609,90 @@
                 return;
             }
 
-            const userAgent = navigator.userAgent;
-            const platform = navigator.platform;
-            registrarLog('Tentativa de acesso via link', `Token válido - Dispositivo: ${platform} - User Agent: ${userAgent.substring(0, 100)}`);
+            // Guardar dados do link para uso posterior
+            linkSenhaTemp = payload.pwd ? atob(payload.pwd) : null;
+            linkExpirationTime = payload.exp;
 
-            if (payload.pwd) {
-                linkSenhaTemp = atob(payload.pwd);
-                document.getElementById('login-screen').style.display = 'none';
+            // Iniciar timer de expiração automática
+            iniciarTimerExpiracao(payload.exp - agora);
+
+            const userAgent = navigator.userAgent;
+            registrarLog('Tentativa de acesso via link', `Dispositivo: ${navigator.platform} — ${userAgent.substring(0, 80)}`);
+
+            if (linkSenhaTemp) {
                 document.getElementById('modal-senha-link').style.display = 'flex';
                 setTimeout(() => {
                     const inp = document.getElementById('acesso-senha-link');
                     if (inp) inp.focus();
                 }, 300);
             } else {
-                document.getElementById('login-screen').style.display = 'none';
+                // Sem senha: acesso direto somente leitura
+                carregarDadosDoLink(payload);
                 ativarModoSomenteLeitura();
                 registrarLog('Acesso via link', 'Acesso somente leitura permitido (sem senha)');
             }
+
+            // Guardar payload para uso após autenticação
+            window._linkPayload = payload;
+
         } catch (e) {
+            console.error('Erro ao processar link:', e);
             document.getElementById('modal-expired').style.display = 'flex';
         }
     }
 
+    function carregarDadosDoLink(payload) {
+        if (payload.db && Array.isArray(payload.db)) {
+            db = payload.db;
+        }
+        if (payload.tipos && Array.isArray(payload.tipos)) {
+            tiposEquipamentos = payload.tipos;
+        }
+        atualizarUI();
+    }
+
+    function iniciarTimerExpiracao(msRestantes) {
+        if (linkExpirationTimer) clearTimeout(linkExpirationTimer);
+        if (msRestantes <= 0) {
+            expirarAcessoLink();
+            return;
+        }
+        linkExpirationTimer = setTimeout(() => {
+            expirarAcessoLink();
+        }, msRestantes);
+    }
+
+    function expirarAcessoLink() {
+        // Fechar todos os modais
+        document.getElementById('modal-detalhes').style.display = 'none';
+        document.getElementById('modal-confirm').style.display = 'none';
+        document.body.style.overflow = 'auto';
+        // Mostrar modal de expirado imediatamente
+        document.getElementById('modal-expired').style.display = 'flex';
+        showToast('⏰ O acesso via link expirou.');
+    }
+
+    // ==========================================
+    // VERIFICAÇÃO DE SENHA DO LINK
+    // ==========================================
     function verificarSenhaLink() {
         const senhaInput = document.getElementById('acesso-senha-link').value;
         const erroDiv = document.getElementById('senha-erro');
 
         if (senhaInput === linkSenhaTemp) {
             document.getElementById('modal-senha-link').style.display = 'none';
+            // Carregar dados do link após autenticação
+            if (window._linkPayload) {
+                carregarDadosDoLink(window._linkPayload);
+            }
             ativarModoSomenteLeitura();
             registrarLog('Acesso via link', 'Senha correta — Acesso somente leitura liberado');
             showToast('✅ Acesso liberado! Modo visualização ativo.');
         } else {
             erroDiv.style.display = 'block';
+            erroDiv.style.animation = 'none';
+            erroDiv.offsetHeight;
+            erroDiv.style.animation = 'shakeError 0.4s ease';
             document.getElementById('acesso-senha-link').value = '';
             document.getElementById('acesso-senha-link').focus();
             registrarLog('Tentativa de acesso via link', 'Senha incorreta — Acesso negado');
@@ -2776,46 +2711,44 @@
         }
     }
 
+    // ==========================================
+    // MODO SOMENTE LEITURA
+    // ==========================================
     function ativarModoSomenteLeitura() {
         isReadOnly = true;
         document.getElementById('readonly-banner').style.display = 'block';
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            const oc = btn.getAttribute('onclick') || '';
-            if (oc.includes('cadastro') || oc.includes('backup') || oc.includes('relatorios')) {
-                btn.style.display = 'none';
-            }
-        });
-        document.querySelectorAll('.btn-edit, .btn-del, #btn-cancelar-edicao, .btn-export-pdf, .btn-save[onclick*="criarBackup"], .btn-restaurar-paste, .file-input-label, .btn-limpar-logs').forEach(el => {
-            if (el) el.style.display = 'none';
-        });
-        showToast('👁️ Modo de visualização ativado');
+        document.getElementById('nav-cadastro').style.display = 'none';
+        document.getElementById('nav-backup').style.display = 'none';
+        document.querySelectorAll('.btn-del, .btn-edit, #btn-salvar').forEach(el => el.style.display = 'none');
+        navegar('dashboard');
     }
 
     // ==========================================
-    // LOGIN
+    // LOGIN NORMAL (ADMIN)
     // ==========================================
     function fazerLogin() {
-        const senhaInput = document.getElementById('login-senha').value;
+        const senha = document.getElementById('login-senha').value;
         const erroDiv = document.getElementById('login-erro');
 
-        if (senhaInput === senhaAtual) {
+        if (senha === senhaAtual) {
             document.getElementById('login-screen').style.display = 'none';
             erroDiv.style.display = 'none';
-            showToast('✅ Bem-vindo ao FireGuardian Pro!');
-            registrarLog('Login', 'Acesso administrativo');
+            atualizarUI();
+            inicializarGrafico();
+            navegar('dashboard');
         } else {
             erroDiv.style.display = 'block';
-            document.getElementById('login-senha').value = '';
-            document.getElementById('login-senha').focus();
             erroDiv.style.animation = 'none';
             erroDiv.offsetHeight;
             erroDiv.style.animation = 'shakeError 0.4s ease';
+            document.getElementById('login-senha').value = '';
+            document.getElementById('login-senha').focus();
         }
     }
 
     function toggleSenhaLogin() {
         const input = document.getElementById('login-senha');
-        const icon = document.querySelector('.login-body .toggle-senha');
+        const icon = document.querySelector('#login-screen .toggle-senha');
         if (input.type === 'password') {
             input.type = 'text';
             if (icon) { icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash'); }
@@ -2827,7 +2760,8 @@
 
     function toggleSenhaShare() {
         const input = document.getElementById('share-senha');
-        const icon = document.querySelector('.senha-link-box .toggle-senha');
+        const icon = document.querySelector('.senha-box .toggle-senha');
+        if (!input) return;
         if (input.type === 'password') {
             input.type = 'text';
             if (icon) { icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash'); }
@@ -2838,184 +2772,287 @@
     }
 
     // ==========================================
-    // INICIALIZAÇÃO DE DATAS
+    // INDICADOR DE CONEXÃO
     // ==========================================
-    function inicializarDatasDefault() {
-        const hoje = new Date().toISOString().split('T')[0];
-        document.getElementById('cad-ultima').value = hoje;
-        const anoQueVem = new Date();
-        anoQueVem.setFullYear(anoQueVem.getFullYear() + 1);
-        document.getElementById('cad-validade').value = anoQueVem.toISOString().split('T')[0];
-    }
-
-    function configurarCampoCodigo() {
-        const campo = document.getElementById('cad-codigo');
-        const prefixo = 'AK - ';
-        if (!campo.value.startsWith(prefixo)) campo.value = prefixo;
-        campo.addEventListener('input', function() {
-            if (!this.value.startsWith(prefixo)) this.value = prefixo + this.value.replace(prefixo, '');
-            if (this.value.length < prefixo.length) this.value = prefixo;
-        });
-        campo.addEventListener('focus', function() {
-            if (this.value === prefixo) {
-                setTimeout(() => {
-                    this.setSelectionRange(prefixo.length, prefixo.length);
-                }, 0);
-            }
-        });
-    }
-
-    function verificarTipoMangueira() {
-        const tipo = document.getElementById('cad-tipo').value.toLowerCase();
-        const camposMangueira = document.getElementById('campos-mangueira');
-        if (tipo === 'mangueira') {
-            camposMangueira.style.display = 'block';
+    function atualizarConexao() {
+        const indicator = document.getElementById('connection-indicator');
+        const text = document.getElementById('connection-text');
+        if (navigator.onLine) {
+            indicator.classList.remove('offline');
+            text.textContent = 'Online';
         } else {
-            camposMangueira.style.display = 'none';
-            document.getElementById('cad-chave-storz').value = '';
-            document.getElementById('cad-adaptador-storz').value = '';
+            indicator.classList.add('offline');
+            text.textContent = 'Offline';
         }
     }
 
     // ==========================================
     // NAVEGAÇÃO
     // ==========================================
-    function navegar(tabId) {
-        const targetTab = document.getElementById(tabId);
-        if (!targetTab) {
-            showToast('⚠️ Aba não disponível no modo de visualização');
-            return;
-        }
+    function navegar(aba) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        const tabEl = document.getElementById(aba);
+        if (tabEl) tabEl.classList.add('active');
+        const navEl = document.getElementById('nav-' + aba);
+        if (navEl) navEl.classList.add('active');
 
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-
-        targetTab.classList.add('active');
-
-        const btn = document.getElementById('nav-' + tabId);
-        if (btn) btn.classList.add('active');
-
-        if (tabId === 'organizacao') renderizarOrganizacao();
-        if (tabId === 'cadastro') atualizarListaRecentes();
-        if (tabId === 'dashboard') atualizarGrafico();
-        if (tabId === 'exportar-filtrado') { atualizarPreviewExportacao(); verificarFiltrosMangueira(); }
-        if (tabId === 'backup') atualizarInfoBackup();
-
-        if (tabId === 'cadastro' && !document.getElementById('edit-id').value) {
-            document.getElementById('cadastro-titulo').textContent = 'Novo Cadastro';
-        }
+        if (aba === 'lista') renderizarLista();
+        if (aba === 'organizacao') renderizarOrganizacao();
+        if (aba === 'dashboard') { atualizarGrafico(); atualizarBarrasProgresso(); }
+        if (aba === 'backup') atualizarInfoBackup();
+        if (aba === 'relatorios') atualizarLogAcessos();
+        if (aba === 'exportar-filtrado') atualizarPreviewExportacao();
     }
 
-    function mudarSubAbaLista(tipo) {
-        subAbaAtiva = tipo;
-        document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
-        document.getElementById('subtab-' + tipo).classList.add('active');
-        if (tipo === 'com-data') {
-            document.getElementById('lista-com-data').classList.remove('d-none');
-            document.getElementById('lista-sem-data').classList.add('d-none');
-        } else {
-            document.getElementById('lista-com-data').classList.add('d-none');
-            document.getElementById('lista-sem-data').classList.remove('d-none');
-        }
+    // ==========================================
+    // STATUS E DATAS
+    // ==========================================
+    function getStatus(validade) {
+        if (!validade) return { class: 'nodata', text: 'Sem Validade', icon: 'fa-box', color: '#78909c' };
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
+        const venc = new Date(validade + 'T00:00:00');
+        const diff = Math.floor((venc - hoje) / (1000 * 60 * 60 * 24));
+        if (diff < 0) return { class: 'expired', text: `Vencido há ${Math.abs(diff)}d`, icon: 'fa-times-circle', color: '#c62828' };
+        if (diff <= 30) return { class: 'warning', text: `Vence em ${diff}d`, icon: 'fa-exclamation-triangle', color: '#ff9800' };
+        return { class: 'ok', text: `Válido (${diff}d)`, icon: 'fa-check-circle', color: '#2e7d32' };
     }
 
-    function setCadastroMode(comData) {
-        isComDataMode = comData;
-        const fieldset = document.getElementById('datas-fieldset');
-        document.getElementById('btn-mode-data').className = comData ? 'type-btn active' : 'type-btn';
-        document.getElementById('btn-mode-nodata').className = !comData ? 'type-btn active' : 'type-btn';
-        fieldset.style.display = comData ? 'block' : 'none';
-        document.getElementById('cad-validade').required = comData;
+    function inicializarDatasDefault() {
+        const hoje = new Date();
+        const proxAno = new Date();
+        proxAno.setFullYear(proxAno.getFullYear() + 1);
+        const fmt = d => d.toISOString().split('T')[0];
+        const ultima = document.getElementById('cad-ultima');
+        const validade = document.getElementById('cad-validade');
+        if (ultima && !ultima.value) ultima.value = fmt(hoje);
+        if (validade && !validade.value) validade.value = fmt(proxAno);
     }
 
     function validarDatas() {
         const ultima = document.getElementById('cad-ultima').value;
         const validade = document.getElementById('cad-validade').value;
-        const erro = document.getElementById('data-erro');
-        const btnSalvar = document.getElementById('btn-salvar');
-
-        if (ultima && validade && new Date(validade) <= new Date(ultima)) {
-            erro.style.display = 'flex';
-            btnSalvar.disabled = true;
+        const erroEl = document.getElementById('data-erro');
+        if (ultima && validade && validade <= ultima) {
+            erroEl.style.display = 'flex';
             return false;
-        } else {
-            erro.style.display = 'none';
-            btnSalvar.disabled = false;
-            return true;
         }
+        erroEl.style.display = 'none';
+        return true;
     }
 
     // ==========================================
-    // CRUD EQUIPAMENTOS
+    // MODO DE CADASTRO
     // ==========================================
-    function salvarEquipamento(e) {
-        e.preventDefault();
-        if (isReadOnly) return;
+    function setCadastroMode(comData) {
+        isComDataMode = comData;
+        document.getElementById('btn-mode-data').classList.toggle('active', comData);
+        document.getElementById('btn-mode-nodata').classList.toggle('active', !comData);
+        document.getElementById('datas-fieldset').style.display = comData ? 'block' : 'none';
+        const validade = document.getElementById('cad-validade');
+        validade.required = comData;
+        if (!comData) validade.value = '';
+    }
 
-        if (isComDataMode && !validarDatas()) {
-            showToast('⚠️ Corrija as datas antes de salvar');
+    function verificarTipoMangueira() {
+        const tipo = document.getElementById('cad-tipo').value.toLowerCase();
+        const campos = document.getElementById('campos-mangueira');
+        campos.style.display = tipo === 'mangueira' ? 'block' : 'none';
+
+        const input = document.getElementById('cad-tipo');
+        const container = document.getElementById('tipos-container');
+        const lista = document.getElementById('tipos-lista');
+        const termo = input.value.toLowerCase();
+
+        const filtrados = tiposEquipamentos.filter(t => t.toLowerCase().includes(termo));
+        if (filtrados.length > 0 && document.activeElement === input) {
+            lista.innerHTML = filtrados.map(t => `
+                <div class="tipo-item" 
+                     onclick="selecionarTipo('${t.replace(/'/g, "\\'")}')"
+                     oncontextmenu="abrirContextMenu(event, '${t.replace(/'/g, "\\'")}'); return false;"
+                     ontouchstart="iniciarLongPress('${t.replace(/'/g, "\\'")}', this)"
+                     ontouchend="cancelarLongPress()"
+                     ontouchmove="cancelarLongPress()">
+                    <span>${t}</span>
+                    <i class="fas fa-chevron-right"></i>
+                </div>`).join('');
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function selecionarTipo(tipo) {
+        document.getElementById('cad-tipo').value = tipo;
+        document.getElementById('tipos-container').style.display = 'none';
+        verificarTipoMangueira();
+        formModificado = true;
+    }
+
+    // ==========================================
+    // CONTEXT MENU E LONG PRESS
+    // ==========================================
+    let tipoSelecionadoContextMenu = null;
+    let longPressTimer = null;
+
+    function abrirContextMenu(event, tipo) {
+        tipoSelecionadoContextMenu = tipo;
+        const menu = document.getElementById('context-menu');
+        menu.style.display = 'block';
+        menu.style.left = event.clientX + 'px';
+        menu.style.top = event.clientY + 'px';
+        document.addEventListener('click', fecharContextMenu, { once: true });
+    }
+
+    function fecharContextMenu() {
+        document.getElementById('context-menu').style.display = 'none';
+        tipoSelecionadoContextMenu = null;
+    }
+
+    function iniciarLongPress(tipo, el) {
+        longPressTimer = setTimeout(() => {
+            tipoSelecionadoContextMenu = tipo;
+            const rect = el.getBoundingClientRect();
+            const menu = document.getElementById('context-menu');
+            menu.style.display = 'block';
+            menu.style.left = rect.left + 'px';
+            menu.style.top = (rect.bottom + window.scrollY) + 'px';
+            document.addEventListener('touchstart', fecharContextMenu, { once: true });
+        }, 600);
+    }
+
+    function cancelarLongPress() {
+        if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+    }
+
+    function excluirTipoSelecionado() {
+        if (!tipoSelecionadoContextMenu) return;
+        const tipo = tipoSelecionadoContextMenu;
+        confirmar(`Deseja excluir o tipo "${tipo}" da lista?`, (ok) => {
+            if (ok) {
+                tiposEquipamentos = tiposEquipamentos.filter(t => t !== tipo);
+                localStorage.setItem('fire_tipos', JSON.stringify(tiposEquipamentos));
+                atualizarListaTipos();
+                verificarTipoMangueira();
+                showToast(`🗑️ Tipo "${tipo}" removido`);
+            }
+        });
+        fecharContextMenu();
+    }
+
+    function atualizarListaTipos() {
+        const lista = document.getElementById('tipos-lista');
+        if (!lista) return;
+        const termo = document.getElementById('cad-tipo').value.toLowerCase();
+        const filtrados = tiposEquipamentos.filter(t => t.toLowerCase().includes(termo));
+        lista.innerHTML = filtrados.map(t => `
+            <div class="tipo-item" 
+                 onclick="selecionarTipo('${t.replace(/'/g, "\\'")}')"
+                 oncontextmenu="abrirContextMenu(event, '${t.replace(/'/g, "\\'")}'); return false;"
+                 ontouchstart="iniciarLongPress('${t.replace(/'/g, "\\'")}', this)"
+                 ontouchend="cancelarLongPress()"
+                 ontouchmove="cancelarLongPress()">
+                <span>${t}</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>`).join('');
+    }
+
+    // ==========================================
+    // CONFIGURAR CAMPO CÓDIGO
+    // ==========================================
+    function configurarCampoCodigo() {
+        const input = document.getElementById('cad-codigo');
+        if (!input) return;
+        input.addEventListener('keydown', (e) => {
+            const val = input.value;
+            if (e.key === 'Backspace' && val.length <= 5) e.preventDefault();
+        });
+        input.addEventListener('input', () => {
+            if (!input.value.startsWith('AK - ')) {
+                input.value = 'AK - ' + input.value.replace(/^AK\s*-?\s*/i, '');
+            }
+        });
+    }
+
+    // ==========================================
+    // SALVAR / EDITAR EQUIPAMENTO
+    // ==========================================
+    function salvarEquipamento(event) {
+        event.preventDefault();
+        if (isReadOnly) { showToast('❌ Modo somente leitura'); return; }
+        if (!validarDatas()) { showToast('⚠️ Corrija as datas antes de salvar'); return; }
+
+        const tipo = document.getElementById('cad-tipo').value.trim();
+        const codigo = document.getElementById('cad-codigo').value.trim();
+        const descricao = document.getElementById('cad-descricao').value.trim();
+        const area = document.getElementById('cad-area').value.trim();
+        const local = document.getElementById('cad-local').value.trim();
+        const ultima = document.getElementById('cad-ultima').value;
+        const validade = isComDataMode ? document.getElementById('cad-validade').value : '';
+        const obs = document.getElementById('cad-obs').value.trim();
+        const chaveStorz = document.getElementById('cad-chave-storz').value;
+        const adaptadorStorz = document.getElementById('cad-adaptador-storz').value;
+
+        if (!tipo || !codigo || !descricao || !area || !local) {
+            showToast('⚠️ Preencha todos os campos obrigatórios');
             return;
         }
 
-        const btnSalvar = document.getElementById('btn-salvar');
         const editId = document.getElementById('edit-id').value;
+        const item = {
+            id: editId ? parseInt(editId) : Date.now(),
+            tipo, codigo, descricao, area, local, ultima, validade, obs, chaveStorz, adaptadorStorz
+        };
 
-        btnSalvar.disabled = true;
-        btnSalvar.classList.add('loading');
-        btnSalvar.innerHTML = '<i class="fas fa-spinner"></i> SALVANDO...';
-
-        setTimeout(() => {
-            const tipo = document.getElementById('cad-tipo').value;
-            
+        if (editId) {
+            const idx = db.findIndex(i => i.id === parseInt(editId));
+            if (idx !== -1) db[idx] = item;
+        } else {
+            // Adicionar novo tipo se não existir
             if (tipo && !tiposEquipamentos.includes(tipo)) {
                 tiposEquipamentos.push(tipo);
                 localStorage.setItem('fire_tipos', JSON.stringify(tiposEquipamentos));
-                atualizarListaTipos();
             }
+            db.push(item);
+        }
 
-            const itemData = {
-                tipo: tipo,
-                codigo: document.getElementById('cad-codigo').value,
-                descricao: document.getElementById('cad-descricao').value,
-                area: document.getElementById('cad-area').value,
-                local: document.getElementById('cad-local').value,
-                obs: document.getElementById('cad-obs').value,
-                ultima: isComDataMode ? document.getElementById('cad-ultima').value : null,
-                validade: isComDataMode ? document.getElementById('cad-validade').value : null,
-                chaveStorz: document.getElementById('cad-chave-storz').value || null,
-                adaptadorStorz: document.getElementById('cad-adaptador-storz').value || null
-            };
+        localStorage.setItem('fire_db', JSON.stringify(db));
+        atualizarUI();
+        limparFormulario();
+        showToast(editId ? '✅ Equipamento atualizado!' : '✅ Equipamento cadastrado!');
+        formModificado = false;
+    }
 
-            if (editId) {
-                const index = db.findIndex(i => i.id == editId);
-                if (index !== -1) { 
-                    db[index] = { ...db[index], ...itemData }; 
-                    showToast('✅ Equipamento atualizado!'); 
-                }
-            } else {
-                db.push({ id: Date.now(), ...itemData });
-                showToast('✅ Equipamento cadastrado!');
-            }
+    function limparFormulario() {
+        document.getElementById('edit-id').value = '';
+        document.getElementById('cad-tipo').value = '';
+        document.getElementById('cad-codigo').value = 'AK - ';
+        document.getElementById('cad-descricao').value = '';
+        document.getElementById('cad-area').value = '';
+        document.getElementById('cad-local').value = '';
+        document.getElementById('cad-obs').value = '';
+        document.getElementById('cad-chave-storz').value = '';
+        document.getElementById('cad-adaptador-storz').value = '';
+        document.getElementById('campos-mangueira').style.display = 'none';
+        document.getElementById('btn-cancelar-edicao').style.display = 'none';
+        document.getElementById('cadastro-titulo').innerHTML = '<i class="fas fa-plus-circle"></i> Novo Cadastro';
+        document.getElementById('btn-salvar').innerHTML = '<i class="fas fa-save"></i> SALVAR EQUIPAMENTO';
+        setCadastroMode(true);
+        inicializarDatasDefault();
+        formModificado = false;
+    }
 
-            localStorage.setItem('fire_db', JSON.stringify(db));
-            e.target.reset();
-            document.getElementById('edit-id').value = '';
-            document.getElementById('cadastro-titulo').textContent = 'Novo Cadastro';
-            document.getElementById('btn-cancelar-edicao').style.display = 'none';
-            formModificado = false;
-            inicializarDatasDefault();
-            document.getElementById('cad-codigo').value = 'AK - ';
-            btnSalvar.disabled = false;
-            btnSalvar.classList.remove('loading');
-            btnSalvar.innerHTML = '<i class="fas fa-save"></i> SALVAR EQUIPAMENTO';
-            atualizarUI();
-            atualizarListaRecentes();
-            verificarTipoMangueira();
-        }, 800);
+    function cancelarEdicao() {
+        if (formModificado) {
+            confirmar('Deseja descartar as alterações?', (ok) => { if (ok) limparFormulario(); });
+        } else {
+            limparFormulario();
+        }
     }
 
     function editarItem(id) {
-        if (isReadOnly) return;
+        if (isReadOnly) { showToast('❌ Modo somente leitura'); return; }
         const item = db.find(i => i.id === id);
         if (!item) return;
 
@@ -3025,215 +3062,215 @@
         document.getElementById('cad-descricao').value = item.descricao;
         document.getElementById('cad-area').value = item.area;
         document.getElementById('cad-local').value = item.local;
+        document.getElementById('cad-ultima').value = item.ultima || '';
+        document.getElementById('cad-validade').value = item.validade || '';
         document.getElementById('cad-obs').value = item.obs || '';
-
-        setCadastroMode(!!item.validade);
-        if (item.validade) {
-            document.getElementById('cad-ultima').value = item.ultima || '';
-            document.getElementById('cad-validade').value = item.validade;
-        }
-
         document.getElementById('cad-chave-storz').value = item.chaveStorz || '';
         document.getElementById('cad-adaptador-storz').value = item.adaptadorStorz || '';
-        document.getElementById('cadastro-titulo').textContent = '✏️ Editar Cadastro';
-        document.getElementById('btn-cancelar-edicao').style.display = 'block';
-        formModificado = true;
-        verificarTipoMangueira();
-        navegar('cadastro');
-        showToast('✏️ Modo edição ativado');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
 
-    function cancelarEdicao() {
-        document.getElementById('form-equipamento').reset();
-        document.getElementById('edit-id').value = '';
-        document.getElementById('cadastro-titulo').textContent = 'Novo Cadastro';
-        document.getElementById('btn-cancelar-edicao').style.display = 'none';
-        formModificado = false;
-        inicializarDatasDefault();
-        setCadastroMode(true);
-        document.getElementById('cad-codigo').value = 'AK - ';
+        setCadastroMode(!!item.validade);
         verificarTipoMangueira();
-        showToast('❌ Edição cancelada');
+
+        document.getElementById('cadastro-titulo').innerHTML = '<i class="fas fa-edit"></i> Editando Equipamento';
+        document.getElementById('btn-salvar').innerHTML = '<i class="fas fa-save"></i> ATUALIZAR EQUIPAMENTO';
+        document.getElementById('btn-cancelar-edicao').style.display = 'flex';
+
+        fecharModal();
+        navegar('cadastro');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        formModificado = false;
     }
 
     function excluirItem(id) {
-        if (isReadOnly) return;
+        if (isReadOnly) { showToast('❌ Modo somente leitura'); return; }
         const item = db.find(i => i.id === id);
         if (!item) return;
-
-        if (confirm('⚠️ Deseja realmente excluir o item:\n\n' + item.codigo + ' - ' + item.tipo + '\n' + item.descricao + '\n\nEsta ação não pode ser desfeita!')) {
-            db = db.filter(i => i.id !== id);
-            localStorage.setItem('fire_db', JSON.stringify(db));
-            atualizarUI(); 
-            atualizarListaRecentes(); 
-            fecharModal();
-            showToast('🗑️ Item excluído com sucesso');
-        }
-    }
-
-    // ==========================================
-    // STATUS
-    // ==========================================
-    function getStatus(validade) {
-        if (!validade) return { class: 'nodata', text: 'Sem validade', days: null, priority: 3, icon: 'fa-box' };
-
-        const hoje = new Date(); 
-        hoje.setHours(0,0,0,0);
-        const venc = new Date(validade); 
-        venc.setHours(0,0,0,0);
-        const diffDays = Math.ceil((venc - hoje) / (1000 * 60 * 60 * 24));
-
-        if (diffDays < 0) return { class: 'expired', text: 'Vencido', days: diffDays, priority: 1, icon: 'fa-times-circle' };
-        if (diffDays <= 30) return { class: 'warning', text: 'Atenção', days: diffDays, priority: 2, icon: 'fa-exclamation-triangle' };
-        return { class: 'ok', text: 'Conforme', days: diffDays, priority: 4, icon: 'fa-check-circle' };
-    }
-
-    // ==========================================
-    // UI UPDATES
-    // ==========================================
-    function atualizarUI() {
-        renderizarLista();
-        atualizarDashboard();
-        atualizarModelos();
-        atualizarDatalistAreas();
-    }
-
-    function renderizarLista() {
-        const listData = document.getElementById('container-itens-data');
-        const listNoData = document.getElementById('container-itens-sem-data');
-        if (!listData || !listNoData) return;
-
-        const comData = [], semData = [];
-        db.forEach(item => {
-            if (item.validade) comData.push({ item, status: getStatus(item.validade) });
-            else semData.push(item);
-        });
-
-        comData.sort((a, b) => a.status.priority - b.status.priority);
-
-        listData.innerHTML = comData.length === 0
-            ? '<div class="empty-state"><i class="fas fa-calendar-check"></i><p>Nenhum equipamento com controle de validade cadastrado</p></div>'
-            : comData.map(({ item, status }) => criarCardItem(item, status)).join('');
-
-        listNoData.innerHTML = semData.length === 0
-            ? '<div class="empty-state"><i class="fas fa-box"></i><p>Nenhum item de inventário sem validade cadastrado</p></div>'
-            : semData.map(item => criarCardItem(item, getStatus(null))).join('');
-
-        document.getElementById('contador-com-data').innerText = 
-            '📊 ' + comData.length + ' item(ns) com controle de validade';
-    }
-
-    function criarCardItem(item, status) {
-        const btnEdit = isReadOnly ? '' : `<button class="btn-icon btn-edit" onclick="event.stopPropagation(); editarItem(${item.id})"><i class="fas fa-edit"></i></button>`;
-        const btnDelete = isReadOnly ? '' : `<button class="btn-icon btn-del" onclick="event.stopPropagation(); excluirItem(${item.id})"><i class="fas fa-trash"></i></button>`;
-
-        const badgeColor = { 'expired': '#c62828', 'warning': '#ff9800', 'ok': '#2e7d32', 'nodata': '#78909c' }[status.class];
-
-        const validadeInfo = item.validade
-            ? `<span class="badge" style="background: ${badgeColor};"><i class="fas ${status.icon}"></i> ${status.text} (${status.days}d) | ${item.validade.split('-').reverse().join('/')}</span>`
-            : '<span class="badge" style="background: #78909c;"><i class="fas fa-box"></i> Sem validade</span>';
-
-        let mangueiraIndicators = '';
-        if (item.tipo && item.tipo.toLowerCase() === 'mangueira') {
-            if (item.chaveStorz) mangueiraIndicators += `<span class="mangueira-indicator">${item.chaveStorz === 'sim' ? 'C' : 'S/C'}</span>`;
-            if (item.adaptadorStorz) mangueiraIndicators += `<span class="mangueira-indicator">${item.adaptadorStorz === 'sim' ? 'A' : 'S/A'}</span>`;
-        }
-
-        return `
-            <div class="item-card ${status.class}" onclick="abrirDetalhes(${item.id})">
-                <div class="item-info">
-                    <h4><i class="fas fa-fire-extinguisher"></i> ${item.codigo} - ${item.tipo} ${mangueiraIndicators}</h4>
-                    <p><i class="fas fa-align-left"></i> ${item.descricao}</p>
-                    <p><i class="fas fa-map-marker-alt"></i> ${item.area} › ${item.local}</p>
-                    ${validadeInfo}
-                </div>
-                <div class="actions">
-                    ${btnEdit}
-                    ${btnDelete}
-                </div>
-            </div>
-        `;
-    }
-
-    function atualizarDashboard() {
-        let counts = { ok: 0, warn: 0, expired: 0, nodata: 0, total: 0, mangueiras: 0 };
-        const areasSet = new Set();
-
-        db.forEach(item => {
-            counts.total++; 
-            areasSet.add(item.area);
-            if (item.tipo && item.tipo.toLowerCase() === 'mangueira') counts.mangueiras++;
-            if (item.validade) {
-                const st = getStatus(item.validade);
-                if (st.class === 'ok') counts.ok++;
-                if (st.class === 'warning') counts.warn++;
-                if (st.class === 'expired') counts.expired++;
-            } else counts.nodata++;
-        });
-
-        document.getElementById('dash-total').innerText = counts.total;
-        document.getElementById('dash-ok').innerText = counts.ok;
-        document.getElementById('dash-warn').innerText = counts.warn;
-        document.getElementById('dash-expired').innerText = counts.expired;
-        document.getElementById('dash-inventory').innerText = counts.nodata;
-        document.getElementById('dash-areas').innerText = areasSet.size;
-        document.getElementById('dash-mangueiras').innerText = counts.mangueiras;
-
-        const totalComData = counts.ok + counts.warn + counts.expired;
-        if (totalComData > 0) {
-            const cp = Math.round((counts.ok / totalComData) * 100);
-            const ap = Math.round((counts.warn / totalComData) * 100);
-            const vp = Math.round((counts.expired / totalComData) * 100);
-
-            document.getElementById('conformidade-percent').textContent = cp + '%';
-            document.getElementById('conformidade-bar').style.width = cp + '%';
-            document.getElementById('atencao-percent').textContent = ap + '%';
-            document.getElementById('atencao-bar').style.width = ap + '%';
-            document.getElementById('vencido-percent').textContent = vp + '%';
-            document.getElementById('vencido-bar').style.width = vp + '%';
-        }
-        atualizarGrafico();
-    }
-
-    function atualizarModelos() {
-        const sel = document.getElementById('modelo-select');
-        sel.innerHTML = '<option value="">-- Selecione para preencher automaticamente --</option>';
-        const unicos = new Set();
-
-        db.forEach(item => {
-            const key = item.tipo + ' - ' + item.descricao;
-            if (!unicos.has(key)) {
-                unicos.add(key);
-                const opt = document.createElement('option');
-                opt.value = JSON.stringify(item);
-                opt.textContent = key;
-                sel.appendChild(opt);
+        confirmar(`⚠️ Excluir "${item.codigo} - ${item.tipo}"?\n\nEsta ação não pode ser desfeita.`, (ok) => {
+            if (ok) {
+                db = db.filter(i => i.id !== id);
+                localStorage.setItem('fire_db', JSON.stringify(db));
+                atualizarUI();
+                fecharModal();
+                showToast('🗑️ Equipamento excluído');
             }
         });
     }
 
-    function atualizarDatalistAreas() {
-        const dl = document.getElementById('lista-areas'); 
-        dl.innerHTML = '';
-        [...new Set(db.map(i => i.area))].sort().forEach(a => {
-            const opt = document.createElement('option'); 
-            opt.value = a; 
-            dl.appendChild(opt);
-        });
+    // ==========================================
+    // ATUALIZAR UI
+    // ==========================================
+    function atualizarUI() {
+        atualizarDashboard();
+        atualizarModelos();
+        atualizarDatalist();
+        renderizarListaRecentes();
+        if (document.getElementById('lista').classList.contains('active')) renderizarLista();
+        if (document.getElementById('organizacao').classList.contains('active')) renderizarOrganizacao();
+        if (document.getElementById('exportar-filtrado').classList.contains('active')) atualizarPreviewExportacao();
+        atualizarGrafico();
+        atualizarBarrasProgresso();
     }
 
-    function atualizarListaRecentes() {
+    function atualizarDashboard() {
+        let ok = 0, warn = 0, expired = 0, nodata = 0, mangueiras = 0;
+        const areas = new Set();
+        db.forEach(item => {
+            if (item.tipo && item.tipo.toLowerCase() === 'mangueira') mangueiras++;
+            areas.add(item.area || 'Sem Área');
+            if (!item.validade) { nodata++; return; }
+            const st = getStatus(item.validade);
+            if (st.class === 'ok') ok++;
+            else if (st.class === 'warning') warn++;
+            else if (st.class === 'expired') expired++;
+        });
+        document.getElementById('dash-total').textContent = db.length;
+        document.getElementById('dash-ok').textContent = ok;
+        document.getElementById('dash-warn').textContent = warn;
+        document.getElementById('dash-expired').textContent = expired;
+        document.getElementById('dash-inventory').textContent = nodata;
+        document.getElementById('dash-areas').textContent = areas.size;
+        document.getElementById('dash-mangueiras').textContent = mangueiras;
+    }
+
+    function atualizarBarrasProgresso() {
+        const total = db.filter(i => !!i.validade).length;
+        if (total === 0) {
+            ['conformidade', 'atencao', 'vencido'].forEach(k => {
+                document.getElementById(k + '-percent').textContent = '0%';
+                document.getElementById(k + '-bar').style.width = '0%';
+            });
+            return;
+        }
+        let ok = 0, warn = 0, expired = 0;
+        db.forEach(item => {
+            if (!item.validade) return;
+            const st = getStatus(item.validade);
+            if (st.class === 'ok') ok++;
+            else if (st.class === 'warning') warn++;
+            else if (st.class === 'expired') expired++;
+        });
+        const pOk = Math.round(ok / total * 100);
+        const pWarn = Math.round(warn / total * 100);
+        const pExp = Math.round(expired / total * 100);
+        document.getElementById('conformidade-percent').textContent = pOk + '%';
+        document.getElementById('conformidade-bar').style.width = pOk + '%';
+        document.getElementById('atencao-percent').textContent = pWarn + '%';
+        document.getElementById('atencao-bar').style.width = pWarn + '%';
+        document.getElementById('vencido-percent').textContent = pExp + '%';
+        document.getElementById('vencido-bar').style.width = pExp + '%';
+    }
+
+    function atualizarModelos() {
+        const sel = document.getElementById('modelo-select');
+        if (!sel) return;
+        const opcaoAtual = sel.value;
+        sel.innerHTML = '<option value="">-- Selecione para preencher automaticamente --</option>';
+        const vistos = new Set();
+        db.forEach(item => {
+            const key = item.tipo + '|' + item.descricao + '|' + item.area;
+            if (!vistos.has(key)) {
+                vistos.add(key);
+                const opt = document.createElement('option');
+                opt.value = JSON.stringify({ tipo: item.tipo, descricao: item.descricao, area: item.area, chaveStorz: item.chaveStorz, adaptadorStorz: item.adaptadorStorz, validade: item.validade });
+                opt.textContent = `${item.tipo} — ${item.descricao} (${item.area})`;
+                sel.appendChild(opt);
+            }
+        });
+        sel.value = opcaoAtual;
+    }
+
+    function atualizarDatalist() {
+        const dl = document.getElementById('lista-areas');
+        if (!dl) return;
+        const areas = [...new Set(db.map(i => i.area).filter(Boolean))].sort();
+        dl.innerHTML = areas.map(a => `<option value="${a}">`).join('');
+    }
+
+    // ==========================================
+    // CRIAR CARD DE ITEM
+    // ==========================================
+    function criarCardItem(item, st) {
+        const cor = { 'expired': '#c62828', 'warning': '#ff9800', 'ok': '#2e7d32', 'nodata': '#78909c' }[st.class];
+        let mangueiraInfo = '';
+        if (item.tipo && item.tipo.toLowerCase() === 'mangueira') {
+            mangueiraInfo = `<span class="mangueira-indicator"><i class="fas fa-key"></i>${item.chaveStorz === 'sim' ? 'C' : 'S/C'} | <i class="fas fa-plug"></i>${item.adaptadorStorz === 'sim' ? 'A' : 'S/A'}</span>`;
+        }
+        return `
+        <div class="item-card ${st.class}" onclick="abrirDetalhes(${item.id})">
+            <div class="item-info">
+                <h4><i class="fas ${st.icon}" style="color:${cor}"></i> ${item.codigo} ${mangueiraInfo}</h4>
+                <p><i class="fas fa-tools"></i> ${item.tipo} — ${item.descricao}</p>
+                <p><i class="fas fa-map-marker-alt"></i> ${item.area} | <i class="fas fa-location-arrow"></i> ${item.local}</p>
+                <span class="badge" style="background:${cor}">
+                    <i class="fas ${st.icon}"></i> ${st.text}
+                </span>
+            </div>
+            ${!isReadOnly ? `
+            <div class="actions">
+                <button class="btn-icon btn-edit" onclick="event.stopPropagation(); editarItem(${item.id})" title="Editar">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-icon btn-del" onclick="event.stopPropagation(); excluirItem(${item.id})" title="Excluir">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>` : ''}
+        </div>`;
+    }
+
+    // ==========================================
+    // RENDERIZAR LISTA
+    // ==========================================
+    function renderizarLista() {
+        const comData = db.filter(i => !!i.validade);
+        const semData = db.filter(i => !i.validade);
+
+        const containerData = document.getElementById('container-itens-data');
+        const containerSemData = document.getElementById('container-itens-sem-data');
+        const contador = document.getElementById('contador-com-data');
+
+        if (comData.length === 0) {
+            containerData.innerHTML = '<div class="empty-state"><i class="fas fa-calendar-times"></i><p>Nenhum equipamento com validade cadastrado</p></div>';
+        } else {
+            const sorted = [...comData].sort((a, b) => {
+                const sa = getStatus(a.validade), sb = getStatus(b.validade);
+                const order = { expired: 0, warning: 1, ok: 2, nodata: 3 };
+                return (order[sa.class] || 3) - (order[sb.class] || 3);
+            });
+            containerData.innerHTML = sorted.map(item => criarCardItem(item, getStatus(item.validade))).join('');
+        }
+
+        if (semData.length === 0) {
+            containerSemData.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><p>Nenhum item de inventário cadastrado</p></div>';
+        } else {
+            containerSemData.innerHTML = semData.map(item => criarCardItem(item, getStatus(item.validade))).join('');
+        }
+
+        if (contador) contador.textContent = `${comData.length} equipamento(s) com controle de validade`;
+    }
+
+    function mudarSubAbaLista(aba) {
+        subAbaAtiva = aba;
+        document.getElementById('lista-com-data').classList.toggle('d-none', aba !== 'com-data');
+        document.getElementById('lista-sem-data').classList.toggle('d-none', aba !== 'sem-data');
+        document.getElementById('subtab-com-data').classList.toggle('active', aba === 'com-data');
+        document.getElementById('subtab-sem-data').classList.toggle('active', aba === 'sem-data');
+    }
+
+    // ==========================================
+    // LISTA RECENTES (CADASTRO)
+    // ==========================================
+    function renderizarListaRecentes() {
         const container = document.getElementById('lista-recentes');
         const count = document.getElementById('recentes-count');
+        if (!container) return;
 
         if (db.length === 0) {
             container.innerHTML = '<div class="empty-state" style="padding: 30px 10px;"><i class="fas fa-inbox"></i><p style="font-size: 0.9rem;">Nenhum equipamento cadastrado ainda</p></div>';
-            count.textContent = 'Equipamentos Cadastrados (0)';
+            if (count) count.textContent = 'Equipamentos Cadastrados (0)';
             return;
         }
 
-        const recentes = [...db].reverse().slice(0, 10);
+        const recentes = [...db].reverse().slice(0, 20);
         container.innerHTML = recentes.map(item => {
             const st = getStatus(item.validade);
             const cor = { 'expired': '#c62828', 'warning': '#ff9800', 'ok': '#2e7d32', 'nodata': '#78909c' }[st.class];
@@ -3250,13 +3287,12 @@
             </div>`;
         }).join('');
 
-        count.textContent = 'Equipamentos Cadastrados (' + db.length + ')';
+        if (count) count.textContent = 'Equipamentos Cadastrados (' + db.length + ')';
     }
 
     function aplicarModelo() {
         const sel = document.getElementById('modelo-select');
         if (!sel.value) return;
-
         const item = JSON.parse(sel.value);
         document.getElementById('cad-tipo').value = item.tipo;
         document.getElementById('cad-descricao').value = item.descricao;
@@ -3275,7 +3311,7 @@
     function inicializarGrafico() {
         const ctx = document.getElementById('statusChart');
         if (!ctx) return;
-
+        if (statusChart) { statusChart.destroy(); statusChart = null; }
         statusChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
@@ -3287,7 +3323,7 @@
                 }]
             },
             options: {
-                responsive: true, 
+                responsive: true,
                 maintainAspectRatio: true,
                 plugins: {
                     legend: { position: 'bottom', labels: { padding: 15, font: { size: 12 } } },
@@ -3295,29 +3331,28 @@
                         callbacks: {
                             label: function(ctx) {
                                 const v = ctx.parsed || 0;
-                                const t = ctx.dataset.data.reduce((a,b)=>a+b,0);
-                                return ctx.label + ': ' + v + ' (' + (t>0?Math.round(v/t*100):0) + '%)';
+                                const t = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                return ctx.label + ': ' + v + ' (' + (t > 0 ? Math.round(v / t * 100) : 0) + '%)';
                             }
                         }
                     }
                 }
             }
         });
+        atualizarGrafico();
     }
 
     function atualizarGrafico() {
         if (!statusChart) return;
-
-        let c = { ok:0, warn:0, expired:0, nodata:0 };
+        let c = { ok: 0, warn: 0, expired: 0, nodata: 0 };
         db.forEach(item => {
-            if (item.validade) { 
-                const st = getStatus(item.validade); 
-                if(st.class==='ok')c.ok++; 
-                if(st.class==='warning')c.warn++; 
-                if(st.class==='expired')c.expired++; 
+            if (item.validade) {
+                const st = getStatus(item.validade);
+                if (st.class === 'ok') c.ok++;
+                if (st.class === 'warning') c.warn++;
+                if (st.class === 'expired') c.expired++;
             } else c.nodata++;
         });
-
         statusChart.data.datasets[0].data = [c.ok, c.warn, c.expired, c.nodata];
         statusChart.update();
     }
@@ -3328,66 +3363,59 @@
     function renderizarOrganizacao() {
         const container = document.getElementById('areas-container');
         container.innerHTML = '';
-
         const areas = {};
         db.forEach(item => {
             const n = item.area || 'Sem Área';
             if (!areas[n]) areas[n] = [];
             areas[n].push(item);
         });
-
         if (Object.keys(areas).length === 0) {
             container.innerHTML = '<div class="empty-state"><i class="fas fa-map-marked-alt"></i><p>Nenhuma área cadastrada</p></div>';
             return;
         }
-
         Object.keys(areas).sort().forEach(nomeArea => {
             const itens = areas[nomeArea];
-            let sc = { ok:0, warn:0, expired:0, nodata:0 };
-            itens.forEach(item => { 
-                const st = getStatus(item.validade); 
-                sc[st.class] = (sc[st.class]||0) + 1; 
+            let sc = { ok: 0, warn: 0, expired: 0, nodata: 0 };
+            itens.forEach(item => {
+                const st = getStatus(item.validade);
+                sc[st.class] = (sc[st.class] || 0) + 1;
             });
-
             let itensHtml = itens.map(item => {
                 const st = getStatus(item.validade);
-                const cor = { 'expired':'#c62828','warning':'#ff9800','ok':'#2e7d32','nodata':'#78909c' }[st.class];
+                const cor = { 'expired': '#c62828', 'warning': '#ff9800', 'ok': '#2e7d32', 'nodata': '#78909c' }[st.class];
                 let mi = '';
                 if (item.tipo && item.tipo.toLowerCase() === 'mangueira') {
-                    mi = '<span class="mangueira-indicator">' + (item.chaveStorz==='sim'?'C':'S/C') + '|' + (item.adaptadorStorz==='sim'?'A':'S/A') + '</span>';
+                    mi = '<span class="mangueira-indicator">' + (item.chaveStorz === 'sim' ? 'C' : 'S/C') + '|' + (item.adaptadorStorz === 'sim' ? 'A' : 'S/A') + '</span>';
                 }
-                return `<div style="padding: 12px; border-bottom: 1px solid #f0f0f0; display:flex; justify-content:space-between; align-items: center; cursor: pointer; transition: all 0.2s;" 
-                         onclick="abrirDetalhes(${item.id})"
-                         onmouseover="this.style.background='#f8f9fa'"
-                         onmouseout="this.style.background='white'">
-                        <span style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fas ${st.icon}" style="color:${cor}; font-size: 1.1rem;"></i> 
-                            <div>
-                                <strong style="color: var(--text-main);">${item.codigo}</strong> - ${item.tipo} ${mi}
-                                <br>
-                                <small style="color: var(--text-sub);">${item.descricao}</small>
-                            </div>
-                        </span>
-                        <small style="color: var(--text-sub); text-align: right;">
-                            <i class="fas fa-location-arrow"></i> ${item.local}
-                        </small>
-                    </div>`;
+                return `<div style="padding: 12px; border-bottom: 1px solid #f0f0f0; display:flex; justify-content:space-between; align-items: center; cursor: pointer; transition: all 0.2s;"
+                             onclick="abrirDetalhes(${item.id})"
+                             onmouseover="this.style.background='#f8f9fa'"
+                             onmouseout="this.style.background='white'">
+                            <span style="display: flex; align-items: center; gap: 10px;">
+                                <i class="fas ${st.icon}" style="color:${cor}; font-size: 1.1rem;"></i>
+                                <div>
+                                    <strong style="color: var(--text-main);">${item.codigo}</strong> - ${item.tipo} ${mi}
+                                    <br>
+                                    <small style="color: var(--text-sub);">${item.descricao}</small>
+                                </div>
+                            </span>
+                            <small style="color: var(--text-sub); text-align: right;">
+                                <i class="fas fa-location-arrow"></i> ${item.local}
+                            </small>
+                        </div>`;
             }).join('');
-
             const statusBadges = `
                 ${sc.ok > 0 ? `<span class="badge" style="background: #43a047; margin-left: 5px;">${sc.ok} OK</span>` : ''}
                 ${sc.warn > 0 ? `<span class="badge" style="background: #fb8c00; margin-left: 5px;">${sc.warn} Atenção</span>` : ''}
                 ${sc.expired > 0 ? `<span class="badge" style="background: #e53935; margin-left: 5px;">${sc.expired} Vencidos</span>` : ''}
-                ${sc.nodata > 0 ? `<span class="badge" style="background: #78909c; margin-left: 5px;">${sc.nodata} S/Data</span>` : ''}
-            `;
-
+                ${sc.nodata > 0 ? `<span class="badge" style="background: #78909c; margin-left: 5px;">${sc.nodata} S/Data</span>` : ''}`;
             const section = document.createElement('div');
             section.className = 'area-section';
             section.innerHTML = `
                 <div class="area-header" onclick="toggleArea(this)">
                     <span style="display: flex; align-items: center; gap: 10px;">
                         <i class="fas fa-chevron-right" style="transition: transform 0.3s;"></i>
-                        <i class="fas fa-map-marker-alt"></i> 
+                        <i class="fas fa-map-marker-alt"></i>
                         <strong>${nomeArea}</strong>
                     </span>
                     <div>
@@ -3399,17 +3427,16 @@
                     ${itensHtml}
                     ${!isReadOnly ? `
                     <div style="text-align:right; padding:15px; background:#fafafa; border-top: 2px solid #e0e0e0;">
-                        <button onclick="event.stopPropagation(); excluirArea('${nomeArea}')" 
-                                style="padding: 8px 15px; background: linear-gradient(135deg, #ffebee, #ffcdd2); 
-                                       color: var(--danger); border: none; border-radius: 8px; cursor: pointer; 
+                        <button onclick="event.stopPropagation(); confirmarExcluirArea('${nomeArea.replace(/'/g, "\\'")}')"
+                                style="padding: 8px 15px; background: linear-gradient(135deg, #ffebee, #ffcdd2);
+                                       color: var(--danger); border: none; border-radius: 8px; cursor: pointer;
                                        font-weight: 600; transition: all 0.3s;"
                                 onmouseover="this.style.background='linear-gradient(135deg, var(--danger), #b71c1c)'; this.style.color='white';"
                                 onmouseout="this.style.background='linear-gradient(135deg, #ffebee, #ffcdd2)'; this.style.color='var(--danger)';">
                             <i class="fas fa-trash"></i> Excluir toda esta área
                         </button>
                     </div>` : ''}
-                </div>
-            `;
+                </div>`;
             container.appendChild(section);
         });
     }
@@ -3422,15 +3449,18 @@
         icon.style.transform = content.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0deg)';
     }
 
-    function excluirArea(nomeArea) {
-        if(isReadOnly) return;
-        if(confirm(`⚠️ ATENÇÃO: Isso excluirá TODOS os ${db.filter(i => i.area === nomeArea).length} equipamento(s) da área "${nomeArea}".\n\n❌ Esta ação NÃO pode ser desfeita!\n\n✅ Confirmar exclusão?`)) {
-            db = db.filter(item => item.area !== nomeArea);
-            localStorage.setItem('fire_db', JSON.stringify(db));
-            atualizarUI();
-            renderizarOrganizacao();
-            showToast(`🗑️ Área "${nomeArea}" excluída com sucesso`);
-        }
+    function confirmarExcluirArea(nomeArea) {
+        if (isReadOnly) return;
+        const mensagem = `⚠️ ATENÇÃO: Isso excluirá TODOS os ${db.filter(i => i.area === nomeArea).length} equipamento(s) da área "${nomeArea}".\n\n❌ Esta ação NÃO pode ser desfeita!`;
+        confirmar(mensagem, (confirmado) => {
+            if (confirmado) {
+                db = db.filter(item => item.area !== nomeArea);
+                localStorage.setItem('fire_db', JSON.stringify(db));
+                atualizarUI();
+                renderizarOrganizacao();
+                showToast(`🗑️ Área "${nomeArea}" excluída com sucesso`);
+            }
+        });
     }
 
     // ==========================================
@@ -3448,48 +3478,27 @@
         const resultsDiv = document.getElementById('busca-results');
         const statsDiv = document.getElementById('busca-stats');
         const countSpan = document.getElementById('busca-count');
-
         if (termo.length === 0) {
-            resultsDiv.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-search"></i>
-                    <p>Digite acima para buscar equipamentos</p>
-                </div>`;
+            resultsDiv.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><p>Digite acima para buscar equipamentos</p></div>`;
             statsDiv.style.display = 'none';
             return;
         }
-
-        let filtered = db.filter(item => 
+        let filtered = db.filter(item =>
             item.codigo.toLowerCase().includes(termo) ||
             item.tipo.toLowerCase().includes(termo) ||
             item.descricao.toLowerCase().includes(termo) ||
             item.local.toLowerCase().includes(termo) ||
             item.area.toLowerCase().includes(termo)
         );
-
         if (filtroAtivoBusca !== 'all') {
-            filtered = filtered.filter(item => {
-                const st = getStatus(item.validade);
-                return st.class === filtroAtivoBusca;
-            });
+            filtered = filtered.filter(item => getStatus(item.validade).class === filtroAtivoBusca);
         }
-
         if (filtered.length === 0) {
-            resultsDiv.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-search-minus"></i>
-                    <p>Nenhum resultado encontrado</p>
-                </div>`;
+            resultsDiv.innerHTML = `<div class="empty-state"><i class="fas fa-search-minus"></i><p>Nenhum resultado encontrado</p></div>`;
             statsDiv.style.display = 'none';
             return;
         }
-
-        resultsDiv.innerHTML = '<div class="item-list">' + 
-            filtered.map(item => {
-                const st = getStatus(item.validade);
-                return criarCardItem(item, st);
-            }).join('') + '</div>';
-
+        resultsDiv.innerHTML = '<div class="item-list">' + filtered.map(item => criarCardItem(item, getStatus(item.validade))).join('') + '</div>';
         countSpan.textContent = filtered.length;
         statsDiv.style.display = 'block';
     }
@@ -3504,16 +3513,14 @@
                 setTimeout(() => {
                     const cards = document.querySelectorAll('#container-itens-data .item-card');
                     cards.forEach(card => {
-                        const shouldHighlight = 
+                        const shouldHighlight =
                             (filtro === 'expired' && card.classList.contains('expired')) ||
                             (filtro === 'warning' && card.classList.contains('warning')) ||
                             (filtro === 'ok' && card.classList.contains('ok'));
                         card.style.opacity = shouldHighlight ? '1' : '0.3';
                     });
-                    setTimeout(() => {
-                        cards.forEach(card => card.style.opacity = '1');
-                    }, 4000);
-                }, 100);
+                    setTimeout(() => cards.forEach(c => c.style.opacity = '1'), 3000);
+                }, 200);
             }
         }
     }
@@ -3524,138 +3531,110 @@
     function abrirDetalhes(id) {
         const item = db.find(i => i.id === id);
         if (!item) return;
-
         const st = getStatus(item.validade);
-        const modalBody = document.getElementById('modal-body');
-
-        const statusBadgeColor = {
-            'expired': '#c62828',
-            'warning': '#ff9800',
-            'ok': '#2e7d32',
-            'nodata': '#78909c'
-        }[st.class];
-
-        let mangueiraInfo = '';
+        const cor = { 'expired': '#c62828', 'warning': '#ff9800', 'ok': '#2e7d32', 'nodata': '#78909c' }[st.class];
+        const validade = item.validade ? item.validade.split('-').reverse().join('/') : 'Não definida';
+        const ultima = item.ultima ? item.ultima.split('-').reverse().join('/') : 'Não registrada';
+        let mangueiraSection = '';
         if (item.tipo && item.tipo.toLowerCase() === 'mangueira') {
-            const chaveStorz = item.chaveStorz ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') : 'Não informado';
-            const adaptadorStorz = item.adaptadorStorz ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') : 'Não informado';
-            mangueiraInfo = `
-            <div style="background: linear-gradient(135deg, #fff3e0, #ffe0b2); padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #fb8c00;">
-                <h5 style="margin: 0 0 10px 0; color: #e65100;"><i class="fas fa-tape"></i> Especificações da Mangueira</h5>
-                <p style="margin: 8px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-key" style="color: #f57c00; width: 20px;"></i>
-                    <strong>Chave Storz:</strong> ${chaveStorz}
-                </p>
-                <p style="margin: 8px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-plug" style="color: #43a047; width: 20px;"></i>
-                    <strong>Adaptador Storz:</strong> ${adaptadorStorz}
-                </p>
+            mangueiraSection = `
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffe0b2); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 2px dashed #fb8c00;">
+                <h5 style="margin: 0 0 10px 0; color: #e65100;"><i class="fas fa-tape"></i> Especificações de Mangueira</h5>
+                <p style="margin: 5px 0;"><i class="fas fa-key" style="color: #f57c00;"></i> <strong>Chave Storz:</strong> ${item.chaveStorz === 'sim' ? '✅ Sim' : item.chaveStorz === 'nao' ? '❌ Não' : 'Não informado'}</p>
+                <p style="margin: 5px 0;"><i class="fas fa-plug" style="color: #43a047;"></i> <strong>Adaptador Storz:</strong> ${item.adaptadorStorz === 'sim' ? '✅ Sim' : item.adaptadorStorz === 'nao' ? '❌ Não' : 'Não informado'}</p>
             </div>`;
         }
-
-        modalBody.innerHTML = `
-            <div style="margin-bottom: 20px; text-align: center;">
-                <span class="badge" style="background: ${statusBadgeColor}; font-size: 1.1rem; padding: 8px 20px;">
-                    <i class="fas ${st.icon}"></i> ${st.text}
-                </span>
-            </div>
-            
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
-                <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-barcode" style="color: var(--primary); width: 20px;"></i>
-                    <strong>Código:</strong> <span style="color: var(--primary); font-weight: 600;">${item.codigo}</span>
-                </p>
-                <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-fire-extinguisher" style="color: var(--primary); width: 20px;"></i>
-                    <strong>Tipo:</strong> ${item.tipo}
-                </p>
-                <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-align-left" style="color: var(--primary); width: 20px;"></i>
-                    <strong>Descrição:</strong> ${item.descricao}
-                </p>
-            </div>
-            
-            ${mangueiraInfo}
-            
-            <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
-                <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-map-marker-alt" style="color: #1976d2; width: 20px;"></i>
-                    <strong>Área:</strong> ${item.area}
-                </p>
-                <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-location-arrow" style="color: #1976d2; width: 20px;"></i>
-                    <strong>Local:</strong> ${item.local}
-                </p>
-            </div>
-            
-            ${item.validade ? `
-            <div style="background: #fff3e0; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
-                <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-calendar-check" style="color: #f57c00; width: 20px;"></i>
-                    <strong>Última Inspeção:</strong> ${item.ultima ? item.ultima.split('-').reverse().join('/') : 'Não informada'}
-                </p>
-                <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-calendar-times" style="color: #f57c00; width: 20px;"></i>
-                    <strong>Próxima Validade:</strong> ${item.validade.split('-').reverse().join('/')}
-                </p>
-                <p style="margin: 10px 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-clock" style="color: #f57c00; width: 20px;"></i>
-                    <strong>Dias Restantes:</strong> <span style="font-weight: 600; color: ${statusBadgeColor};">${st.days !== null ? st.days + ' dias' : 'N/A'}</span>
-                </p>
-            </div>
-            ` : `
-            <div style="background: #f5f5f5; padding: 15px; border-radius: 10px; margin-bottom: 15px; text-align: center;">
-                <i class="fas fa-box" style="font-size: 2rem; color: #78909c; margin-bottom: 10px;"></i>
-                <p><strong>Item de inventário sem controle de validade</strong></p>
-            </div>
-            `}
-            
-            ${item.obs ? `
-            <div style="background: #fff9c4; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #fbc02d;">
-                <p style="margin: 0; display: flex; align-items: flex-start; gap: 10px;">
-                    <i class="fas fa-sticky-note" style="color: #f57c00; width: 20px; margin-top: 3px;"></i>
-                    <span><strong>Observações:</strong><br>${item.obs}</span>
-                </p>
-            </div>
-            ` : ''}
-            
-            ${!isReadOnly ? `
-            <div style="margin-top: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button onclick="fecharModal(); editarItem(${item.id})" 
-                        style="padding: 12px 20px; background: linear-gradient(135deg, #1976d2, #1565c0); 
-                               color: white; border: none; border-radius: 8px; cursor: pointer; 
-                               font-weight: 600; transition: all 0.3s;"
-                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)';"
-                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
-                    <i class="fas fa-edit"></i> Editar
-                </button>
-                <button onclick="fecharModal(); excluirItem(${item.id})" 
-                        style="padding: 12px 20px; background: linear-gradient(135deg, var(--danger), #b71c1c); 
-                               color: white; border: none; border-radius: 8px; cursor: pointer; 
-                               font-weight: 600; transition: all 0.3s;"
-                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)';"
-                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
-                    <i class="fas fa-trash"></i> Excluir
-                </button>
-            </div>
-            ` : ''}
-        `;
-
+        document.getElementById('modal-body').innerHTML = `
+            <div style="padding: 5px 0;">
+                <div style="background: linear-gradient(135deg, ${cor}22, ${cor}11); padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid ${cor};">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                        <i class="fas ${st.icon}" style="color:${cor}; font-size: 1.5rem;"></i>
+                        <div>
+                            <h2 style="margin: 0; color: ${cor}; font-size: 1.4rem;">${item.codigo}</h2>
+                            <span style="font-size: 0.9rem; color: var(--text-sub);">${item.tipo}</span>
+                        </div>
+                    </div>
+                    <span class="badge" style="background:${cor}"><i class="fas ${st.icon}"></i> ${st.text}</span>
+                </div>
+                <div style="display: grid; gap: 12px; margin-bottom: 20px;">
+                    <div style="padding: 12px; background: #f8f9fa; border-radius: 8px;">
+                        <p style="margin: 0; font-size: 0.85rem; color: var(--text-sub);">Descrição</p>
+                        <p style="margin: 5px 0 0 0; font-weight: 600;">${item.descricao}</p>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div style="padding: 12px; background: #f8f9fa; border-radius: 8px;">
+                            <p style="margin: 0; font-size: 0.85rem; color: var(--text-sub);"><i class="fas fa-map-marker-alt"></i> Área</p>
+                            <p style="margin: 5px 0 0 0; font-weight: 600;">${item.area}</p>
+                        </div>
+                        <div style="padding: 12px; background: #f8f9fa; border-radius: 8px;">
+                            <p style="margin: 0; font-size: 0.85rem; color: var(--text-sub);"><i class="fas fa-location-arrow"></i> Local</p>
+                            <p style="margin: 5px 0 0 0; font-weight: 600;">${item.local}</p>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div style="padding: 12px; background: #e8f5e9; border-radius: 8px;">
+                            <p style="margin: 0; font-size: 0.85rem; color: var(--text-sub);"><i class="fas fa-calendar-day"></i> Última Inspeção</p>
+                            <p style="margin: 5px 0 0 0; font-weight: 600; color: #2e7d32;">${ultima}</p>
+                        </div>
+                        <div style="padding: 12px; background: ${cor}22; border-radius: 8px;">
+                            <p style="margin: 0; font-size: 0.85rem; color: var(--text-sub);"><i class="fas fa-calendar-times"></i> Validade</p>
+                            <p style="margin: 5px 0 0 0; font-weight: 600; color: ${cor};">${validade}</p>
+                        </div>
+                    </div>
+                </div>
+                ${mangueiraSection}
+                ${item.obs ? `<div style="padding: 12px; background: #fff8e1; border-radius: 8px; border-left: 4px solid #ffc107; margin-bottom: 15px;"><p style="margin: 0; font-size: 0.85rem; color: var(--text-sub);"><i class="fas fa-sticky-note"></i> Observações</p><p style="margin: 5px 0 0 0;">${item.obs}</p></div>` : ''}
+                ${!isReadOnly ? `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                    <button class="btn-save" onclick="editarItem(${item.id})" style="background: linear-gradient(135deg, #1976d2, #1565c0);">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button class="btn-save" onclick="excluirItem(${item.id})" style="background: linear-gradient(135deg, var(--danger), #b71c1c);">
+                        <i class="fas fa-trash"></i> Excluir
+                    </button>
+                </div>` : ''}
+            </div>`;
         document.getElementById('modal-detalhes').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
     }
 
     function fecharModal(event) {
-        if (!event || event.target.id === 'modal-detalhes' || event.target.classList.contains('modal-close')) {
+        if (!event || event.target === document.getElementById('modal-detalhes')) {
             document.getElementById('modal-detalhes').style.display = 'none';
+            document.body.style.overflow = 'auto';
         }
     }
 
-    function fecharModalBackup() {
-        document.getElementById('modal-backup').style.display = 'none';
+    // ==========================================
+    // MODAL DE CONFIRMAÇÃO
+    // ==========================================
+    function confirmar(mensagem, callback) {
+        document.getElementById('confirm-mensagem').textContent = mensagem;
+        document.getElementById('modal-confirm').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        confirmCallback = callback;
+    }
+
+    function fecharModalConfirm(event) {
+        if (!event || event.target === document.getElementById('modal-confirm')) {
+            document.getElementById('modal-confirm').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            confirmCallback = null;
+        }
     }
 
     // ==========================================
-    // EXPORTAÇÃO FILTRADA
+    // TOAST
+    // ==========================================
+    function showToast(msg, duration = 3000) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, duration);
+    }
+
+    // ==========================================
+    // EXPORTAÇÃO FILTRADA (PDF)
     // ==========================================
     function verificarFiltrosMangueira() {
         const temMangueiras = db.some(i => i.tipo === 'Mangueira');
@@ -3673,30 +3652,21 @@
     }
 
     function getFiltrosSelecionados() {
-        const filtros = {
-            status: [],
-            tipos: [],
-            mangueira: { chaveStorz: [], adaptadorStorz: [] },
-            data: []
-        };
+        const filtros = { status: [], tipos: [], mangueira: { chaveStorz: [], adaptadorStorz: [] }, data: [] };
         if (document.getElementById('filtro-status-ok').checked) filtros.status.push('ok');
         if (document.getElementById('filtro-status-warning').checked) filtros.status.push('warning');
         if (document.getElementById('filtro-status-expired').checked) filtros.status.push('expired');
         if (document.getElementById('filtro-status-nodata').checked) filtros.status.push('nodata');
-
         if (document.getElementById('filtro-tipo-mangueira').checked) filtros.tipos.push('Mangueira');
         if (document.getElementById('filtro-tipo-extintor').checked) filtros.tipos.push('Extintor');
         if (document.getElementById('filtro-tipo-hidrante').checked) filtros.tipos.push('Hidrante');
         if (document.getElementById('filtro-tipo-outros').checked) filtros.tipos.push('outros');
-
         if (document.getElementById('filtro-chave-storz-sim').checked) filtros.mangueira.chaveStorz.push('sim');
         if (document.getElementById('filtro-chave-storz-nao').checked) filtros.mangueira.chaveStorz.push('nao');
         if (document.getElementById('filtro-adaptador-storz-sim').checked) filtros.mangueira.adaptadorStorz.push('sim');
         if (document.getElementById('filtro-adaptador-storz-nao').checked) filtros.mangueira.adaptadorStorz.push('nao');
-
         if (document.getElementById('filtro-data-com').checked) filtros.data.push('com-data');
         if (document.getElementById('filtro-data-sem').checked) filtros.data.push('sem-data');
-
         return filtros;
     }
 
@@ -3704,11 +3674,7 @@
         return itens.filter(item => {
             const st = getStatus(item.validade);
             let incluir = true;
-
-            if (filtros.status.length > 0) {
-                if (!filtros.status.includes(st.class)) incluir = false;
-            }
-
+            if (filtros.status.length > 0 && !filtros.status.includes(st.class)) incluir = false;
             if (filtros.tipos.length > 0 && incluir) {
                 const tipoMatch = filtros.tipos.some(tipo => {
                     if (tipo === 'outros') return !['Mangueira', 'Extintor', 'Hidrante'].includes(item.tipo);
@@ -3716,31 +3682,25 @@
                 });
                 if (!tipoMatch) incluir = false;
             }
-
             if (filtros.tipos.includes('Mangueira') && incluir) {
                 if (filtros.mangueira.chaveStorz.length > 0 && !filtros.mangueira.chaveStorz.includes(item.chaveStorz)) incluir = false;
                 if (filtros.mangueira.adaptadorStorz.length > 0 && !filtros.mangueira.adaptadorStorz.includes(item.adaptadorStorz)) incluir = false;
             }
-
             if (filtros.data.length > 0 && incluir) {
                 const temData = !!item.validade;
-                const matchComData = filtros.data.includes('com-data') && temData;
-                const matchSemData = filtros.data.includes('sem-data') && !temData;
-                if (!matchComData && !matchSemData) incluir = false;
+                if (!filtros.data.includes('com-data') || !temData) {
+                    if (!filtros.data.includes('sem-data') || temData) incluir = false;
+                }
             }
-
             return incluir;
         });
     }
 
     function atualizarPreviewExportacao() {
         verificarFiltrosMangueira();
-
         const filtros = getFiltrosSelecionados();
         const itensFiltrados = aplicarFiltrosExportacao(db, filtros);
-
         document.getElementById('export-total').textContent = itensFiltrados.length;
-
         let counts = { ok: 0, warning: 0, expired: 0, mangueiras: 0 };
         itensFiltrados.forEach(item => {
             const st = getStatus(item.validade);
@@ -3749,363 +3709,118 @@
             if (st.class === 'expired') counts.expired++;
             if (item.tipo && item.tipo.toLowerCase() === 'mangueira') counts.mangueiras++;
         });
-
         document.getElementById('export-status-ok').textContent = counts.ok;
         document.getElementById('export-status-warning').textContent = counts.warning;
         document.getElementById('export-status-expired').textContent = counts.expired;
         document.getElementById('export-mangueiras').textContent = counts.mangueiras;
-
         const previewDiv = document.getElementById('export-lista-preview');
         if (itensFiltrados.length === 0) {
             previewDiv.innerHTML = '<div class="empty-state" style="padding: 30px;"><i class="fas fa-filter"></i><p>Nenhum equipamento corresponde aos filtros selecionados</p></div>';
         } else {
-            previewDiv.innerHTML = '<div class="item-list">' + 
-                itensFiltrados.slice(0, 10).map(item => {
-                    const st = getStatus(item.validade);
-                    return criarCardItem(item, st);
-                }).join('') +
-                (itensFiltrados.length > 10 ? 
-                    `<div style="text-align: center; padding: 15px; color: var(--text-sub);">
-                        <i class="fas fa-ellipsis-h"></i> e mais ${itensFiltrados.length - 10} equipamento(s)...
-                    </div>` : '') +
+            previewDiv.innerHTML = '<div class="item-list">' +
+                itensFiltrados.slice(0, 10).map(item => criarCardItem(item, getStatus(item.validade))).join('') +
+                (itensFiltrados.length > 10 ? `<div style="text-align: center; padding: 15px; color: var(--text-sub);"><i class="fas fa-ellipsis-h"></i> e mais ${itensFiltrados.length - 10} equipamento(s)...</div>` : '') +
                 '</div>';
         }
-
         document.getElementById('btn-export-pdf').disabled = itensFiltrados.length === 0;
-        document.getElementById('btn-export-txt').disabled = itensFiltrados.length === 0;
-    }
-
-    function exportarFiltradoPDF() {
-        if (isReadOnly) {
-            showToast('❌ Função não disponível no modo visualização');
-            return;
-        }
-        
-        const filtros = getFiltrosSelecionados();
-        const itensFiltrados = aplicarFiltrosExportacao(db, filtros);
-        
-        if (itensFiltrados.length === 0) {
-            showToast('⚠️ Nenhum equipamento para exportar');
-            return;
-        }
-        
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        doc.setFontSize(18);
-        doc.setTextColor(211, 47, 47);
-        doc.text("FireGuardian Pro - Exportação Filtrada", 14, 20);
-        
-        doc.setFontSize(10);
-        doc.setTextColor(0, 0, 0);
-        doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 28);
-        doc.text(`Total de Itens: ${itensFiltrados.length}`, 14, 34);
-        
-        let filtrosTexto = [];
-        if (filtros.status.length > 0) filtrosTexto.push(`Status: ${filtros.status.join(', ')}`);
-        if (filtros.tipos.length > 0) filtrosTexto.push(`Tipos: ${filtros.tipos.join(', ')}`);
-        if (filtros.data.length > 0) filtrosTexto.push(`Data: ${filtros.data.join(', ')}`);
-        
-        if (filtrosTexto.length > 0) {
-            doc.text(`Filtros: ${filtrosTexto.join(' | ')}`, 14, 40);
-        }
-        
-        const tableColumn = ["TAG", "Tipo", "Descrição", "Área", "Local", "Validade", "Status", "Chave Storz", "Adaptador Storz"];
-        const tableRows = [];
-
-        itensFiltrados.forEach(item => {
-            const st = getStatus(item.validade);
-            const validade = item.validade ? item.validade.split('-').reverse().join('/') : 'N/A';
-            const status = st.text;
-            const chaveStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.chaveStorz) 
-                ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            const adaptadorStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.adaptadorStorz) 
-                ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            
-            tableRows.push([
-                item.codigo, 
-                item.tipo, 
-                item.descricao, 
-                item.area, 
-                item.local, 
-                validade,
-                status,
-                chaveStorz,
-                adaptadorStorz
-            ]);
-        });
-
-        doc.autoTable({
-            head: [tableColumn],
-            body: tableRows,
-            startY: filtrosTexto.length > 0 ? 45 : 40,
-            styles: { fontSize: 8, cellPadding: 3 },
-            headStyles: { fillColor: [211, 47, 47], fontStyle: 'bold' },
-            alternateRowStyles: { fillColor: [245, 245, 245] },
-            margin: { top: 40 }
-        });
-
-        // Usar Blob para compatibilidade Android
-        const pdfBlob = doc.output('blob');
-        const url = URL.createObjectURL(pdfBlob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `FireGuardian_Filtrado_${new Date().toISOString().split('T')[0]}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setTimeout(() => URL.revokeObjectURL(url), 5000);
-        
-        showToast('📄 PDF filtrado gerado!');
-    }
-
-    function exportarFiltradoTXT() {
-        if (isReadOnly) {
-            showToast('❌ Função não disponível no modo visualização');
-            return;
-        }
-        
-        const filtros = getFiltrosSelecionados();
-        const itensFiltrados = aplicarFiltrosExportacao(db, filtros);
-        
-        if (itensFiltrados.length === 0) {
-            showToast('⚠️ Nenhum equipamento para exportar');
-            return;
-        }
-        
-        let conteudo = 'FIREGUARDIAN PRO - EXPORTAÇÃO FILTRADA\n';
-        conteudo += '=' .repeat(80) + '\n';
-        conteudo += `Gerado em: ${new Date().toLocaleString('pt-BR')}\n`;
-        conteudo += `Total de Itens: ${itensFiltrados.length}\n`;
-        
-        let filtrosTexto = [];
-        if (filtros.status.length > 0) filtrosTexto.push(`Status: ${filtros.status.join(', ')}`);
-        if (filtros.tipos.length > 0) filtrosTexto.push(`Tipos: ${filtros.tipos.join(', ')}`);
-        if (filtros.data.length > 0) filtrosTexto.push(`Data: ${filtros.data.join(', ')}`);
-        
-        if (filtrosTexto.length > 0) {
-            conteudo += `Filtros: ${filtrosTexto.join(' | ')}\n`;
-        }
-        
-        conteudo += '=' .repeat(80) + '\n\n';
-        
-        conteudo += 'TAG'.padEnd(12) + ' | ';
-        conteudo += 'TIPO'.padEnd(15) + ' | ';
-        conteudo += 'DESCRIÇÃO'.padEnd(30) + ' | ';
-        conteudo += 'ÁREA'.padEnd(20) + ' | ';
-        conteudo += 'LOCAL'.padEnd(20) + ' | ';
-        conteudo += 'VALIDADE'.padEnd(12) + ' | ';
-        conteudo += 'STATUS'.padEnd(12) + ' | ';
-        conteudo += 'CHAVE'.padEnd(8) + ' | ';
-        conteudo += 'ADAPTADOR'.padEnd(10) + '\n';
-        conteudo += '-'.repeat(180) + '\n';
-        
-        itensFiltrados.forEach(item => {
-            const st = getStatus(item.validade);
-            const validade = item.validade ? item.validade.split('-').reverse().join('/') : 'N/A';
-            const chaveStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.chaveStorz) 
-                ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            const adaptadorStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.adaptadorStorz) 
-                ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            
-            conteudo += item.codigo.padEnd(12) + ' | ';
-            conteudo += item.tipo.substring(0, 15).padEnd(15) + ' | ';
-            conteudo += item.descricao.substring(0, 30).padEnd(30) + ' | ';
-            conteudo += item.area.substring(0, 20).padEnd(20) + ' | ';
-            conteudo += item.local.substring(0, 20).padEnd(20) + ' | ';
-            conteudo += validade.padEnd(12) + ' | ';
-            conteudo += st.text.padEnd(12) + ' | ';
-            conteudo += chaveStorz.padEnd(8) + ' | ';
-            conteudo += adaptadorStorz.padEnd(10) + '\n';
-        });
-        
-        conteudo += '\n' + '=' .repeat(80) + '\n';
-        conteudo += 'Fim do relatório\n';
-        
-        const blob = new Blob([conteudo], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `FireGuardian_Filtrado_${new Date().toISOString().split('T')[0]}.txt`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setTimeout(() => URL.revokeObjectURL(url), 5000);
-        
-        showToast('📄 TXT filtrado gerado!');
     }
 
     // ==========================================
-    // EXPORTAÇÃO GERAL
+    // FUNÇÃO UNIFICADA DE DOWNLOAD (ANDROID / PC)
     // ==========================================
-    function gerarPDF() {
-        if (isReadOnly) {
-            showToast('❌ Função não disponível no modo visualização');
-            return;
-        }
-        
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        doc.setFontSize(18);
-        doc.setTextColor(211, 47, 47);
-        doc.text("FireGuardian Pro - Relatório Completo", 14, 20);
-        
-        doc.setFontSize(10);
-        doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 28);
-        doc.text(`Total de Itens: ${db.length}`, 14, 34);
-        
-        const tableColumn = ["TAG", "Tipo", "Descrição", "Área", "Local", "Validade", "Status", "Chave Storz", "Adaptador Storz"];
-        const tableRows = [];
-
-        db.forEach(item => {
-            const st = getStatus(item.validade);
-            const validade = item.validade ? item.validade.split('-').reverse().join('/') : 'N/A';
-            const status = st.text;
-            const chaveStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.chaveStorz) 
-                ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            const adaptadorStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.adaptadorStorz) 
-                ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            
-            tableRows.push([
-                item.codigo, 
-                item.tipo, 
-                item.descricao, 
-                item.area, 
-                item.local, 
-                validade,
-                status,
-                chaveStorz,
-                adaptadorStorz
-            ]);
-        });
-
-        doc.autoTable({
-            head: [tableColumn],
-            body: tableRows,
-            startY: 40,
-            styles: { fontSize: 8, cellPadding: 3 },
-            headStyles: { fillColor: [211, 47, 47], fontStyle: 'bold' },
-            alternateRowStyles: { fillColor: [245, 245, 245] },
-            margin: { top: 40 }
-        });
-
-        // Usar Blob para compatibilidade Android
-        const pdfBlob = doc.output('blob');
-        const url = URL.createObjectURL(pdfBlob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `FireGuardian_Relatorio_${new Date().toISOString().split('T')[0]}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setTimeout(() => URL.revokeObjectURL(url), 5000);
-        
-        showToast('📄 PDF gerado!');
-    }
-
-    function gerarTXT() {
-        if (isReadOnly) {
-            showToast('❌ Função não disponível no modo visualização');
-            return;
-        }
-        
-        let conteudo = 'FIREGUARDIAN PRO - RELATÓRIO COMPLETO\n';
-        conteudo += '=' .repeat(80) + '\n';
-        conteudo += `Gerado em: ${new Date().toLocaleString('pt-BR')}\n`;
-        conteudo += `Total de Itens: ${db.length}\n`;
-        conteudo += '=' .repeat(80) + '\n\n';
-        
-        conteudo += 'TAG'.padEnd(12) + ' | ';
-        conteudo += 'TIPO'.padEnd(15) + ' | ';
-        conteudo += 'DESCRIÇÃO'.padEnd(30) + ' | ';
-        conteudo += 'ÁREA'.padEnd(20) + ' | ';
-        conteudo += 'LOCAL'.padEnd(20) + ' | ';
-        conteudo += 'VALIDADE'.padEnd(12) + ' | ';
-        conteudo += 'STATUS'.padEnd(12) + ' | ';
-        conteudo += 'CHAVE'.padEnd(8) + ' | ';
-        conteudo += 'ADAPTADOR'.padEnd(10) + '\n';
-        conteudo += '-'.repeat(180) + '\n';
-        
-        db.forEach(item => {
-            const st = getStatus(item.validade);
-            const validade = item.validade ? item.validade.split('-').reverse().join('/') : 'N/A';
-            const chaveStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.chaveStorz) 
-                ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            const adaptadorStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.adaptadorStorz) 
-                ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') 
-                : 'N/A';
-            
-            conteudo += item.codigo.padEnd(12) + ' | ';
-            conteudo += item.tipo.substring(0, 15).padEnd(15) + ' | ';
-            conteudo += item.descricao.substring(0, 30).padEnd(30) + ' | ';
-            conteudo += item.area.substring(0, 20).padEnd(20) + ' | ';
-            conteudo += item.local.substring(0, 20).padEnd(20) + ' | ';
-            conteudo += validade.padEnd(12) + ' | ';
-            conteudo += st.text.padEnd(12) + ' | ';
-            conteudo += chaveStorz.padEnd(8) + ' | ';
-            conteudo += adaptadorStorz.padEnd(10) + '\n';
-        });
-        
-        conteudo += '\n' + '=' .repeat(80) + '\n';
-        conteudo += 'Fim do relatório\n';
-        
-        const blob = new Blob([conteudo], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `FireGuardian_Completo_${new Date().toISOString().split('T')[0]}.txt`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setTimeout(() => URL.revokeObjectURL(url), 5000);
-        
-        showToast('📄 TXT gerado!');
-    }
-
-    // ==========================================
-    // BACKUP E RESTAURAÇÃO - BLOB PARA ANDROID
-    // ==========================================
-    function criarBackup() {
-        if (db.length === 0) {
-            showToast('⚠️ Não há dados para fazer backup');
-            return;
-        }
-
-        const backupData = {
-            data: db,
-            tipos: tiposEquipamentos,
-            timestamp: new Date().toISOString(),
-            versao: '2.0',
-            totalEquipamentos: db.length
-        };
-
-        try {
-            const dataStr = JSON.stringify(backupData, null, 2);
-            const blob = new Blob([dataStr], { type: "application/json" });
+    function baixarArquivo(conteudo, nomeArquivo, tipoMime) {
+        const blob = new Blob([conteudo], { type: tipoMime });
+        // Verifica se está em ambiente Android com ponte nativa
+        if (window.Android && typeof window.Android.processarDownloadBlob === 'function') {
+            const reader = new FileReader();
+            reader.onload = function() {
+                window.Android.processarDownloadBlob(reader.result, nomeArquivo, tipoMime);
+            };
+            reader.readAsDataURL(blob);
+        } else {
+            // Comportamento padrão para navegador PC
             const url = window.URL.createObjectURL(blob);
-            
             const link = document.createElement('a');
             link.href = url;
-            link.download = "FireGuardian_Backup_" + new Date().toISOString().split('T')[0] + ".json";
+            link.download = nomeArquivo;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
             setTimeout(() => window.URL.revokeObjectURL(url), 5000);
-            
+        }
+    }
+
+    // ==========================================
+    // EXPORTAÇÃO FILTRADA (PDF) USANDO baixarArquivo
+    // ==========================================
+    function exportarFiltradoPDF() {
+        if (isReadOnly) { showToast('❌ Função não disponível no modo visualização'); return; }
+        const filtros = getFiltrosSelecionados();
+        const itensFiltrados = aplicarFiltrosExportacao(db, filtros);
+        if (itensFiltrados.length === 0) { showToast('⚠️ Nenhum equipamento para exportar'); return; }
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFontSize(18); doc.setTextColor(211, 47, 47);
+        doc.text("FireGuardian Pro - Exportação Filtrada", 14, 20);
+        doc.setFontSize(10); doc.setTextColor(0, 0, 0);
+        doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 28);
+        doc.text(`Total de Itens: ${itensFiltrados.length}`, 14, 34);
+        let filtrosTexto = [];
+        if (filtros.status.length > 0) filtrosTexto.push(`Status: ${filtros.status.join(', ')}`);
+        if (filtros.tipos.length > 0) filtrosTexto.push(`Tipos: ${filtros.tipos.join(', ')}`);
+        if (filtros.data.length > 0) filtrosTexto.push(`Data: ${filtros.data.join(', ')}`);
+        if (filtrosTexto.length > 0) doc.text(`Filtros: ${filtrosTexto.join(' | ')}`, 14, 40);
+        const tableColumn = ["TAG", "Tipo", "Descrição", "Área", "Local", "Validade", "Status", "Chave Storz", "Adaptador Storz"];
+        const tableRows = itensFiltrados.map(item => {
+            const st = getStatus(item.validade);
+            const validade = item.validade ? item.validade.split('-').reverse().join('/') : 'N/A';
+            const chaveStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.chaveStorz) ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') : 'N/A';
+            const adaptadorStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.adaptadorStorz) ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') : 'N/A';
+            return [item.codigo, item.tipo, item.descricao, item.area, item.local, validade, st.text, chaveStorz, adaptadorStorz];
+        });
+        doc.autoTable({ head: [tableColumn], body: tableRows, startY: filtrosTexto.length > 0 ? 45 : 40, styles: { fontSize: 8, cellPadding: 3 }, headStyles: { fillColor: [211, 47, 47], fontStyle: 'bold' }, alternateRowStyles: { fillColor: [245, 245, 245] }, margin: { top: 40 } });
+        baixarArquivo(doc.output('blob'), `FireGuardian_Filtrado_${new Date().toISOString().split('T')[0]}.pdf`, 'application/pdf');
+        showToast('📄 PDF filtrado gerado!');
+    }
+
+    // ==========================================
+    // EXPORTAÇÃO COMPLETA (PDF) USANDO baixarArquivo
+    // ==========================================
+    function gerarPDF() {
+        if (isReadOnly) { showToast('❌ Função não disponível no modo visualização'); return; }
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFontSize(18); doc.setTextColor(211, 47, 47);
+        doc.text("FireGuardian Pro - Relatório Completo", 14, 20);
+        doc.setFontSize(10); doc.setTextColor(0, 0, 0);
+        doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 28);
+        doc.text(`Total de Itens: ${db.length}`, 14, 34);
+        const tableColumn = ["TAG", "Tipo", "Descrição", "Área", "Local", "Validade", "Status", "Chave Storz", "Adaptador Storz"];
+        const tableRows = db.map(item => {
+            const st = getStatus(item.validade);
+            const validade = item.validade ? item.validade.split('-').reverse().join('/') : 'N/A';
+            const chaveStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.chaveStorz) ? (item.chaveStorz === 'sim' ? 'Sim' : 'Não') : 'N/A';
+            const adaptadorStorz = (item.tipo && item.tipo.toLowerCase() === 'mangueira' && item.adaptadorStorz) ? (item.adaptadorStorz === 'sim' ? 'Sim' : 'Não') : 'N/A';
+            return [item.codigo, item.tipo, item.descricao, item.area, item.local, validade, st.text, chaveStorz, adaptadorStorz];
+        });
+        doc.autoTable({ head: [tableColumn], body: tableRows, startY: 40, styles: { fontSize: 8, cellPadding: 3 }, headStyles: { fillColor: [211, 47, 47], fontStyle: 'bold' }, alternateRowStyles: { fillColor: [245, 245, 245] }, margin: { top: 40 } });
+        baixarArquivo(doc.output('blob'), `FireGuardian_Relatorio_${new Date().toISOString().split('T')[0]}.pdf`, 'application/pdf');
+        showToast('📄 PDF gerado!');
+    }
+
+    // ==========================================
+    // BACKUP E RESTAURAÇÃO
+    // ==========================================
+    function criarBackup() {
+        if (db.length === 0) { showToast('⚠️ Não há dados para fazer backup'); return; }
+        const backupData = { data: db, tipos: tiposEquipamentos, timestamp: new Date().toISOString(), versao: '2.0', totalEquipamentos: db.length };
+        try {
+            const dataStr = JSON.stringify(backupData, null, 2);
+            baixarArquivo(dataStr, "FireGuardian_Backup_" + new Date().toISOString().split('T')[0] + ".json", "application/json");
             localStorage.setItem('fire_last_backup', new Date().toLocaleString('pt-BR'));
             atualizarInfoBackup();
             showToast('💾 Backup gerado e download iniciado!');
         } catch (e) {
-            console.warn('Download automático falhou, exibindo modal manual', e);
             document.getElementById('backup-manual-texto').value = JSON.stringify(backupData, null, 2);
             document.getElementById('modal-backup').style.display = 'flex';
             showToast('⚠️ Use o modo manual de cópia');
@@ -4115,166 +3830,147 @@
     function copiarBackupManual() {
         const textarea = document.getElementById('backup-manual-texto');
         textarea.select();
-        try { 
-            navigator.clipboard.writeText(textarea.value).then(() => showToast('📋 Backup copiado!')); 
-        }
-        catch (err) { 
-            document.execCommand('copy'); 
-            showToast('📋 Backup copiado!'); 
-        }
+        try { navigator.clipboard.writeText(textarea.value).then(() => showToast('📋 Backup copiado!')); }
+        catch (err) { document.execCommand('copy'); showToast('📋 Backup copiado!'); }
+    }
+
+    function fecharModalBackup() {
+        document.getElementById('modal-backup').style.display = 'none';
     }
 
     function restaurarBackup(input) {
         const file = input.files[0];
         if (!file) return;
-
-        if (!confirm('⚠️ ATENÇÃO: Isso substituirá todos os dados atuais pelos do backup.\n\nDeseja continuar?')) {
-            input.value = '';
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const backupData = JSON.parse(e.target.result);
-                
-                if (!backupData.data || !Array.isArray(backupData.data)) {
-                    throw new Error('Formato de arquivo inválido');
-                }
-
-                db = backupData.data;
-                localStorage.setItem('fire_db', JSON.stringify(db));
-                
-                if (backupData.tipos && Array.isArray(backupData.tipos)) {
-                    tiposEquipamentos = backupData.tipos;
-                    localStorage.setItem('fire_tipos', JSON.stringify(tiposEquipamentos));
-                    atualizarListaTipos();
-                }
-                
-                atualizarUI();
-                atualizarInfoBackup();
-                
-                showToast(`✅ Backup restaurado! ${db.length} equipamentos carregados.`);
-                
-                input.value = '';
-                
-            } catch (error) {
-                showToast('❌ Erro ao restaurar backup: ' + error.message);
+        confirmar('⚠️ ATENÇÃO: Isso substituirá todos os dados atuais pelos do backup.\n\nDeseja continuar?', (ok) => {
+            if (ok) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const conteudo = JSON.parse(e.target.result);
+                        let dadosRestaurados, tiposRestaurados = tiposEquipamentos;
+                        if (Array.isArray(conteudo)) {
+                            dadosRestaurados = conteudo;
+                        } else if (conteudo.data && Array.isArray(conteudo.data)) {
+                            dadosRestaurados = conteudo.data;
+                            if (conteudo.tipos && Array.isArray(conteudo.tipos)) tiposRestaurados = conteudo.tipos;
+                        } else {
+                            throw new Error('Formato de arquivo inválido');
+                        }
+                        db = dadosRestaurados;
+                        localStorage.setItem('fire_db', JSON.stringify(db));
+                        localStorage.setItem('fire_tipos', JSON.stringify(tiposRestaurados));
+                        tiposEquipamentos = tiposRestaurados;
+                        atualizarListaTipos();
+                        atualizarUI();
+                        atualizarInfoBackup();
+                        showToast(`✅ Backup restaurado! ${db.length} equipamentos carregados.`);
+                        input.value = '';
+                    } catch (error) {
+                        showToast('❌ Erro ao restaurar backup: ' + error.message);
+                        input.value = '';
+                    }
+                };
+                reader.readAsText(file);
+            } else {
                 input.value = '';
             }
-        };
-        reader.readAsText(file);
+        });
     }
 
     function atualizarInfoBackup() {
-        document.getElementById('backup-total').textContent = db.length;
-        const ultimo = localStorage.getItem('fire_last_backup');
-        document.getElementById('backup-last').textContent = ultimo || 'Nunca';
+        const totalEl = document.getElementById('backup-total');
+        const lastEl = document.getElementById('backup-last');
+        if (totalEl) totalEl.textContent = db.length;
+        if (lastEl) lastEl.textContent = localStorage.getItem('fire_last_backup') || 'Nunca';
     }
 
     // ==========================================
-    // COMPARTILHAMENTO E LOGS
+    // COMPARTILHAMENTO — CORREÇÃO PRINCIPAL COM COMPRESSÃO LZSTRING
+    // Os dados são embutidos diretamente no link (hash da URL) e compactados
     // ==========================================
     function gerarLink() {
+        if (db.length === 0) { showToast('⚠️ Nenhum equipamento para compartilhar'); return; }
+
+        const senha = document.getElementById('share-senha').value.trim();
+        if (!senha || senha.length < 4) { showToast('⚠️ A senha deve ter pelo menos 4 caracteres'); return; }
+
         const minutos = parseInt(document.getElementById('share-time').value);
-        const senhaLink = document.getElementById('share-senha').value;
+        const exp = Date.now() + minutos * 60 * 1000;
 
-        if (!senhaLink || senhaLink.length < 4) {
-            showToast('⚠️ Defina uma senha de pelo menos 4 dígitos para o link');
-            document.getElementById('share-senha').focus();
-            return;
-        }
+        // Payload com dados embutidos
+        const payload = {
+            exp: exp,
+            pwd: btoa(senha),
+            db: db,          // dados embutidos no link
+            tipos: tiposEquipamentos
+        };
 
-        const expiracao = Date.now() + (minutos * 60 * 1000);
-        const tokenPayload = JSON.stringify({ exp: expiracao, pwd: btoa(senhaLink) });
-        const token = btoa(tokenPayload);
-        const url = window.location.origin + window.location.pathname + '?token=' + token;
+        // Compactar com LZString antes de codificar para URL
+        const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(payload));
+        const url = window.location.href.split('#')[0] + '#share=' + compressed;
 
         document.getElementById('share-url').value = url;
-        document.getElementById('share-senha-display').textContent = senhaLink;
+        document.getElementById('share-senha-display').textContent = senha;
+        document.getElementById('share-dados-count').textContent = db.length;
         document.getElementById('link-result').style.display = 'block';
 
-        registrarLog('Link gerado', `Expira em ${minutos} minutos`);
-        showToast('🔗 Link protegido gerado com sucesso!');
+        registrarLog('Link gerado', `Validade: ${minutos} min — ${db.length} equipamentos incorporados (compactado)`);
+        showToast('🔗 Link gerado com dados incorporados e compactados!');
     }
 
     function copiarLink() {
         const url = document.getElementById('share-url').value;
         const senha = document.getElementById('share-senha-display').textContent;
-        const textoCompleto = `Link: ${url}\nSenha: ${senha}`;
-
-        navigator.clipboard.writeText(textoCompleto).then(() => showToast('📋 Link e senha copiados!'))
-            .catch(() => {
-                const copyText = document.getElementById('share-url');
-                copyText.select();
-                document.execCommand('copy');
-                showToast('📋 Link copiado!');
-            });
+        const texto = `🔥 FireGuardian Pro — Link de Visualização\n\n🔗 Link: ${url}\n🔑 Senha: ${senha}\n\n⚠️ Este link expira conforme configurado.`;
+        navigator.clipboard.writeText(texto).then(() => {
+            showToast('✅ Link e senha copiados!');
+        }).catch(() => {
+            const ta = document.createElement('textarea');
+            ta.value = texto;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showToast('✅ Link e senha copiados!');
+        });
     }
 
+    // ==========================================
+    // LOG DE ACESSOS
+    // ==========================================
     function registrarLog(acao, detalhes) {
-        accessLog.unshift({
-            data: new Date().toLocaleString('pt-BR'),
-            acao: acao,
-            detalhes: detalhes
-        });
-        if (accessLog.length > 50) accessLog.pop();
+        const entry = {
+            timestamp: new Date().toLocaleString('pt-BR'),
+            acao,
+            detalhes,
+            type: acao.toLowerCase().includes('negado') || acao.toLowerCase().includes('incorreta') ? 'error' : 'success'
+        };
+        accessLog.unshift(entry);
+        if (accessLog.length > 50) accessLog = accessLog.slice(0, 50);
         localStorage.setItem('fire_access_log', JSON.stringify(accessLog));
-        atualizarLogAcessos();
+        atualizarLogAcessos(); // atualiza UI se estiver visível
     }
 
     function atualizarLogAcessos() {
-        const list = document.getElementById('access-log-list');
+        const container = document.getElementById('access-log-list');
+        if (!container) return;
         if (accessLog.length === 0) {
-            list.innerHTML = '<div class="log-item">Nenhum acesso registrado</div>';
+            container.innerHTML = '<div class="log-item">Nenhum acesso registrado</div>';
             return;
         }
-        list.innerHTML = accessLog.map(log => `
-            <div class="log-item ${log.acao.includes('negado') ? 'error' : (log.acao.includes('correta') ? 'success' : '')}">
-                <strong>${log.data}</strong> - ${log.acao}<br>
-                <small>${log.detalhes}</small>
-            </div>
-        `).join('');
+        container.innerHTML = accessLog.map(entry => `
+            <div class="log-item ${entry.type || 'success'}">
+                <strong>${entry.timestamp}</strong> — ${entry.acao}
+                ${entry.detalhes ? `<br><small style="color: var(--text-sub);">${entry.detalhes}</small>` : ''}
+            </div>`).join('');
     }
 
     function limparLogs() {
-        if (confirm('Deseja realmente limpar todo o histórico de acessos?')) {
-            accessLog = [];
-            localStorage.removeItem('fire_access_log');
-            atualizarLogAcessos();
-            showToast('🗑️ Histórico limpo');
-        }
+        accessLog = [];
+        localStorage.setItem('fire_access_log', JSON.stringify(accessLog));
+        atualizarLogAcessos();
+        showToast('🗑️ Logs limpos');
     }
-
-    // ==========================================
-    // UTILITÁRIOS
-    // ==========================================
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.style.display = 'block';
-        setTimeout(() => { t.style.display = 'none'; }, 3500);
-    }
-
-    document.addEventListener('keydown', (e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-            e.preventDefault();
-            const cadastroAtivo = document.getElementById('cadastro').classList.contains('active');
-            if (cadastroAtivo && !isReadOnly) {
-                document.getElementById('form-equipamento').requestSubmit();
-            }
-        }
-        if (e.key === 'Escape') {
-            fecharModal();
-            fecharContextMenu();
-            if (document.getElementById('modal-senha-link').style.display === 'flex') {
-                document.getElementById('modal-senha-link').style.display = 'none';
-            }
-            if (document.getElementById('modal-expired').style.display === 'flex') {
-                document.getElementById('modal-expired').style.display = 'none';
-            }
-        }
-    });
 </script>
 </body>
 </html>
