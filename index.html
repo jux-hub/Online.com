@@ -9,11 +9,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <!-- Biblioteca LZString para compressão do link de compartilhamento -->
+    <!-- LZString para compactação do link -->
     <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
-
+    
     <style>
-        /* RESET E VARIÁVEIS */
+        /* RESET E VARIÁVEIS (mantido igual ao original) */
         :root {
             --primary: #d32f2f;
             --primary-dark: #b71c1c;
@@ -1714,7 +1714,7 @@
 </head>
 <body>
 
-    <!-- TELA DE LOGIN -->
+    <!-- TELA DE LOGIN (mantida igual) -->
     <div id="login-screen" class="login-screen" style="display:none;">
         <div class="login-bg-particles">
             <span></span><span></span><span></span><span></span><span></span>
@@ -1755,7 +1755,7 @@
         </div>
     </div>
 
-    <!-- MODAL SENHA LINK - APRIMORADO -->
+    <!-- MODAL SENHA LINK (mantido igual) -->
     <div id="modal-senha-link" class="modal-senha-link-overlay" style="display:none;">
         <div class="modal-senha-link-box">
             <div class="modal-senha-link-header">
@@ -1788,7 +1788,7 @@
         </div>
     </div>
 
-    <!-- MODAL LINK EXPIRADO - APRIMORADO -->
+    <!-- MODAL LINK EXPIRADO (mantido igual) -->
     <div id="modal-expired" class="modal-expired-overlay" style="display:none;">
         <div class="modal-expired-box">
             <div class="modal-expired-header">
@@ -1852,7 +1852,7 @@
             </button>
         </nav>
 
-        <!-- DASHBOARD -->
+        <!-- DASHBOARD (mantido igual) -->
         <div id="dashboard" class="tab-content active">
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-chart-line"></i> Visão Geral do Sistema</h3>
@@ -1954,7 +1954,7 @@
             </div>
         </div>
 
-        <!-- CADASTRO -->
+        <!-- CADASTRO (mantido igual) -->
         <div id="cadastro" class="tab-content">
             <div class="card">
                 <h3 id="cadastro-titulo" class="section-title"><i class="fas fa-plus-circle"></i> Novo Cadastro</h3>
@@ -2085,7 +2085,7 @@
             </div>
         </div>
 
-        <!-- BUSCA AVANÇADA -->
+        <!-- BUSCA AVANÇADA (mantido igual) -->
         <div id="busca" class="tab-content">
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-search"></i> Busca Avançada de Equipamentos</h3>
@@ -2126,7 +2126,7 @@
             </div>
         </div>
 
-        <!-- LISTA DE EQUIPAMENTOS -->
+        <!-- LISTA DE EQUIPAMENTOS (mantido igual) -->
         <div id="lista" class="tab-content">
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-list"></i> Lista Completa de Equipamentos</h3>
@@ -2161,7 +2161,7 @@
             </div>
         </div>
 
-        <!-- ORGANIZAÇÃO POR ÁREA -->
+        <!-- ORGANIZAÇÃO POR ÁREA (mantido igual) -->
         <div id="organizacao" class="tab-content">
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-layer-group"></i> Organização por Áreas</h3>
@@ -2172,7 +2172,7 @@
             </div>
         </div>
 
-        <!-- EXPORTAR FILTRADO -->
+        <!-- EXPORTAR FILTRADO (mantido igual) -->
         <div id="exportar-filtrado" class="tab-content">
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-filter"></i> Exportação Filtrada de Equipamentos</h3>
@@ -2312,7 +2312,7 @@
             </div>
         </div>
 
-        <!-- BACKUP LOCAL -->
+        <!-- BACKUP LOCAL (mantido igual) -->
         <div id="backup" class="tab-content">
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-hdd"></i> Backup e Restauração Local</h3>
@@ -2364,7 +2364,7 @@
             </div>
         </div>
 
-        <!-- RELATÓRIOS -->
+        <!-- RELATÓRIOS (compartilhamento otimizado) -->
         <div id="relatorios" class="tab-content">
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-file-export"></i> Exportação e Compartilhamento</h3>
@@ -2381,62 +2381,64 @@
 
                 <hr style="margin: 30px 0; border: 0; border-top: 2px solid #e0e0e0;">
 
-                <!-- Compartilhamento de Acesso -->
-                <h4 style="margin: 0 0 10px 0; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-share-alt"></i> Compartilhar Acesso (Somente Leitura)
-                </h4>
-                
-                <p style="font-size: 0.95rem; color: var(--text-sub); margin-bottom: 20px; line-height: 1.6;">
-                    Gere um link temporário para visualização <strong>somente leitura</strong> protegido por senha. 
-                    Os dados atuais são <strong>incorporados diretamente no link</strong>, garantindo que o destinatário veja exatamente o estado atual dos equipamentos.
-                </p>
-
-                <div class="share-box">
-                    <div class="field-group" style="margin-bottom: 15px;">
-                        <label style="color: var(--text-main);"><i class="fas fa-clock"></i> Validade do link</label>
-                        <select id="share-time" style="margin-top: 5px;">
-                            <option value="15">15 Minutos</option>
-                            <option value="60" selected>1 Hora</option>
-                            <option value="1440">24 Horas</option>
-                            <option value="10080">7 Dias</option>
-                        </select>
-                    </div>
-
-                    <div class="senha-link-box">
-                        <div class="field-group" style="margin-bottom: 10px;">
-                            <label style="color: #e65100;"><i class="fas fa-lock"></i> Senha de Acesso do Link *</label>
-                            <div class="senha-box" style="position: relative;">
-                                <input type="password" id="share-senha" placeholder="Mínimo 4 dígitos" style="margin-top: 5px; padding-right: 40px;">
-                                <i class="fas fa-eye toggle-senha" onclick="toggleSenhaShare()" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-sub); font-size: 1.1rem;"></i>
-                            </div>
-                            <small style="color: var(--text-sub); display: block; margin-top: 5px;">
-                                O destinatário precisará apenas desta senha para acessar o link
-                            </small>
-                        </div>
-                    </div>
+                <!-- Compartilhamento de Acesso (Somente Leitura) - APENAS PARA ADMIN -->
+                <div id="compartilhamento-admin">
+                    <h4 style="margin: 0 0 10px 0; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-share-alt"></i> Compartilhar Acesso (Somente Leitura)
+                    </h4>
                     
-                    <button class="btn-save" style="background: linear-gradient(135deg, #1976d2, #1565c0); margin-top: 15px;" onclick="gerarLink()">
-                        <i class="fas fa-link"></i> GERAR LINK PROTEGIDO
-                    </button>
+                    <p style="font-size: 0.95rem; color: var(--text-sub); margin-bottom: 20px; line-height: 1.6;">
+                        Gere um link temporário para visualização <strong>somente leitura</strong> protegido por senha. 
+                        Os dados atuais são <strong>compactados e incorporados diretamente no link</strong>, garantindo que o destinatário veja exatamente o estado atual dos equipamentos.
+                    </p>
 
-                    <div id="link-result" style="margin-top: 20px; display: none; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                        <label style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-main); font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-check-circle" style="color: var(--ok);"></i> Link gerado com sucesso:
-                        </label>
-                        <input type="text" id="share-url" readonly style="font-size: 0.85rem; background: #f5f5f5; margin-bottom: 10px; word-break: break-all;">
-                        <div style="background: #fff3e0; padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #ff9800;">
-                            <small style="color: #e65100; font-weight: 600;">
-                                <i class="fas fa-key"></i> Senha de acesso: <span id="share-senha-display"></span>
-                            </small>
+                    <div class="share-box">
+                        <div class="field-group" style="margin-bottom: 15px;">
+                            <label style="color: var(--text-main);"><i class="fas fa-clock"></i> Validade do link</label>
+                            <select id="share-time" style="margin-top: 5px;">
+                                <option value="15">15 Minutos</option>
+                                <option value="60" selected>1 Hora</option>
+                                <option value="1440">24 Horas</option>
+                                <option value="10080">7 Dias</option>
+                            </select>
                         </div>
-                        <div style="background: #e8f5e9; padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #43a047;">
-                            <small style="color: #2e7d32; font-weight: 600;">
-                                <i class="fas fa-database"></i> Dados incorporados: <span id="share-dados-count">0</span> equipamento(s)
-                            </small>
+
+                        <div class="senha-link-box">
+                            <div class="field-group" style="margin-bottom: 10px;">
+                                <label style="color: #e65100;"><i class="fas fa-lock"></i> Senha de Acesso do Link *</label>
+                                <div class="senha-box" style="position: relative;">
+                                    <input type="password" id="share-senha" placeholder="Mínimo 4 dígitos" style="margin-top: 5px; padding-right: 40px;">
+                                    <i class="fas fa-eye toggle-senha" onclick="toggleSenhaShare()" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-sub); font-size: 1.1rem;"></i>
+                                </div>
+                                <small style="color: var(--text-sub); display: block; margin-top: 5px;">
+                                    O destinatário precisará apenas desta senha para acessar o link
+                                </small>
+                            </div>
                         </div>
-                        <button onclick="copiarLink()" style="padding: 10px 20px; background: linear-gradient(135deg, var(--ok), #1b5e20); color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; transition: all 0.3s;">
-                            <i class="fas fa-copy"></i> COPIAR LINK E SENHA
+                        
+                        <button class="btn-save" style="background: linear-gradient(135deg, #1976d2, #1565c0); margin-top: 15px;" onclick="gerarLink()">
+                            <i class="fas fa-link"></i> GERAR LINK PROTEGIDO (COMPACTADO)
                         </button>
+
+                        <div id="link-result" style="margin-top: 20px; display: none; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <label style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-main); font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-check-circle" style="color: var(--ok);"></i> Link gerado com sucesso:
+                            </label>
+                            <input type="text" id="share-url" readonly style="font-size: 0.85rem; background: #f5f5f5; margin-bottom: 10px; word-break: break-all;">
+                            <div style="background: #fff3e0; padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #ff9800;">
+                                <small style="color: #e65100; font-weight: 600;">
+                                    <i class="fas fa-key"></i> Senha de acesso: <span id="share-senha-display"></span>
+                                </small>
+                            </div>
+                            <div style="background: #e8f5e9; padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #43a047;">
+                                <small style="color: #2e7d32; font-weight: 600;">
+                                    <i class="fas fa-database"></i> Dados compactados: <span id="share-dados-count">0</span> equipamento(s)
+                                </small>
+                            </div>
+                            <button onclick="copiarLink()" style="padding: 10px 20px; background: linear-gradient(135deg, var(--ok), #1b5e20); color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; transition: all 0.3s;">
+                                <i class="fas fa-copy"></i> COPIAR LINK E SENHA
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -2457,7 +2459,7 @@
 
     </div><!-- /container -->
 
-    <!-- MODAL DE DETALHES -->
+    <!-- MODAL DE DETALHES (mantido igual) -->
     <div id="modal-detalhes" class="modal-overlay" onclick="fecharModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -2468,7 +2470,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE BACKUP MANUAL -->
+    <!-- MODAL DE BACKUP MANUAL (mantido igual) -->
     <div id="modal-backup" class="modal-overlay" style="display: none;" onclick="if(event.target===this)fecharModalBackup()">
         <div class="modal-content backup-modal-content" style="max-width: 600px; width: 95%;">
             <div class="modal-header" style="border-bottom-color: #444; background: #2d2d2d; border-radius: 20px 20px 0 0;">
@@ -2487,7 +2489,7 @@
         </div>
     </div>
 
-    <!-- CONTEXT MENU -->
+    <!-- CONTEXT MENU (mantido igual) -->
     <div id="context-menu" class="context-menu">
         <div class="context-menu-item danger" onclick="excluirTipoSelecionado()">
             <i class="fas fa-trash"></i> Excluir Tipo
@@ -2497,7 +2499,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE CONFIRMAÇÃO -->
+    <!-- MODAL DE CONFIRMAÇÃO (mantido igual) -->
     <div id="modal-confirm" class="modal-overlay" style="display: none;" onclick="fecharModalConfirm(event)">
         <div class="modal-content" style="max-width: 400px;" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -2519,7 +2521,7 @@
 
 <script>
     // ==========================================
-    // ESTADO DA APLICAÇÃO
+    // ESTADO DA APLICAÇÃO (mantido igual, com acréscimos)
     // ==========================================
     let db = JSON.parse(localStorage.getItem('fire_db')) || [];
     let tiposEquipamentos = JSON.parse(localStorage.getItem('fire_tipos')) || [
@@ -2540,13 +2542,44 @@
     let linkExpirationTime = null;
 
     // ==========================================
-    // INICIALIZAÇÃO
+    // NOVA FUNÇÃO DE DOWNLOAD (com suporte a Android)
+    // ==========================================
+    function baixarArquivo(conteudo, nomeArquivo, tipoMime) {
+        const blob = new Blob([conteudo], { type: tipoMime });
+        // Se estiver no Android e a ponte existir
+        if (window.Android && typeof window.Android.processarDownloadBlob === 'function') {
+            const reader = new FileReader();
+            reader.onload = function() {
+                window.Android.processarDownloadBlob(reader.result, nomeArquivo, tipoMime);
+            };
+            reader.readAsDataURL(blob);
+        } else {
+            // Comportamento padrão para navegador PC
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = nomeArquivo;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => window.URL.revokeObjectURL(url), 5000);
+        }
+    }
+
+    // Substituir funções antigas de download
+    function abrirDownloadNovaAba(blob, filename) {
+        // Redireciona para a nova função
+        baixarArquivo(blob, filename, blob.type);
+    }
+
+    // ==========================================
+    // INICIALIZAÇÃO (adaptada)
     // ==========================================
     document.addEventListener('DOMContentLoaded', () => {
         const hash = window.location.hash;
 
         if (hash && hash.startsWith('#share=')) {
-            // Modo compartilhamento: dados vêm da URL
+            // Modo compartilhamento: dados vêm da URL (compactados com LZString)
             processarLinkCompartilhamento(hash.substring(7));
         } else {
             // Modo normal: mostrar login
@@ -2593,14 +2626,13 @@
     });
 
     // ==========================================
-    // PROCESSAMENTO DO LINK DE COMPARTILHAMENTO (COMPACTADO COM LZSTRING)
-    // CORREÇÃO PRINCIPAL: dados embutidos na URL e compactados
+    // PROCESSAMENTO DO LINK DE COMPARTILHAMENTO (compactado com LZString)
     // ==========================================
     function processarLinkCompartilhamento(encodedData) {
         try {
-            // Descomprimir com LZString
+            // Descompactar com LZString
             const jsonStr = LZString.decompressFromEncodedURIComponent(encodedData);
-            if (!jsonStr) throw new Error('Falha na descompressão');
+            if (!jsonStr) throw new Error('Falha na descompactação');
             const payload = JSON.parse(jsonStr);
             const agora = Date.now();
 
@@ -2663,11 +2695,9 @@
     }
 
     function expirarAcessoLink() {
-        // Fechar todos os modais
         document.getElementById('modal-detalhes').style.display = 'none';
         document.getElementById('modal-confirm').style.display = 'none';
         document.body.style.overflow = 'auto';
-        // Mostrar modal de expirado imediatamente
         document.getElementById('modal-expired').style.display = 'flex';
         showToast('⏰ O acesso via link expirou.');
     }
@@ -2681,7 +2711,6 @@
 
         if (senhaInput === linkSenhaTemp) {
             document.getElementById('modal-senha-link').style.display = 'none';
-            // Carregar dados do link após autenticação
             if (window._linkPayload) {
                 carregarDadosDoLink(window._linkPayload);
             }
@@ -2712,13 +2741,14 @@
     }
 
     // ==========================================
-    // MODO SOMENTE LEITURA
+    // MODO SOMENTE LEITURA (agora oculta também a aba relatórios)
     // ==========================================
     function ativarModoSomenteLeitura() {
         isReadOnly = true;
         document.getElementById('readonly-banner').style.display = 'block';
         document.getElementById('nav-cadastro').style.display = 'none';
         document.getElementById('nav-backup').style.display = 'none';
+        document.getElementById('nav-relatorios').style.display = 'none'; // Oculta a aba de compartilhamento
         document.querySelectorAll('.btn-del, .btn-edit, #btn-salvar').forEach(el => el.style.display = 'none');
         navegar('dashboard');
     }
@@ -2806,7 +2836,7 @@
     }
 
     // ==========================================
-    // STATUS E DATAS
+    // STATUS E DATAS (mantido igual)
     // ==========================================
     function getStatus(validade) {
         if (!validade) return { class: 'nodata', text: 'Sem Validade', icon: 'fa-box', color: '#78909c' };
@@ -2843,7 +2873,7 @@
     }
 
     // ==========================================
-    // MODO DE CADASTRO
+    // MODO DE CADASTRO (mantido igual)
     // ==========================================
     function setCadastroMode(comData) {
         isComDataMode = comData;
@@ -2891,7 +2921,7 @@
     }
 
     // ==========================================
-    // CONTEXT MENU E LONG PRESS
+    // CONTEXT MENU E LONG PRESS (mantido igual)
     // ==========================================
     let tipoSelecionadoContextMenu = null;
     let longPressTimer = null;
@@ -2959,7 +2989,7 @@
     }
 
     // ==========================================
-    // CONFIGURAR CAMPO CÓDIGO
+    // CONFIGURAR CAMPO CÓDIGO (mantido igual)
     // ==========================================
     function configurarCampoCodigo() {
         const input = document.getElementById('cad-codigo');
@@ -2976,7 +3006,7 @@
     }
 
     // ==========================================
-    // SALVAR / EDITAR EQUIPAMENTO
+    // SALVAR / EDITAR EQUIPAMENTO (mantido igual)
     // ==========================================
     function salvarEquipamento(event) {
         event.preventDefault();
@@ -3009,7 +3039,6 @@
             const idx = db.findIndex(i => i.id === parseInt(editId));
             if (idx !== -1) db[idx] = item;
         } else {
-            // Adicionar novo tipo se não existir
             if (tipo && !tiposEquipamentos.includes(tipo)) {
                 tiposEquipamentos.push(tipo);
                 localStorage.setItem('fire_tipos', JSON.stringify(tiposEquipamentos));
@@ -3097,7 +3126,7 @@
     }
 
     // ==========================================
-    // ATUALIZAR UI
+    // ATUALIZAR UI (mantido igual)
     // ==========================================
     function atualizarUI() {
         atualizarDashboard();
@@ -3187,7 +3216,7 @@
     }
 
     // ==========================================
-    // CRIAR CARD DE ITEM
+    // CRIAR CARD DE ITEM (mantido igual)
     // ==========================================
     function criarCardItem(item, st) {
         const cor = { 'expired': '#c62828', 'warning': '#ff9800', 'ok': '#2e7d32', 'nodata': '#78909c' }[st.class];
@@ -3218,7 +3247,7 @@
     }
 
     // ==========================================
-    // RENDERIZAR LISTA
+    // RENDERIZAR LISTA (mantido igual)
     // ==========================================
     function renderizarLista() {
         const comData = db.filter(i => !!i.validade);
@@ -3257,7 +3286,7 @@
     }
 
     // ==========================================
-    // LISTA RECENTES (CADASTRO)
+    // LISTA RECENTES (CADASTRO) (mantido igual)
     // ==========================================
     function renderizarListaRecentes() {
         const container = document.getElementById('lista-recentes');
@@ -3306,7 +3335,7 @@
     }
 
     // ==========================================
-    // GRÁFICO
+    // GRÁFICO (mantido igual)
     // ==========================================
     function inicializarGrafico() {
         const ctx = document.getElementById('statusChart');
@@ -3358,7 +3387,7 @@
     }
 
     // ==========================================
-    // ORGANIZAÇÃO POR ÁREAS
+    // ORGANIZAÇÃO POR ÁREAS (mantido igual)
     // ==========================================
     function renderizarOrganizacao() {
         const container = document.getElementById('areas-container');
@@ -3464,7 +3493,7 @@
     }
 
     // ==========================================
-    // BUSCA AVANÇADA
+    // BUSCA AVANÇADA (mantido igual)
     // ==========================================
     function aplicarFiltro(elemento, filtro) {
         document.querySelectorAll('.filter-chip').forEach(chip => chip.classList.remove('active'));
@@ -3526,7 +3555,7 @@
     }
 
     // ==========================================
-    // MODAL DE DETALHES
+    // MODAL DE DETALHES (mantido igual)
     // ==========================================
     function abrirDetalhes(id) {
         const item = db.find(i => i.id === id);
@@ -3606,7 +3635,7 @@
     }
 
     // ==========================================
-    // MODAL DE CONFIRMAÇÃO
+    // MODAL DE CONFIRMAÇÃO (mantido igual)
     // ==========================================
     function confirmar(mensagem, callback) {
         document.getElementById('confirm-mensagem').textContent = mensagem;
@@ -3624,7 +3653,7 @@
     }
 
     // ==========================================
-    // TOAST
+    // TOAST (mantido igual)
     // ==========================================
     function showToast(msg, duration = 3000) {
         const toast = document.getElementById('toast');
@@ -3634,7 +3663,7 @@
     }
 
     // ==========================================
-    // EXPORTAÇÃO FILTRADA (PDF)
+    // EXPORTAÇÃO FILTRADA (PDF) - com download adaptado
     // ==========================================
     function verificarFiltrosMangueira() {
         const temMangueiras = db.some(i => i.tipo === 'Mangueira');
@@ -3725,34 +3754,6 @@
         document.getElementById('btn-export-pdf').disabled = itensFiltrados.length === 0;
     }
 
-    // ==========================================
-    // FUNÇÃO UNIFICADA DE DOWNLOAD (ANDROID / PC)
-    // ==========================================
-    function baixarArquivo(conteudo, nomeArquivo, tipoMime) {
-        const blob = new Blob([conteudo], { type: tipoMime });
-        // Verifica se está em ambiente Android com ponte nativa
-        if (window.Android && typeof window.Android.processarDownloadBlob === 'function') {
-            const reader = new FileReader();
-            reader.onload = function() {
-                window.Android.processarDownloadBlob(reader.result, nomeArquivo, tipoMime);
-            };
-            reader.readAsDataURL(blob);
-        } else {
-            // Comportamento padrão para navegador PC
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = nomeArquivo;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            setTimeout(() => window.URL.revokeObjectURL(url), 5000);
-        }
-    }
-
-    // ==========================================
-    // EXPORTAÇÃO FILTRADA (PDF) USANDO baixarArquivo
-    // ==========================================
     function exportarFiltradoPDF() {
         if (isReadOnly) { showToast('❌ Função não disponível no modo visualização'); return; }
         const filtros = getFiltrosSelecionados();
@@ -3784,7 +3785,7 @@
     }
 
     // ==========================================
-    // EXPORTAÇÃO COMPLETA (PDF) USANDO baixarArquivo
+    // EXPORTAÇÃO COMPLETA (PDF) com download adaptado
     // ==========================================
     function gerarPDF() {
         if (isReadOnly) { showToast('❌ Função não disponível no modo visualização'); return; }
@@ -3809,14 +3810,14 @@
     }
 
     // ==========================================
-    // BACKUP E RESTAURAÇÃO
+    // BACKUP E RESTAURAÇÃO (com download adaptado)
     // ==========================================
     function criarBackup() {
         if (db.length === 0) { showToast('⚠️ Não há dados para fazer backup'); return; }
         const backupData = { data: db, tipos: tiposEquipamentos, timestamp: new Date().toISOString(), versao: '2.0', totalEquipamentos: db.length };
         try {
             const dataStr = JSON.stringify(backupData, null, 2);
-            baixarArquivo(dataStr, "FireGuardian_Backup_" + new Date().toISOString().split('T')[0] + ".json", "application/json");
+            baixarArquivo(dataStr, `FireGuardian_Backup_${new Date().toISOString().split('T')[0]}.json`, 'application/json');
             localStorage.setItem('fire_last_backup', new Date().toLocaleString('pt-BR'));
             atualizarInfoBackup();
             showToast('💾 Backup gerado e download iniciado!');
@@ -3885,8 +3886,7 @@
     }
 
     // ==========================================
-    // COMPARTILHAMENTO — CORREÇÃO PRINCIPAL COM COMPRESSÃO LZSTRING
-    // Os dados são embutidos diretamente no link (hash da URL) e compactados
+    // COMPARTILHAMENTO — AGORA COM COMPACTAÇÃO LZSTRING
     // ==========================================
     function gerarLink() {
         if (db.length === 0) { showToast('⚠️ Nenhum equipamento para compartilhar'); return; }
@@ -3901,11 +3901,11 @@
         const payload = {
             exp: exp,
             pwd: btoa(senha),
-            db: db,          // dados embutidos no link
+            db: db,
             tipos: tiposEquipamentos
         };
 
-        // Compactar com LZString antes de codificar para URL
+        // Compactar com LZString e codificar para URI
         const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(payload));
         const url = window.location.href.split('#')[0] + '#share=' + compressed;
 
@@ -3914,14 +3914,14 @@
         document.getElementById('share-dados-count').textContent = db.length;
         document.getElementById('link-result').style.display = 'block';
 
-        registrarLog('Link gerado', `Validade: ${minutos} min — ${db.length} equipamentos incorporados (compactado)`);
-        showToast('🔗 Link gerado com dados incorporados e compactados!');
+        registrarLog('Link gerado (compactado)', `Validade: ${minutos} min — ${db.length} equipamentos incorporados`);
+        showToast('🔗 Link gerado com dados compactados!');
     }
 
     function copiarLink() {
         const url = document.getElementById('share-url').value;
         const senha = document.getElementById('share-senha-display').textContent;
-        const texto = `🔥 FireGuardian Pro — Link de Visualização\n\n🔗 Link: ${url}\n🔑 Senha: ${senha}\n\n⚠️ Este link expira conforme configurado.`;
+        const texto = `🔥 FireGuardian Pro — Link de Visualização (Compactado)\n\n🔗 Link: ${url}\n🔑 Senha: ${senha}\n\n⚠️ Este link expira conforme configurado.`;
         navigator.clipboard.writeText(texto).then(() => {
             showToast('✅ Link e senha copiados!');
         }).catch(() => {
@@ -3936,7 +3936,7 @@
     }
 
     // ==========================================
-    // LOG DE ACESSOS
+    // LOG DE ACESSOS (mantido igual)
     // ==========================================
     function registrarLog(acao, detalhes) {
         const entry = {
@@ -3948,7 +3948,6 @@
         accessLog.unshift(entry);
         if (accessLog.length > 50) accessLog = accessLog.slice(0, 50);
         localStorage.setItem('fire_access_log', JSON.stringify(accessLog));
-        atualizarLogAcessos(); // atualiza UI se estiver visível
     }
 
     function atualizarLogAcessos() {
@@ -3971,6 +3970,7 @@
         atualizarLogAcessos();
         showToast('🗑️ Logs limpos');
     }
+
 </script>
 </body>
 </html>
