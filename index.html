@@ -2,7 +2,6 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <!-- VIEWPORT CORRIGIDA PARA WEBVIEW ANDROID -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>FireGuardian Pro - Backup Local</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -757,7 +756,7 @@
             font-weight: 700;
         }
 
-        /* ========== MODAL CORRIGIDO PARA ANDROID (VERSÃO TESTADA) ========== */
+        /* ========== MODAL CORRIGIDO PARA ANDROID ========== */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -1641,9 +1640,59 @@
             margin-top: 20px;
         }
 
-        .modal-expired {
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
+        /* Tela de expiração melhorada */
+        .expired-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 70%, #b71c1c 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        .expired-box {
+            background: rgba(255,255,255,0.07);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 40px 30px;
+            border-radius: 24px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+            animation: slideInLogin 0.6s ease;
+        }
+        
+        .expired-box i {
+            font-size: 4rem;
+            color: var(--danger);
+            margin-bottom: 20px;
+        }
+        
+        .expired-box h2 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+        
+        .expired-box p {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 25px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        .expired-box .btn-save {
+            width: auto;
+            padding: 12px 30px;
+            margin: 0 auto;
         }
 
         .context-menu {
@@ -1703,7 +1752,6 @@
             font-size: 0.8rem;
         }
 
-        /* NOVO: Estilo para o modal de confirmação */
         #modal-confirm .modal-content {
             text-align: center;
         }
@@ -1719,7 +1767,7 @@
 </head>
 <body>
 
-    <!-- TELA DE LOGIN (VERSÃO BETA) -->
+    <!-- TELA DE LOGIN (VERSÃO 1.7) -->
     <div id="login-screen" class="login-screen">
         <div class="login-bg-particles">
             <span></span><span></span><span></span><span></span><span></span>
@@ -1731,7 +1779,7 @@
                 </div>
                 <h1>FireGuardian Pro</h1>
                 <p>Gestão de Segurança Contra Incêndio</p>
-                <span class="login-version">v2.0 — Acesso Restrito</span>
+                <span class="login-version">v1.7 — Acesso Restrito</span>
             </div>
             <div class="login-body">
                 <div class="field-group">
@@ -1757,6 +1805,18 @@
             <div class="login-footer">
                 <i class="fas fa-shield-alt"></i> Sistema protegido — Acesso apenas para administradores
             </div>
+        </div>
+    </div>
+
+    <!-- TELA DE EXPIRAÇÃO MELHORADA -->
+    <div id="expired-screen" class="expired-screen" style="display: none;">
+        <div class="expired-box">
+            <i class="fas fa-hourglass-end"></i>
+            <h2>Link Expirado</h2>
+            <p>O link de compartilhamento que você utilizou não é mais válido.<br>Por favor, solicite um novo link ao administrador do sistema.</p>
+            <button class="btn-save" onclick="window.location.href=window.location.pathname" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark));">
+                <i class="fas fa-home"></i> PÁGINA INICIAL
+            </button>
         </div>
     </div>
 
@@ -1806,7 +1866,6 @@
 
         <!-- DASHBOARD -->
         <div id="dashboard" class="tab-content active">
-            <!-- ... (conteúdo original do dashboard) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-chart-line"></i> Visão Geral do Sistema</h3>
                 <div class="dash-grid">
@@ -1909,7 +1968,6 @@
 
         <!-- CADASTRO -->
         <div id="cadastro" class="tab-content">
-            <!-- ... (conteúdo original do cadastro) ... -->
             <div class="card">
                 <h3 id="cadastro-titulo" class="section-title"><i class="fas fa-plus-circle"></i> Novo Cadastro</h3>
                 <div class="cadastro-split">
@@ -2044,7 +2102,6 @@
 
         <!-- BUSCA AVANÇADA -->
         <div id="busca" class="tab-content">
-            <!-- ... (conteúdo original da busca) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-search"></i> Busca Avançada de Equipamentos</h3>
                 
@@ -2086,7 +2143,6 @@
 
         <!-- LISTA DE EQUIPAMENTOS -->
         <div id="lista" class="tab-content">
-            <!-- ... (conteúdo original da lista) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-list"></i> Lista Completa de Equipamentos</h3>
                 
@@ -2122,7 +2178,6 @@
 
         <!-- ORGANIZAÇÃO POR ÁREA -->
         <div id="organizacao" class="tab-content">
-            <!-- ... (conteúdo original da organização) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-layer-group"></i> Organização por Áreas</h3>
                 
@@ -2134,9 +2189,8 @@
             </div>
         </div>
 
-        <!-- EXPORTAR FILTRADO (mantido do oficial, SEM TXT) -->
+        <!-- EXPORTAR FILTRADO (apenas PDF) -->
         <div id="exportar-filtrado" class="tab-content">
-            <!-- ... (conteúdo original do exportar filtrado) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-filter"></i> Exportação Filtrada de Equipamentos</h3>
 
@@ -2271,7 +2325,7 @@
                 <!-- Botões de Exportação (apenas PDF) -->
                 <div class="export-actions">
                     <button class="btn-export btn-export-pdf" onclick="exportarFiltradoPDF()" id="btn-export-pdf" disabled>
-                        <i class="fas fa-file-pdf"></i> Exportar em PDF (Nova Aba)
+                        <i class="fas fa-file-pdf"></i> Exportar em PDF
                     </button>
                 </div>
             </div>
@@ -2279,7 +2333,6 @@
 
         <!-- BACKUP LOCAL -->
         <div id="backup" class="tab-content">
-            <!-- ... (conteúdo original do backup) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-hdd"></i> Backup e Restauração Local</h3>
 
@@ -2334,9 +2387,8 @@
             </div>
         </div>
 
-        <!-- RELATÓRIOS (apenas PDF, sem TXT) -->
+        <!-- RELATÓRIOS (apenas PDF, compartilhamento visível apenas para admin) -->
         <div id="relatorios" class="tab-content">
-            <!-- ... (conteúdo original dos relatórios) ... -->
             <div class="card">
                 <h3 class="section-title"><i class="fas fa-file-export"></i> Exportação e Compartilhamento</h3>
                 
@@ -2346,65 +2398,66 @@
                 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 30px;">
                     <button class="btn-save" style="background: linear-gradient(135deg, #e53935, #c62828);" onclick="gerarPDF()">
-                        <i class="fas fa-file-pdf"></i> Exportar PDF (Nova Aba)
+                        <i class="fas fa-file-pdf"></i> Exportar PDF
                     </button>
-                    <!-- Botão TXT removido -->
                 </div>
 
                 <hr style="margin: 30px 0; border: 0; border-top: 2px solid #e0e0e0;">
 
-                <!-- Compartilhamento de Acesso (Somente Leitura) -->
-                <h4 style="margin: 0 0 10px 0; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-share-alt"></i> Compartilhar Acesso (Somente Leitura)
-                </h4>
-                
-                <p style="font-size: 0.95rem; color: var(--text-sub); margin-bottom: 20px; line-height: 1.6;">
-                    Gere um link temporário para visualização <strong>somente leitura</strong> protegido por senha. 
-                    O destinatário NÃO precisará da senha de administrador — apenas da senha definida para o link.
-                </p>
-
-                <div class="share-box">
-                    <div class="field-group" style="margin-bottom: 15px;">
-                        <label style="color: var(--text-main);"><i class="fas fa-clock"></i> Validade do link</label>
-                        <select id="share-time" style="margin-top: 5px;">
-                            <option value="15">15 Minutos</option>
-                            <option value="60" selected>1 Hora</option>
-                            <option value="1440">24 Horas</option>
-                            <option value="10080">7 Dias</option>
-                        </select>
-                    </div>
-
-                    <!-- Senha para o link -->
-                    <div class="senha-link-box">
-                        <div class="field-group" style="margin-bottom: 10px;">
-                            <label style="color: #e65100;"><i class="fas fa-lock"></i> Senha de Acesso do Link *</label>
-                            <div class="senha-box" style="position: relative;">
-                                <input type="password" id="share-senha" placeholder="Mínimo 4 dígitos" style="margin-top: 5px; padding-right: 40px;">
-                                <i class="fas fa-eye toggle-senha" onclick="toggleSenhaShare()" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-sub);"></i>
-                            </div>
-                            <small style="color: var(--text-sub); display: block; margin-top: 5px;">
-                                O destinatário precisará apenas desta senha para acessar o link
-                            </small>
-                        </div>
-                    </div>
+                <!-- Compartilhamento de Acesso (Somente Leitura) - exibido apenas para admin -->
+                <div id="compartilhamento-admin-section">
+                    <h4 style="margin: 0 0 10px 0; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-share-alt"></i> Compartilhar Acesso (Somente Leitura)
+                    </h4>
                     
-                    <button class="btn-save" style="background: linear-gradient(135deg, #1976d2, #1565c0); margin-top: 15px;" onclick="gerarLink()">
-                        <i class="fas fa-link"></i> GERAR LINK PROTEGIDO
-                    </button>
+                    <p style="font-size: 0.95rem; color: var(--text-sub); margin-bottom: 20px; line-height: 1.6;">
+                        Gere um link temporário para visualização <strong>somente leitura</strong> protegido por senha. 
+                        O destinatário NÃO precisará da senha de administrador — apenas da senha definida para o link.
+                    </p>
 
-                    <div id="link-result" style="margin-top: 20px; display: none; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                        <label style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-main); font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-check-circle" style="color: var(--ok);"></i> Link gerado com sucesso:
-                        </label>
-                        <input type="text" id="share-url" readonly style="font-size: 0.9rem; background: #f5f5f5; margin-bottom: 10px;">
-                        <div style="background: #fff3e0; padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #ff9800;">
-                            <small style="color: #e65100; font-weight: 600;">
-                                <i class="fas fa-key"></i> Senha de acesso: <span id="share-senha-display"></span>
-                            </small>
+                    <div class="share-box">
+                        <div class="field-group" style="margin-bottom: 15px;">
+                            <label style="color: var(--text-main);"><i class="fas fa-clock"></i> Validade do link</label>
+                            <select id="share-time" style="margin-top: 5px;">
+                                <option value="15">15 Minutos</option>
+                                <option value="60" selected>1 Hora</option>
+                                <option value="1440">24 Horas</option>
+                                <option value="10080">7 Dias</option>
+                            </select>
                         </div>
-                        <button onclick="copiarLink()" style="padding: 10px 20px; background: linear-gradient(135deg, var(--ok), #1b5e20); color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; transition: all 0.3s;">
-                            <i class="fas fa-copy"></i> COPIAR LINK E SENHA
+
+                        <!-- Senha para o link -->
+                        <div class="senha-link-box">
+                            <div class="field-group" style="margin-bottom: 10px;">
+                                <label style="color: #e65100;"><i class="fas fa-lock"></i> Senha de Acesso do Link *</label>
+                                <div class="senha-box" style="position: relative;">
+                                    <input type="password" id="share-senha" placeholder="Mínimo 4 dígitos" style="margin-top: 5px; padding-right: 40px;">
+                                    <i class="fas fa-eye toggle-senha" onclick="toggleSenhaShare()" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-sub);"></i>
+                                </div>
+                                <small style="color: var(--text-sub); display: block; margin-top: 5px;">
+                                    O destinatário precisará apenas desta senha para acessar o link
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <button class="btn-save" style="background: linear-gradient(135deg, #1976d2, #1565c0); margin-top: 15px;" onclick="gerarLink()">
+                            <i class="fas fa-link"></i> GERAR LINK PROTEGIDO
                         </button>
+
+                        <div id="link-result" style="margin-top: 20px; display: none; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <label style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-main); font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-check-circle" style="color: var(--ok);"></i> Link gerado com sucesso:
+                            </label>
+                            <input type="text" id="share-url" readonly style="font-size: 0.9rem; background: #f5f5f5; margin-bottom: 10px;">
+                            <div style="background: #fff3e0; padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #ff9800;">
+                                <small style="color: #e65100; font-weight: 600;">
+                                    <i class="fas fa-key"></i> Senha de acesso: <span id="share-senha-display"></span>
+                                </small>
+                            </div>
+                            <button onclick="copiarLink()" style="padding: 10px 20px; background: linear-gradient(135deg, var(--ok), #1b5e20); color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; transition: all 0.3s;">
+                                <i class="fas fa-copy"></i> COPIAR LINK E SENHA
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -2461,18 +2514,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE EXPIRAÇÃO DE LINK -->
-    <div id="modal-expired" class="modal-overlay" style="display: none;">
-        <div class="modal-content" style="text-align: center;">
-            <i class="fas fa-hourglass-end" style="font-size: 4rem; color: var(--danger); margin-bottom: 20px;"></i>
-            <h3 style="color: var(--danger); margin-bottom: 15px;">Link Expirado</h3>
-            <p style="margin-bottom: 25px; color: var(--text-sub);">Este link de compartilhamento não é mais válido. Solicite um novo link ao administrador.</p>
-            <button class="btn-save" onclick="window.location.href=window.location.pathname" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark));">
-                <i class="fas fa-home"></i> Página Inicial
-            </button>
-        </div>
-    </div>
-
     <!-- MODAL DE BACKUP MANUAL (fallback) -->
     <div id="modal-backup" class="modal-overlay" style="display: none;" onclick="if(event.target===this)fecharModalBackup()">
         <div class="modal-content backup-modal-content" style="max-width: 600px; width: 95%;">
@@ -2490,7 +2531,7 @@
         </div>
     </div>
 
-    <!-- NOVO: Context Menu para exclusão de tipos -->
+    <!-- Context Menu para exclusão de tipos -->
     <div id="context-menu" class="context-menu">
         <div class="context-menu-item danger" onclick="excluirTipoSelecionado()">
             <i class="fas fa-trash"></i> Excluir Tipo
@@ -2500,7 +2541,7 @@
         </div>
     </div>
 
-    <!-- NOVO: MODAL DE CONFIRMAÇÃO CUSTOMIZADO -->
+    <!-- MODAL DE CONFIRMAÇÃO CUSTOMIZADO -->
     <div id="modal-confirm" class="modal-overlay" style="display: none;" onclick="fecharModalConfirm(event)">
         <div class="modal-content" style="max-width: 400px;" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -2538,7 +2579,6 @@
     let senhaAtual = localStorage.getItem('fire_senha') || '1234';
     let accessLog = JSON.parse(localStorage.getItem('fire_access_log')) || [];
     let linkSenhaTemp = null;
-    // NOVO: variável para callback do modal de confirmação
     let confirmCallback = null;
 
     // ==========================================
@@ -2573,7 +2613,6 @@
         window.addEventListener('offline', atualizarConexao);
         atualizarConexao();
 
-        // Fechar dropdown ao clicar fora
         document.addEventListener('click', (e) => {
             const container = document.getElementById('tipos-container');
             const input = document.getElementById('cad-tipo');
@@ -2582,7 +2621,6 @@
             }
         });
 
-        // NOVO: Event listeners para o modal de confirmação
         document.getElementById('confirm-btn-sim').addEventListener('click', function() {
             if (confirmCallback) {
                 confirmCallback(true);
@@ -2610,7 +2648,7 @@
     }
 
     // ==========================================
-    // GERENCIAMENTO DE TIPOS - CORRIGIDO (sem datalist)
+    // GERENCIAMENTO DE TIPOS
     // ==========================================
     function atualizarListaTipos() {
         const container = document.getElementById('tipos-container');
@@ -2619,7 +2657,6 @@
         
         if (!container || !lista || !inputTipo) return;
         
-        // Renderizar lista de tipos (apenas se não estiver em modo leitura)
         if (!isReadOnly) {
             lista.innerHTML = '';
             
@@ -2633,7 +2670,6 @@
                     </button>
                 `;
                 
-                // Clique simples seleciona o tipo
                 div.addEventListener('click', (e) => {
                     if (e.target.closest('.btn-excluir-tipo')) return;
                     inputTipo.value = tipo;
@@ -2645,21 +2681,17 @@
             });
         }
         
-        // Configurar eventos do input (apenas uma vez)
         if (!inputTipo.dataset.eventsConfigured) {
             inputTipo.dataset.eventsConfigured = 'true';
             
-            // Mostrar lista ao focar
             inputTipo.addEventListener('focus', () => {
                 if (!isReadOnly) {
                     container.style.display = 'block';
-                    // Resetar filtros
                     const itens = lista.querySelectorAll('.tipo-item');
                     itens.forEach(item => item.style.display = 'flex');
                 }
             });
             
-            // Filtrar ao digitar
             inputTipo.addEventListener('input', (e) => {
                 const termo = e.target.value.toLowerCase();
                 const itens = lista.querySelectorAll('.tipo-item');
@@ -2672,7 +2704,6 @@
                     if (visivel) temVisivel = true;
                 });
                 
-                // Mostrar container se houver resultados e estiver digitando
                 if (termo.length > 0 && temVisivel) {
                     container.style.display = 'block';
                 }
@@ -2699,21 +2730,24 @@
     // ==========================================
     function verificarTokenCompartilhado(token) {
         try {
-            const payload = JSON.parse(atob(token));
+            // Token agora é composto por exp:senha em base64url (sem padding)
+            const decoded = atob(token.replace(/-/g, '+').replace(/_/g, '='));
+            const [exp, pwdB64] = decoded.split(':');
+            const expNum = parseInt(exp, 10);
             const agora = Date.now();
 
-            if (agora > payload.exp) {
-                document.getElementById('modal-expired').style.display = 'flex';
+            if (agora > expNum) {
+                document.getElementById('expired-screen').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
                 return;
             }
 
-            // Registrar acesso com informações do dispositivo
             const userAgent = navigator.userAgent;
             const platform = navigator.platform;
             registrarLog('Tentativa de acesso via link', `Token válido - Dispositivo: ${platform} - User Agent: ${userAgent.substring(0, 100)}`);
 
-            if (payload.pwd) {
-                linkSenhaTemp = atob(payload.pwd);
+            if (pwdB64) {
+                linkSenhaTemp = atob(pwdB64);
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('modal-senha-link').style.display = 'flex';
                 setTimeout(() => {
@@ -2726,7 +2760,8 @@
                 registrarLog('Acesso via link', 'Acesso somente leitura permitido (sem senha)');
             }
         } catch (e) {
-            document.getElementById('modal-expired').style.display = 'flex';
+            document.getElementById('expired-screen').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
         }
     }
 
@@ -2759,7 +2794,6 @@
         }
     }
 
-    // NOVO: função para ativar modo leitura e garantir que a UI seja atualizada
     function ativarModoSomenteLeitura() {
         isReadOnly = true;
         document.getElementById('readonly-banner').style.display = 'block';
@@ -2770,13 +2804,12 @@
                 btn.style.display = 'none';
             }
         });
-        document.querySelectorAll('.btn-edit, .btn-del, #btn-cancelar-edicao, .btn-export-pdf, .btn-save[onclick*="criarBackup"], .btn-restaurar-paste, .file-input-label, .btn-limpar-logs').forEach(el => {
+        document.querySelectorAll('.btn-edit, .btn-del, #btn-cancelar-edicao, .btn-export-pdf, .btn-save[onclick*="criarBackup"], .btn-restaurar-paste, .file-input-label, .btn-limpar-logs, #compartilhamento-admin-section').forEach(el => {
             if (el) el.style.display = 'none';
         });
-        // ATUALIZA A UI PARA MOSTRAR OS DADOS
+        // Força a atualização da UI e navega para a lista para garantir que os dados apareçam
         atualizarUI();
-        // Navega para o dashboard (já está ativo, mas garantimos)
-        navegar('dashboard');
+        navegar('lista');
         showToast('👁️ Modo de visualização ativado');
     }
 
@@ -2956,7 +2989,6 @@
         setTimeout(() => {
             const tipo = document.getElementById('cad-tipo').value;
             
-            // NOVO: Adicionar tipo à lista se for novo
             if (tipo && !tiposEquipamentos.includes(tipo)) {
                 tiposEquipamentos.push(tipo);
                 localStorage.setItem('fire_tipos', JSON.stringify(tiposEquipamentos));
@@ -3047,7 +3079,6 @@
         showToast('❌ Edição cancelada');
     }
 
-    // NOVO: função de exclusão usando modal de confirmação
     function excluirItem(id) {
         if (isReadOnly) return;
         const item = db.find(i => i.id === id);
@@ -3416,7 +3447,6 @@
         icon.style.transform = content.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0deg)';
     }
 
-    // NOVO: função auxiliar para confirmar exclusão de área
     function confirmarExcluirArea(nomeArea) {
         if(isReadOnly) return;
         const mensagem = `⚠️ ATENÇÃO: Isso excluirá TODOS os ${db.filter(i => i.area === nomeArea).length} equipamento(s) da área "${nomeArea}".\n\n❌ Esta ação NÃO pode ser desfeita!`;
@@ -3517,7 +3547,7 @@
     }
 
     // ==========================================
-    // MODAL DE DETALHES - COM RESET DE SCROLL E DISPLAY FLEX
+    // MODAL DE DETALHES
     // ==========================================
     function abrirDetalhes(id) {
         const item = db.find(i => i.id === id);
@@ -3639,22 +3669,20 @@
             ` : ''}
         `;
 
-        // Resetar rolagem do modal para o topo
         const modalContent = document.querySelector('#modal-detalhes .modal-content');
         if (modalContent) {
             modalContent.scrollTop = 0;
         }
 
-        // Abrir modal com display flex
         const modal = document.getElementById('modal-detalhes');
         modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden'; // Trava o scroll do fundo
+        document.body.style.overflow = 'hidden';
     }
 
     function fecharModal(event) {
         if (!event || event.target.id === 'modal-detalhes' || event.target.classList.contains('modal-close')) {
             document.getElementById('modal-detalhes').style.display = 'none';
-            document.body.style.overflow = 'auto'; // Libera o scroll
+            document.body.style.overflow = 'auto';
         }
     }
 
@@ -3782,22 +3810,6 @@
         document.getElementById('btn-export-pdf').disabled = itensFiltrados.length === 0;
     }
 
-    // Função para abrir download em nova aba (adaptada para usar o método de link com download)
-    function abrirDownloadNovaAba(blob, filename) {
-        const url = URL.createObjectURL(blob);
-        
-        // Usar o método de link com atributo download (mais compatível)
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        // Limpar URL após um tempo
-        setTimeout(() => URL.revokeObjectURL(url), 5000);
-    }
-
     function exportarFiltradoPDF() {
         if (isReadOnly) {
             showToast('❌ Função não disponível no modo visualização');
@@ -3870,9 +3882,8 @@
             margin: { top: 40 }
         });
 
-        // Abrir em nova aba
-        const pdfBlob = doc.output('blob');
-        abrirDownloadNovaAba(pdfBlob, `FireGuardian_Filtrado_${new Date().toISOString().split('T')[0]}.pdf`);
+        // Usar save() que é mais compatível com WebView Android
+        doc.save(`FireGuardian_Filtrado_${new Date().toISOString().split('T')[0]}.pdf`);
         showToast('📄 PDF filtrado gerado!');
     }
 
@@ -3933,17 +3944,13 @@
             margin: { top: 40 }
         });
 
-        // Abrir em nova aba
-        const pdfBlob = doc.output('blob');
-        abrirDownloadNovaAba(pdfBlob, `FireGuardian_Relatorio_${new Date().toISOString().split('T')[0]}.pdf`);
+        doc.save(`FireGuardian_Relatorio_${new Date().toISOString().split('T')[0]}.pdf`);
         showToast('📄 PDF gerado!');
     }
 
     // ==========================================
-    // BACKUP E RESTAURAÇÃO - USANDO BLOB
+    // BACKUP E RESTAURAÇÃO
     // ==========================================
-    
-    // Criar backup usando Blob para compatibilidade Android
     function criarBackup() {
         if (db.length === 0) {
             showToast('⚠️ Não há dados para fazer backup');
@@ -3952,13 +3959,12 @@
 
         const backupData = {
             data: db,
-            tipos: tiposEquipamentos, // Incluir tipos personalizados
+            tipos: tiposEquipamentos,
             timestamp: new Date().toISOString(),
-            versao: '2.0',
+            versao: '1.7',
             totalEquipamentos: db.length
         };
 
-        // Usar Blob para compatibilidade com Android WebView
         try {
             const dataStr = JSON.stringify(backupData, null, 2);
             const blob = new Blob([dataStr], { type: "application/json" });
@@ -3971,15 +3977,12 @@
             link.click();
             document.body.removeChild(link);
             
-            // Limpar URL após download
             setTimeout(() => window.URL.revokeObjectURL(url), 5000);
             
             localStorage.setItem('fire_last_backup', new Date().toLocaleString('pt-BR'));
             atualizarInfoBackup();
             showToast('💾 Backup gerado e download iniciado!');
         } catch (e) {
-            // Fallback: mostrar modal com texto
-            console.warn('Download automático falhou, exibindo modal manual', e);
             document.getElementById('backup-manual-texto').value = JSON.stringify(backupData, null, 2);
             document.getElementById('modal-backup').style.display = 'flex';
             showToast('⚠️ Use o modo manual de cópia');
@@ -3993,7 +3996,6 @@
         catch (err) { document.execCommand('copy'); showToast('📋 Backup copiado!'); }
     }
 
-    // Restaurar backup com input file oculto
     function restaurarBackup(input) {
         const file = input.files[0];
         if (!file) return;
@@ -4005,15 +4007,12 @@
                     try {
                         const conteudo = JSON.parse(e.target.result);
                         
-                        // Verificar se é o novo formato (objeto com propriedade 'data') ou array direto
                         let dadosRestaurados;
-                        let tiposRestaurados = tiposEquipamentos; // manter atuais se não houver no backup
+                        let tiposRestaurados = tiposEquipamentos;
 
                         if (Array.isArray(conteudo)) {
-                            // Formato antigo (apenas array de equipamentos)
                             dadosRestaurados = conteudo;
                         } else if (conteudo.data && Array.isArray(conteudo.data)) {
-                            // Formato novo com objeto contendo 'data' e opcionalmente 'tipos'
                             dadosRestaurados = conteudo.data;
                             if (conteudo.tipos && Array.isArray(conteudo.tipos)) {
                                 tiposRestaurados = conteudo.tipos;
@@ -4025,7 +4024,6 @@
                         db = dadosRestaurados;
                         localStorage.setItem('fire_db', JSON.stringify(db));
                         
-                        // Restaurar tipos se existirem no backup
                         localStorage.setItem('fire_tipos', JSON.stringify(tiposRestaurados));
                         tiposEquipamentos = tiposRestaurados;
                         atualizarListaTipos();
@@ -4056,7 +4054,7 @@
     }
 
     // ==========================================
-    // COMPARTILHAMENTO E LOG DE ACESSOS (BETA)
+    // COMPARTILHAMENTO E LOG DE ACESSOS
     // ==========================================
     function gerarLink() {
         const minutos = parseInt(document.getElementById('share-time').value);
@@ -4069,8 +4067,10 @@
         }
 
         const expiracao = Date.now() + (minutos * 60 * 1000);
-        const tokenPayload = JSON.stringify({ exp: expiracao, pwd: btoa(senhaLink) });
-        const token = btoa(tokenPayload);
+        // Token compacto: exp:senha_em_base64
+        const tokenPayload = expiracao + ':' + btoa(senhaLink);
+        // Base64url sem padding
+        const token = btoa(tokenPayload).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
         const url = window.location.origin + window.location.pathname + '?token=' + token;
 
         document.getElementById('share-url').value = url;
@@ -4137,7 +4137,6 @@
         setTimeout(() => { t.style.display = 'none'; }, 3500);
     }
 
-    // NOVO: Funções para o modal de confirmação
     function confirmar(mensagem, callback) {
         document.getElementById('confirm-mensagem').innerText = mensagem;
         confirmCallback = callback;
@@ -4151,7 +4150,6 @@
         }
     }
 
-    // Teclas de atalho
     document.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 's') {
             e.preventDefault();
@@ -4162,13 +4160,13 @@
         }
         if (e.key === 'Escape') {
             fecharModal();
-            // fecharContextMenu(); // não definida, mas mantemos
             fecharModalConfirm();
             if (document.getElementById('modal-senha-link').style.display === 'flex') {
                 document.getElementById('modal-senha-link').style.display = 'none';
             }
-            if (document.getElementById('modal-expired').style.display === 'flex') {
-                document.getElementById('modal-expired').style.display = 'none';
+            if (document.getElementById('expired-screen').style.display === 'flex') {
+                document.getElementById('expired-screen').style.display = 'none';
+                document.body.style.overflow = 'auto';
             }
         }
     });
